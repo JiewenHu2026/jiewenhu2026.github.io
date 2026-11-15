@@ -377,6 +377,10 @@ function pressDate(entry) {
     }).format(new Date(date));
     return '<time datetime="' + escape(date) + '">' + escape(formatted) + '</time>';
   }
+  if (/^\d{4}-\d{2}$/.test(date)) {
+    const formatted = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', year: 'numeric' }).format(new Date(date + '-01'));
+    return '<time datetime="' + escape(date) + '">' + escape(formatted) + '</time>';
+  }
   return escape(date);
 }
 
