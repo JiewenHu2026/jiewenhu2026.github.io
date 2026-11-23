@@ -214,6 +214,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
 const introduction = 'Landscape design and research on how places hold memory and change over time.';
 const biography = 'Jiewen Hu is a landscape designer based in Philadelphia. Her work explores how landscapes hold memory and how ecological repair can support communities.';
 const featuredSlugs = ['leaving-traces', 'back-to-roots', 'from-ruins-to-roots', 'ground-in-friction'];
+const lastProjectSlugs = ['the-latent-ground', 'not-quite-order', 'whispers-beyond-the-looking-glass'];
 
 function projectMedia(project, file) {
   return 'media/' + localPath(project.slug) + '/' + localPath(file);
@@ -313,8 +314,13 @@ function projectIndexRow(project) {
 
 function projectsPage() {
   const featured = featuredSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
+  const last = lastProjectSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
   const entries = [...projects].sort((a, b) => Number(b.year) - Number(a.year));
-  const gallery = [...featured, ...entries.filter(({ slug }) => !featuredSlugs.includes(slug))];
+  const gallery = [
+    ...featured,
+    ...entries.filter(({ slug }) => !featuredSlugs.includes(slug) && !lastProjectSlugs.includes(slug)),
+    ...last,
+  ];
   const body = [
     '<main id="main-content" class="project-index">',
     '  <section class="editorial-shell project-index-selected" aria-labelledby="selected-projects">',
