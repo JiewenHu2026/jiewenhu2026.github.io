@@ -123,6 +123,10 @@ function paragraphs(items = []) {
   return items.map((item) => '<p>' + escape(item) + '</p>').join('\n');
 }
 
+function cvLink(prefix) {
+  return '<a href="' + prefix + cvPath + '?v=' + cvVersion + '" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>';
+}
+
 function siteHeader(prefix, route) {
   const navigation = [
     [prefix, 'Home', ''],
@@ -260,7 +264,7 @@ function homePage() {
     '      <p>' + biography + '</p>',
     '      <p>She practices at OLIN and holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
     '      <p class="home-bio-links">',
-    '        <a href="./' + cvPath + '?v=' + cvVersion + '" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>',
+    '        ' + cvLink('./'),
     '        <a href="./about/">About Jiewen <span aria-hidden="true">↗</span></a>',
     '        <a href="./projects/">View projects <span aria-hidden="true">↗</span></a>',
     '      </p>',
@@ -333,7 +337,10 @@ function aboutPage() {
     '      <p>Based in Philadelphia, Jiewen is a Landscape Designer II at OLIN. She holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
     '      <p>Her honors include two ASLA National Student Honor Awards, first place in the ASLA Emerging Professionals Design Competition, and a category win in the professional division of the IFLA Global Landscape Architecture Awards. Her projects have also earned first place in World Landscape Architecture’s Design the World You Want competition, the Karl Foerster Commendation at the Peter Joseph Lenné Prize, and a win in the professional Conceptual Landscape category at the BLT Built Design Awards.</p>',
     '      <p>Her work has been <a href="../press/" aria-label="Press and publications">featured by</a> <em>Landscape Architecture Magazine</em>, ASLA LAND, World Landscape Architecture, Landezine, Penn Weitzman, Archinect, Urbanize LA, and Secret Los Angeles. Her projects have been exhibited in Berlin and Hong Kong, and as part of Melbourne Design Week.</p>',
-    '      <div class="about-actions"><a href="#awards">Recognition <span aria-hidden="true">↓</span></a></div>',
+    '      <div class="about-actions">',
+    '        <a href="#awards">Recognition <span aria-hidden="true">↓</span></a>',
+    '        ' + cvLink('../'),
+    '      </div>',
     '    </div>',
     '  </header>',
     '  <section class="about-section" aria-labelledby="education">',
