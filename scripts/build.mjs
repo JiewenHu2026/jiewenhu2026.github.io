@@ -580,7 +580,7 @@ function aboutAwards() {
   });
   return [
     '  <section class="about-section about-awards" id="recognition" aria-labelledby="awards">',
-    '    <h2 class="section-label" id="awards" data-about-reveal>Awards &amp; Official Announcements</h2>',
+    '    <h2 class="section-label" id="awards" data-about-reveal>Recognition</h2>',
     '    <div class="about-award-years">',
     sections.length ? sections.join('\n') : '      <p>No awards are listed.</p>',
     '    </div>',
