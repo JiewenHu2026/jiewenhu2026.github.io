@@ -299,7 +299,7 @@ function projectIndexCard(project, index) {
     '        <a class="selected-project-card" href="../work/' + localPath(project.slug) + '/">',
     '          <span class="selected-project-image"><img src="../' + cover.src + '" alt=""' + loading + ' decoding="async"></span>',
     '          <span class="selected-project-caption">',
-    '            <span class="selected-project-title">' + escape(project.title) + '</span>',
+    '            <span class="selected-project-title" data-project="' + project.slug + '">' + escape(project.title) + '</span>',
     '            <span class="selected-project-location">' + escape(project.location) + '</span>',
     project.year ? '            <span class="selected-project-meta">' + escape(project.year) + '</span>' : '',
     '          </span>',

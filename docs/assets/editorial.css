@@ -23,8 +23,6 @@
 }
 
 .home-work-index {
-  --old-style-serif: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
-  --compact-sans: 'Arial Narrow', 'Roboto Condensed', 'Franklin Gothic Medium', Arial, sans-serif;
   position: relative;
   z-index: 6;
   color: var(--ink);
@@ -35,28 +33,30 @@
 }
 
 .home-work-index a {
+  font-size: var(--home-title-size, inherit);
+  letter-spacing: var(--home-title-spacing, inherit);
   pointer-events: auto;
 }
 
-.home-work-index :is([data-project="leaving-traces"], [data-project="the-latent-ground"]) {
+:is(.home-work-index, .selected-projects) :is([data-project="leaving-traces"], [data-project="the-latent-ground"]) {
   font-family: var(--serif);
-  letter-spacing: -.06em;
+  --home-title-spacing: -.06em;
 }
 
-.home-work-index :is([data-project="back-to-roots"], [data-project="soil-holds"], [data-project="whispers-beyond-the-looking-glass"]) {
-  font-family: var(--old-style-serif);
+:is(.home-work-index, .selected-projects) :is([data-project="back-to-roots"], [data-project="soil-holds"], [data-project="whispers-beyond-the-looking-glass"]) {
+  font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
 }
 
-.home-work-index :is([data-project="ground-in-friction"], [data-project="from-ruins-to-roots"]) {
-  font-family: var(--compact-sans);
+:is(.home-work-index, .selected-projects) :is([data-project="ground-in-friction"], [data-project="from-ruins-to-roots"]) {
+  font-family: 'Arial Narrow', 'Roboto Condensed', 'Franklin Gothic Medium', Arial, sans-serif;
 }
 
-.home-work-index :is([data-project="not-quite-order"], [data-project="stitching-kingston"]) {
+:is(.home-work-index, .selected-projects) :is([data-project="not-quite-order"], [data-project="stitching-kingston"]) {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
-  font-size: .91em;
+  --home-title-size: .91em;
 }
 
-.home-work-index :is([data-project="from-separation-to-ambiguity"], [data-project="whispers-beyond-the-looking-glass"]) {
+:is(.home-work-index, .selected-projects) :is([data-project="from-separation-to-ambiguity"], [data-project="whispers-beyond-the-looking-glass"]) {
   font-style: italic;
 }
 
@@ -230,7 +230,7 @@
 
 .selected-project-title {
   font-size: .875rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.4;
   letter-spacing: .105em;
   text-transform: uppercase;
