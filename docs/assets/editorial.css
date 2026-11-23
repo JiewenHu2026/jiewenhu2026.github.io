@@ -20,7 +20,6 @@
   scroll-margin-top: 62px;
 }
 
-.home-reel-frames,
 .reel-frame,
 .reel-image-link {
   position: absolute;
@@ -49,7 +48,7 @@
 .reel-frame figcaption {
   position: absolute;
   z-index: 1;
-  bottom: 73px;
+  bottom: 24px;
   left: clamp(22px, 4.3vw, 64px);
   max-width: calc(100% - 46px);
   font-size: .75rem;
@@ -58,75 +57,9 @@
   pointer-events: none;
 }
 
-.home-reel-wordmark {
-  position: absolute;
-  z-index: 2;
-  inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  padding: 14px 30px;
-  min-width: min(182px, 85vw);
-  background: rgb(17 22 20 / 64%);
-  border: 1px solid rgb(255 255 255 / 40%);
-  color: #fff;
-  text-align: center;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.home-reel-wordmark h1 {
-  text-transform: none;
-  font-size: .875rem;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: .14em;
-}
-
-.home-reel-wordmark p {
-  margin-top: 4px;
-  font-size: .625rem;
-  line-height: 1.4;
-  letter-spacing: .11em;
-}
-
-.home-reel-controls {
-  position: absolute;
-  z-index: 3;
-  bottom: 20px;
-  left: clamp(16px, 3.75vw, 56px);
-  display: none;
-  align-items: center;
-  gap: 4px;
-}
-
-.home-reel[data-reel-ready] .home-reel-controls {
-  display: flex;
-}
-
-.home-reel-controls button {
-  min-height: 44px;
-  padding: 0 8px;
-  color: #fff;
-  font: 500 .75rem/1.35 var(--sans);
-}
-
-.home-reel-controls button:not(:disabled):hover {
-  text-decoration: underline;
-  text-underline-offset: .2em;
-}
-
-.reel-position {
-  padding: 0 7px;
-  font-size: .7rem;
-  font-variant-numeric: tabular-nums;
-}
-
 .reel-image-link:focus-visible {
   outline: 2px solid #fff;
   outline-offset: -9px;
-}
-
-.home-reel-controls button:focus-visible {
-  outline-color: #fff;
 }
 
 .home-bio,
@@ -159,8 +92,9 @@
 
 .home-bio-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px 18px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
   padding-top: 12px;
 }
 
@@ -575,8 +509,7 @@
     gap: 8px;
   }
 
-  .reel-frame figcaption { bottom: 111px; }
-  .home-reel-controls { bottom: 59px; }
+  .reel-frame figcaption { bottom: 68px; }
   .selected-project-image { aspect-ratio: 4 / 5; }
   .project-essay-heading h1 { font-size: 2rem; }
   .project-index-table thead th:nth-child(1) { width: 31%; }

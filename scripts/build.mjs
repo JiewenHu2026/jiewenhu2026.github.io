@@ -42,6 +42,8 @@ const [daylightStyles, clockScript] = await Promise.all([
 const daylightStylesVersion = assetVersion(daylightStyles);
 const clockScriptVersion = assetVersion(clockScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
+const cvPath = 'files/jiewen-hu-cv.pdf';
+const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
 const sharedArchiveSources = await Promise.all([
   readVersionSource(fileURLToPath(import.meta.url)),
@@ -163,7 +165,6 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js"></script>');
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (editorial) tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/editorial.css?v=' + editorialStylesVersion + '">');
-  if (home) tags.push('  <script defer src="' + prefix + 'assets/home-reel.js"></script>');
   if (project) tags.push('  <script defer src="' + prefix + 'assets/project-viewer.js"></script>');
   tags.push(
     '</head>',
@@ -205,55 +206,47 @@ function projectCover(project) {
   return { src: projectMedia(project, project.cover || slide.file), alt: project.coverAlt || slide.alt };
 }
 
-function reelImages() {
-  const images = [];
+function homeHeroImage() {
   for (const [slug, file, position] of homeReelSequence) {
     const project = projects.find((entry) => entry.slug === slug);
     const slide = project?.slides.find((entry) => entry.file === file);
-    if (slide) images.push({ project, slide, position });
+    if (slide) return { project, slide, position };
   }
-  return images.length ? images : projects.slice(0, 3).map((project) => ({
-    project, slide: project.slides[0], position: '50% 50%',
-  }));
+  const [project] = projects;
+  return project && { project, slide: project.slides[0], position: '50% 50%' };
 }
 
-function reelFrame({ project, slide, position }, index) {
-  const priority = index === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
+function reelFrame({ project, slide, position }) {
   return [
-    '      <figure class="reel-frame" data-reel-slide' + (index ? ' hidden' : '') + '>',
-    '        <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
-    '          <img src="./' + projectMedia(project, slide.file) + '" alt="' + escape(slide.alt) + '" decoding="async" style="object-position:' + position + '"' + priority + '>',
-    '        </a>',
-    '        <figcaption>' + escape(project.title) + '</figcaption>',
-    '      </figure>',
+    '    <figure class="reel-frame">',
+    '      <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
+    '        <img src="./' + projectMedia(project, slide.file) + '" alt="' + escape(slide.alt) + '" decoding="async" style="object-position:' + position + '" fetchpriority="high">',
+    '      </a>',
+    '      <figcaption>' + escape(project.title) + '</figcaption>',
+    '    </figure>',
   ].join('\n');
 }
 
 function homePage() {
-  const images = reelImages();
-  const lead = images[0];
+  const lead = homeHeroImage();
   const body = [
     '<main id="main-content" class="portfolio-home">',
-    '  <section class="home-reel" id="work" aria-label="Selected project images" data-home-reel>',
-    '    <div class="home-reel-frames">',
-    ...images.map(reelFrame),
-    '    </div>',
-    '    <div class="home-reel-wordmark"><h1>' + name + '</h1><p>Landscape Architecture</p></div>',
-    images.length > 1 ? [
-      '    <div class="home-reel-controls">',
-      '      <button type="button" data-reel-prev aria-label="Previous project image">Previous</button>',
-      '      <button type="button" data-reel-next aria-label="Next project image">Next</button>',
-      '      <span class="reel-position"><span data-reel-current>01</span> / <span data-reel-total>' + String(images.length).padStart(2, '0') + '</span></span>',
-      '      <button type="button" data-reel-toggle aria-label="Pause slideshow">Pause</button>',
-      '    </div>',
-    ].join('\n') : '',
-    '  </section>',
+    '  <h1 class="sr-only">' + name + ' | Landscape Architecture</h1>',
+    ...(lead ? [
+      '  <section class="home-reel" id="work" aria-label="Featured project">',
+      reelFrame(lead),
+      '  </section>',
+    ] : []),
     '  <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">',
     '    <div class="home-bio-inner">',
     '      <h2 id="home-about-title" class="section-label">About</h2>',
     '      <p>' + biography + '</p>',
     '      <p>She practices at OLIN and holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
-    '      <p class="home-bio-links"><a href="./about/">About Jiewen</a><a href="./projects/">View projects</a></p>',
+    '      <p class="home-bio-links">',
+    '        <a href="./' + cvPath + '?v=' + cvVersion + '" target="_blank" rel="noopener">View CV <span aria-hidden="true">↗</span></a>',
+    '        <a href="./about/">About Jiewen</a>',
+    '        <a href="./projects/">View projects</a>',
+    '      </p>',
     '    </div>',
     '  </section>',
     ...(press.length ? [
