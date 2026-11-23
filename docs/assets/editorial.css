@@ -212,8 +212,17 @@
   object-fit: cover;
 }
 
+.selected-project-card[href$="/from-ruins-to-roots/"] .selected-project-image {
+  position: relative;
+  aspect-ratio: 800 / 530;
+}
+
+/* Show rows 220–750 of the 800 × 1000 cover. */
 .selected-project-card[href$="/from-ruins-to-roots/"] .selected-project-image img {
-  object-position: center 43%;
+  position: absolute;
+  inset: 0 auto auto 0;
+  height: auto;
+  transform: translateY(-22%);
 }
 
 .selected-project-caption {
@@ -221,7 +230,7 @@
   align-self: center;
   position: relative;
   display: grid;
-  gap: 5px;
+  gap: 8px;
   padding: 12px clamp(8px, 1.6vw, 24px);
   overflow-wrap: anywhere;
   pointer-events: none;
@@ -229,8 +238,8 @@
 }
 
 .selected-project-title {
-  font-size: clamp(1rem, 1.5vw, 1.125rem);
-  font-weight: 400;
+  font-size: clamp(1.125rem, 1.65vw, 1.25rem);
+  font-weight: 700;
   line-height: 1.4;
   letter-spacing: .105em;
   text-transform: uppercase;
