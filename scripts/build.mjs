@@ -360,7 +360,7 @@ function aboutPage() {
     '      <p class="about-meta">Philadelphia, PA</p>',
     '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer II</p></div>',
     '    </div>',
-    '    <div class="about-row additional-profile-row" data-about-reveal><p class="about-meta">Previous experience</p><div><h3>Studio Outside, Jonathan Alderson Landscape Architects, and SWA Group</h3></div></div>',
+    '    <div class="about-row additional-profile-row" data-about-reveal><p class="about-meta">Previous experience</p><div><h3>SWA Group, Studio Outside, and Jonathan Alderson Landscape Architects</h3></div></div>',
     '  </section>',
     '  <section class="about-section" aria-labelledby="education">',
     '    <h2 class="section-label" id="education" data-about-reveal>Education</h2>',
