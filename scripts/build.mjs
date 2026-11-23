@@ -26,14 +26,19 @@ const [projects, pressRecords, honors] = await Promise.all([
   readOptionalContent('honors.json'),
 ]);
 
-const daylightStyles = await readFile(join(docs, 'assets', 'daylight.css'));
+async function readVersionSource(path) {
+  const text = await readFile(path, 'utf8');
+  return text.replace(/\r\n/g, '\n');
+}
+
+const daylightStyles = await readVersionSource(join(docs, 'assets', 'daylight.css'));
 const daylightStylesVersion = createHash('sha256').update(daylightStyles).digest('hex').slice(0, 12);
 
 const sharedArchiveSources = await Promise.all([
-  readFile(fileURLToPath(import.meta.url)),
+  readVersionSource(fileURLToPath(import.meta.url)),
   daylightStyles,
   ...['site.css', 'portfolio.css', 'reference-type.css', 'philadelphia-clock.js', 'archive-freshness.js', 'press.js']
-    .map((file) => readFile(join(docs, 'assets', file))),
+    .map((file) => readVersionSource(join(docs, 'assets', file))),
 ]);
 
 function archiveVersion(data) {
