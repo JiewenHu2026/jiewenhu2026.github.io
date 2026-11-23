@@ -293,11 +293,13 @@ function homePage() {
 
 function projectIndexCard(project, index) {
   const cover = projectCover(project);
+  const { width, height } = project.coverSize ?? {};
+  const dimensions = width && height ? ' width="' + escape(width) + '" height="' + escape(height) + '"' : '';
   const loading = index >= 4 ? ' loading="lazy"' : '';
   return [
     '      <li>',
     '        <a class="selected-project-card" href="../work/' + localPath(project.slug) + '/">',
-    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt=""' + loading + ' decoding="async"></span>',
+    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt=""' + dimensions + loading + ' decoding="async"></span>',
     '          <span class="selected-project-caption">',
     '            <span class="selected-project-title" data-project="' + project.slug + '">' + escape(project.title) + '</span>',
     '            <span class="selected-project-location">' + escape(project.location) + '</span>',

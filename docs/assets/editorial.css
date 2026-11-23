@@ -229,7 +229,7 @@
 }
 
 .selected-project-title {
-  font-size: .875rem;
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: .105em;
@@ -244,7 +244,15 @@
 
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
   .selected-project-image {
+    align-self: center;
+    aspect-ratio: auto;
+    background: transparent;
     opacity: 0;
+  }
+
+  .selected-project-image img {
+    height: auto;
+    object-fit: contain;
   }
 
   .selected-project-location,
