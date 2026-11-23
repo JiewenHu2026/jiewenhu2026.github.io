@@ -117,6 +117,10 @@ dialog::backdrop {
   pointer-events: none;
 }
 
+.philadelphia-clock p {
+  font: inherit;
+}
+
 .philadelphia-clock p:first-child {
   color: var(--ink);
 }
@@ -149,4 +153,14 @@ body:not(.project-body) .site-footer {
 
 .archive-page h2[id] {
   scroll-margin-top: 78px;
+}
+@media (max-width: 420px) {
+  .site-header {
+    gap: 8px;
+    padding-inline: 13px;
+  }
+
+  .site-header nav {
+    gap: 8px;
+  }
 }

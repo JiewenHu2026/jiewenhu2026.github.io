@@ -41,6 +41,7 @@ const [daylightStyles, clockScript] = await Promise.all([
 ]);
 const daylightStylesVersion = assetVersion(daylightStyles);
 const clockScriptVersion = assetVersion(clockScript);
+const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
 
 const sharedArchiveSources = await Promise.all([
   readVersionSource(fileURLToPath(import.meta.url)),
@@ -98,23 +99,21 @@ function paragraphs(items = []) {
   return items.map((item) => '<p>' + escape(item) + '</p>').join('\n');
 }
 
-function metadata(project) {
-  return [project.year, project.type, project.location].filter(Boolean).map(escape).join(' / ');
-}
-
-function siteHeader(prefix, home, route) {
+function siteHeader(prefix, route) {
   const navigation = [
-    [home ? '#work' : prefix + '#work', 'Projects', ''],
-    [prefix + 'about/', 'About', 'about/'],
+    [prefix, 'Home', ''],
+    [prefix + 'projects/', 'Projects', 'projects/'],
     [prefix + 'awards/', 'Awards', 'awards/'],
     ...(press.length ? [[prefix + 'press/', 'Press', 'press/']] : []),
+    [prefix + 'about/', 'About', 'about/'],
   ];
   return [
     '<header class="site-header">',
     '  <a class="wordmark" href="' + prefix + '" aria-label="Jiewen Hu home">' + name + '</a>',
     '  <nav class="site-navigation" aria-label="Main navigation">',
     ...navigation.map(([href, label, path]) => {
-      const current = path && route === path ? ' aria-current="page"' : '';
+      let current = route === path ? ' aria-current="page"' : '';
+      if (path === 'projects/' && route?.startsWith('work/')) current = ' aria-current="location"';
       return '    <a href="' + href + '"' + current + '>' + label + '</a>';
     }),
     '  </nav>',
@@ -122,7 +121,10 @@ function siteHeader(prefix, home, route) {
   ].join('\n');
 }
 
-function layout({ body, title, description, prefix, route, socialImage, home = false, gallery = false, notFound = false }) {
+function layout({ body, title, description, prefix, route, socialImage, notFound = false }) {
+  const home = route === '';
+  const project = route?.startsWith('work/');
+  const editorial = home || project || route === 'projects/';
   const archive = route === 'press/' ? 'press' : route === 'awards/' ? 'awards' : '';
   const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
   const tags = [
@@ -159,15 +161,17 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js"></script>');
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
-  if (gallery) tags.push('  <script defer src="' + prefix + 'assets/gallery.js"></script>');
+  if (editorial) tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/editorial.css?v=' + editorialStylesVersion + '">');
+  if (home) tags.push('  <script defer src="' + prefix + 'assets/home-reel.js"></script>');
+  if (project) tags.push('  <script defer src="' + prefix + 'assets/project-viewer.js"></script>');
   tags.push(
     '</head>',
-    '<body' + (gallery ? ' class="project-body"' : '') + archiveAttributes + '>',
+    '<body' + archiveAttributes + '>',
     '<a class="skip-link" href="#main-content">Skip to content</a>',
-    siteHeader(prefix, home, route),
+    siteHeader(prefix, route),
     body,
   );
-  if (!gallery && !notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
+  if (!notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
   tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
     '  <p>The time in Philadelphia is <time id="philadelphia-clock-time"></time>. <span id="philadelphia-clock-period"></span></p>',
@@ -179,64 +183,149 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
 }
 
 const introduction = 'Landscape design and research on how places hold memory and change over time.';
+const biography = 'Jiewen Hu is a landscape designer based in Philadelphia. Her work explores how landscapes hold memory and how ecological repair can support communities.';
+const featuredSlugs = ['leaving-traces', 'from-ruins-to-roots', 'ground-in-friction'];
+const homeReelSequence = [
+  ['leaving-traces', 'signal-valley.webp', '45% 35%'],
+  ['ground-in-friction', 'web/perspective-6.webp', '50% 46%'],
+  ['from-separation-to-ambiguity', 'web/01-perspective-1.webp', '50% 50%'],
+  ['not-quite-order', 'web/perspective.webp', '50% 54%'],
+  ['soil-holds', 'web/04-working-ground.webp', '50% 51%'],
+  ['the-latent-ground', 'perspective.jpg', '50% 50%'],
+  ['leaving-traces', 'sheltering-woodland.webp', '50% 38%'],
+];
+
+function projectMedia(project, file) {
+  return 'media/' + localPath(project.slug) + '/' + localPath(file);
+}
 
 function projectCover(project) {
   const slide = project.slides[0];
-  return {
-    src: 'media/' + localPath(project.slug) + '/' + localPath(project.cover || slide.file),
-    alt: project.coverAlt || slide.alt,
-  };
+  return { src: projectMedia(project, project.cover || slide.file), alt: project.coverAlt || slide.alt };
 }
 
-function workCard(project, featured = false) {
-  const cover = projectCover(project);
-  const load = featured ? ' fetchpriority="high"' : ' loading="lazy"';
+function reelImages() {
+  const images = [];
+  for (const [slug, file, position] of homeReelSequence) {
+    const project = projects.find((entry) => entry.slug === slug);
+    const slide = project?.slides.find((entry) => entry.file === file);
+    if (slide) images.push({ project, slide, position });
+  }
+  return images.length ? images : projects.slice(0, 3).map((project) => ({
+    project, slide: project.slides[0], position: '50% 50%',
+  }));
+}
+
+function reelFrame({ project, slide, position }, index) {
+  const priority = index === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
   return [
-    '<li class="work-card' + (featured ? ' work-card-featured' : '') + '">',
-    '  <a class="work-card-link" href="./work/' + localPath(project.slug) + '/">',
-    '    <span class="work-card-image"><img src="./' + cover.src + '" alt="' + escape(cover.alt) + '" decoding="async"' + load + '></span>',
-    '    <span class="work-card-caption">',
-    '      <span class="work-card-title">' + escape(project.title) + '</span>',
-    '      <span class="work-card-year">' + [featured ? project.type : '', project.year].filter(Boolean).map(escape).join(' / ') + '</span>',
-    '    </span>',
-    '  </a>',
-    '</li>',
+    '      <figure class="reel-frame" data-reel-slide' + (index ? ' hidden' : '') + '>',
+    '        <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
+    '          <img src="./' + projectMedia(project, slide.file) + '" alt="' + escape(slide.alt) + '" decoding="async" style="object-position:' + position + '"' + priority + '>',
+    '        </a>',
+    '        <figcaption>' + escape(project.title) + '</figcaption>',
+    '      </figure>',
   ].join('\n');
 }
 
 function homePage() {
-  const [featured, ...otherProjects] = projects;
-  const cover = projectCover(featured);
+  const images = reelImages();
+  const lead = images[0];
   const body = [
-    '<main id="main-content" class="portfolio-page">',
-    '  <div class="portfolio-masthead portfolio-shell">',
-    '    <h1>' + name + '</h1>',
-    '    <p>' + introduction + '</p>',
-    '  </div>',
-    '  <section class="portfolio-shell portfolio-projects" id="work" aria-labelledby="work-title">',
-    '    <h2 class="section-label" id="work-title">Selected projects</h2>',
-    '    <ul class="work-grid portfolio-grid">',
-    workCard(featured, true),
-    ...otherProjects.map((project) => workCard(project)),
-    '    </ul>',
+    '<main id="main-content" class="portfolio-home">',
+    '  <section class="home-reel" id="work" aria-label="Selected project images" data-home-reel>',
+    '    <div class="home-reel-frames">',
+    ...images.map(reelFrame),
+    '    </div>',
+    '    <div class="home-reel-wordmark"><h1>' + name + '</h1><p>Landscape Architecture</p></div>',
+    images.length > 1 ? [
+      '    <div class="home-reel-controls">',
+      '      <button type="button" data-reel-prev aria-label="Previous project image">Previous</button>',
+      '      <button type="button" data-reel-next aria-label="Next project image">Next</button>',
+      '      <span class="reel-position"><span data-reel-current>01</span> / <span data-reel-total>' + String(images.length).padStart(2, '0') + '</span></span>',
+      '      <button type="button" data-reel-toggle aria-label="Pause slideshow">Pause</button>',
+      '    </div>',
+    ].join('\n') : '',
+    '  </section>',
+    '  <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">',
+    '    <div class="home-bio-inner">',
+    '      <h2 id="home-about-title" class="section-label">About</h2>',
+    '      <p>' + biography + '</p>',
+    '      <p>She practices at OLIN and holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
+    '      <p class="home-bio-links"><a href="./about/">About Jiewen</a><a href="./projects/">View projects</a></p>',
+    '    </div>',
     '  </section>',
     ...(press.length ? [
-      '  <section class="portfolio-shell home-press" aria-labelledby="latest-press">',
-      '    <div class="section-header"><h2 class="section-label" id="latest-press">Latest press</h2><a href="./press/">Press archive</a></div>',
+      '  <section class="portfolio-shell home-press home-press-index" aria-labelledby="latest-press">',
+      '    <div class="section-header"><h2 class="section-label" id="latest-press">Press</h2><a href="./press/">View all press</a></div>',
       '    <ul class="press-list">',
-      ...press.slice(0, 4).map((entry) => pressEntry(entry, 'h3', false)),
+      ...press.slice(0, 10).map((entry) => pressEntry(entry, 'h3', false)),
       '    </ul>',
       '  </section>',
     ] : []),
     '</main>',
-  ].join('\n');
+  ].filter(Boolean).join('\n');
   return layout({
     title: name + ' | Landscape Architecture',
     description: introduction,
     prefix: './',
     route: '',
-    home: true,
-    socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
+    socialImage: lead ? { url: new URL(projectMedia(lead.project, lead.slide.file), siteUrl).href, alt: lead.slide.alt } : undefined,
+    body,
+  });
+}
+
+function projectIndexCard(project) {
+  const cover = projectCover(project);
+  return [
+    '      <li>',
+    '        <a class="selected-project-card" href="../work/' + localPath(project.slug) + '/">',
+    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt="' + escape(cover.alt) + '" decoding="async"></span>',
+    '          <span class="selected-project-title">' + escape(project.title) + '</span>',
+    '          <span class="selected-project-location">' + escape(project.location) + '</span>',
+    '        </a>',
+    '      </li>',
+  ].join('\n');
+}
+
+function projectIndexRow(project) {
+  return [
+    '        <tr>',
+    '          <th scope="row"><a href="../work/' + localPath(project.slug) + '/">' + escape(project.title) + '</a></th>',
+    '          <td>' + escape(project.location) + '</td>',
+    '          <td>' + escape(project.year) + '</td>',
+    '          <td>' + escape(project.type) + '</td>',
+    '        </tr>',
+  ].join('\n');
+}
+
+function projectsPage() {
+  const featured = featuredSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
+  const entries = [...projects].sort((a, b) => Number(b.year) - Number(a.year));
+  const body = [
+    '<main id="main-content" class="project-index">',
+    '  <section class="editorial-shell project-index-selected" aria-labelledby="selected-projects">',
+    '    <header class="project-index-heading"><p>Selected</p><h1 id="selected-projects">Projects</h1></header>',
+    '    <ul class="selected-projects">',
+    ...featured.map(projectIndexCard),
+    '    </ul>',
+    '  </section>',
+    '  <section class="editorial-shell project-index-archive" aria-labelledby="project-archive">',
+    '    <header class="project-index-heading archive-index-heading"><p>Projects</p><h2 id="project-archive">Archive</h2></header>',
+    '    <table class="project-index-table">',
+    '      <thead><tr><th scope="col">Title</th><th scope="col">Location</th><th scope="col">Year</th><th scope="col">Type</th></tr></thead>',
+    '      <tbody>',
+    ...entries.map(projectIndexRow),
+    '      </tbody>',
+    '    </table>',
+    '  </section>',
+    '</main>',
+  ].join('\n');
+  return layout({
+    title: 'Projects | ' + name,
+    description: 'Selected landscape architecture projects and an archive of work by ' + name + '.',
+    prefix: '../',
+    route: 'projects/',
     body,
   });
 }
@@ -284,120 +373,139 @@ function aboutPage() {
   });
 }
 
-function drawingSlide(project, slide, index) {
-  const path = '../../media/' + localPath(project.slug) + '/' + localPath(slide.file);
-  const loading = index === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
-  const caption = slide.caption || slide.label;
+function projectArt(project, { slide, number }, variant) {
+  const path = '../../' + projectMedia(project, slide.file);
+  const caption = slide.caption || slide.label || slide.alt;
+  const imageLoading = variant === 'hero' ? ' fetchpriority="high"' : ' loading="lazy"';
   return [
-    '<figure class="drawing-slide" id="slide-' + (index + 1) + '" data-slide>',
-    '  <a class="drawing-link" href="' + path + '">',
-    '    <img src="' + path + '" alt="' + escape(slide.alt) + '" decoding="async"' + loading + '>',
-    '  </a>',
-    caption ? '  <figcaption class="image-caption">' + escape(caption) + '</figcaption>' : '',
-    '</figure>',
+    '    <figure id="slide-' + number + '" class="project-art project-art-' + variant + '">',
+    '      <a href="' + path + '" data-viewer-image data-viewer-caption="' + escape(caption) + '">',
+    '        <img src="' + path + '" alt="' + escape(slide.alt) + '" decoding="async"' + imageLoading + '>',
+    '      </a>',
+    caption ? '      <figcaption>' + escape(caption) + '</figcaption>' : '',
+    '    </figure>',
   ].filter(Boolean).join('\n');
 }
 
-function storySlide(project) {
-  const narrative = project.narrative;
-  return [
-    '<section class="story-slide" id="story" data-slide aria-labelledby="story-heading">',
-    '  <div class="story-content">',
-    '    <p class="eyebrow">Project story</p>',
-    '    <h2 id="story-heading">' + escape(project.storyTitle || project.title) + '</h2>',
-    paragraphs(project.story?.length ? project.story : [project.summary]),
-    narrative?.paragraphs?.length ? [
-      '    <details class="story-narrative">',
-      '      <summary>' + escape(narrative.title || 'Read the full narrative') + '</summary>',
-      paragraphs(narrative.paragraphs),
-      '    </details>',
-    ].join('\n') : '',
-    '  </div>',
-    '</section>',
-  ].filter(Boolean).join('\n');
+function detailRow(label, value) {
+  return '      <div><dt>' + escape(label) + '</dt><dd>' + escape(value) + '</dd></div>';
 }
 
-function projectInfo(project) {
-  const credits = (project.credits ?? []).map(({ label, value }) => (
-    '    <div><dt>' + escape(label) + '</dt><dd>' + escape(value) + '</dd></div>'
-  )).join('\n');
-  const awards = (project.awards ?? []).map(({ label, url }) => (
-    '    <li>' + (url ? '<a href="' + safeUrl(url) + '">' + escape(label) + '</a>' : escape(label)) + '</li>'
-  )).join('\n');
+function projectDetails(project) {
+  const basicDetails = [
+    { label: 'Location', value: project.location },
+    { label: 'Year', value: project.year },
+    { label: 'Type', value: project.type },
+  ].filter(({ value }) => value);
+  const credits = (project.credits ?? []).filter(({ label }) => (
+    !basicDetails.some((detail) => detail.label.toLowerCase() === label.toLowerCase())
+  ));
+  const awards = (project.awards ?? []).map(({ label, distinction, url }) => {
+    const display = escape(distinction ? label + ' — ' + distinction : label);
+    return '        <li>' + (url ? '<a href="' + safeUrl(url) + '">' + display + '</a>' : display) + '</li>';
+  });
   const source = safeUrl(project.source);
   return [
-    '  <p class="intro-meta">' + metadata(project) + '</p>',
-    project.subtitle ? '  <p class="intro-subtitle">' + escape(project.subtitle) + '</p>' : '',
-    '  <p class="intro-summary">' + escape(project.summary) + '</p>',
-    credits ? '  <dl class="project-credits">\n' + credits + '\n  </dl>' : '',
-    awards ? '  <div class="project-awards"><h3>Recognition</h3><ul>\n' + awards + '\n  </ul></div>' : '',
-    source ? '  <p class="project-source"><a href="' + source + '">View the original project</a></p>' : '',
+    '  <section class="editorial-shell project-section project-details" aria-labelledby="details-title">',
+    '    <h2 id="details-title">Project details</h2>',
+    '    <div class="project-section-content">',
+    '      <dl class="project-facts">',
+    ...[...basicDetails, ...credits].map(({ label, value }) => detailRow(label, value)),
+    '      </dl>',
+    awards.length ? '      <ul aria-label="Project recognition" class="project-recognitions">\n' + awards.join('\n') + '\n      </ul>' : '',
+    source ? '      <p class="original-project-link"><a href="' + source + '">Original project page</a></p>' : '',
+    '    </div>',
+    '  </section>',
   ].filter(Boolean).join('\n');
 }
 
-function slideNav(id, label, index) {
-  return '  <a class="slide-dot" href="#' + id + '" data-slide-link aria-label="Slide ' + (index + 1) + ': ' + escape(label) + '"><span aria-hidden="true"></span></a>';
+function projectStatement(project) {
+  const narrative = project.narrative;
+  return [
+    '  <section class="editorial-shell project-section project-statement" id="story" aria-labelledby="statement-title">',
+    '    <h2 id="statement-title">Project statement</h2>',
+    '    <div class="project-section-content">',
+    paragraphs(project.story?.length ? project.story : [project.summary]),
+    narrative?.paragraphs?.length ? [
+      '      <details class="project-extra-story">',
+      '        <summary>' + escape(narrative.title || 'Read the full narrative') + '</summary>',
+      paragraphs(narrative.paragraphs),
+      '      </details>',
+    ].join('\n') : '',
+    '    </div>',
+    '  </section>',
+  ].filter(Boolean).join('\n');
+}
+
+function detailImages(project) {
+  const [first, ...rest] = project.slides;
+  // Keep deep links from the original sequence: the text was position 2.
+  const drawings = rest.map((slide, index) => ({ slide, number: index + 3 }));
+  const highlights = drawings.filter(({ slide }) => !slide.file.includes('/booklet/')).slice(0, 4);
+  return {
+    lead: { slide: first, number: 1 },
+    highlights,
+    archive: drawings.filter((drawing) => !highlights.includes(drawing)),
+  };
+}
+
+function projectViewer() {
+  return [
+    '  <dialog class="project-viewer" data-project-viewer aria-labelledby="viewer-caption">',
+    '    <div class="project-viewer-controls">',
+    '      <button type="button" data-viewer-prev aria-label="Previous drawing">Previous</button>',
+    '      <button type="button" data-viewer-next aria-label="Next drawing">Next</button>',
+    '      <button type="button" data-viewer-close>Close</button>',
+    '    </div>',
+    '    <figure>',
+    '      <img data-viewer-full alt="">',
+    '      <figcaption id="viewer-caption">Drawing</figcaption>',
+    '    </figure>',
+    '  </dialog>',
+  ].join('\n');
 }
 
 function projectPage(project) {
-  const [first, ...rest] = project.slides;
-  const slides = [
-    drawingSlide(project, first, 0),
-    storySlide(project),
-    ...rest.map((slide, index) => drawingSlide(project, slide, index + 2)),
-  ];
-  const nav = [
-    ['slide-1', first.label || first.alt],
-    ['story', 'Project story'],
-    ...rest.map((slide, index) => ['slide-' + (index + 3), slide.label || slide.alt]),
-  ].map(([id, label], index) => slideNav(id, label, index));
-  const count = '01 / ' + String(slides.length).padStart(2, '0');
-  const info = projectInfo(project);
+  const { lead, highlights, archive } = detailImages(project);
+  const cover = projectCover(project);
+  const containLead = ['back-to-roots', 'from-ruins-to-roots'].includes(project.slug);
   const body = [
-    '<main id="main-content" class="project-page" data-gallery>',
-    '  <div class="project-slides">',
-    slides.join('\n'),
+    '<main id="main-content" class="project-essay" data-project-story>',
+    '  <div class="editorial-shell project-lead' + (containLead ? ' project-lead-contained' : '') + '">',
+    projectArt(project, lead, 'hero'),
     '  </div>',
-    '  <nav class="slide-navigation" aria-label="Project slides">',
-    nav.join('\n'),
-    '  </nav>',
-    '  <footer class="project-footer">',
-    '    <div class="project-caption">',
-    '      <h1>' + escape(project.title) + '</h1>',
-    '      <p>' + metadata(project) + '</p>',
+    '  <header class="editorial-shell project-essay-heading">',
+    '    <div><h1>' + escape(project.title) + '</h1>',
+    project.subtitle ? '    <p class="project-essay-subtitle">' + escape(project.subtitle) + '</p>' : '',
     '    </div>',
-    '    <div class="project-controls requires-js" data-gallery-controls>',
-    '      <button type="button" data-prev aria-label="Previous slide"><span aria-hidden="true">←</span></button>',
-    '      <output data-count aria-label="Slide number" aria-live="polite">' + count + '</output>',
-    '      <button type="button" data-next aria-label="Next slide"><span aria-hidden="true">→</span></button>',
-    '    </div>',
-    '    <button class="project-info-button requires-js" type="button" data-info aria-haspopup="dialog" aria-controls="project-info">Project info</button>',
-    '  </footer>',
-    '  <dialog id="project-info" class="project-dialog" aria-labelledby="project-info-title">',
-    '    <div class="intro-panel">',
-    '      <div class="intro-heading">',
-    '        <h2 id="project-info-title">' + escape(project.title) + '</h2>',
-    '        <form method="dialog"><button class="dialog-close" type="submit" aria-label="Close project info"><span aria-hidden="true">×</span></button></form>',
-    '      </div>',
-    info,
-    '    </div>',
-    '  </dialog>',
-    '  <noscript><section class="project-info-fallback"><h2>Project info</h2>',
-    info,
-    '  </section></noscript>',
+    '    <p class="project-essay-summary">' + escape(project.summary) + '</p>',
+    '  </header>',
+    projectDetails(project),
+    projectStatement(project),
+    highlights.length ? [
+      '  <div class="editorial-shell project-illustrations">',
+      ...highlights.map((drawing) => projectArt(project, drawing, 'inline')),
+      '  </div>',
+    ].join('\n') : '',
+    archive.length ? [
+      '  <section class="editorial-shell project-drawings" aria-labelledby="drawings-title">',
+      '    <h2 id="drawings-title">Drawings and images</h2>',
+      '    <div class="project-thumbnail-grid">',
+      ...archive.map((drawing) => projectArt(project, drawing, 'thumbnail')),
+      '    </div>',
+      '  </section>',
+    ].join('\n') : '',
+    '  <div class="editorial-shell project-back"><a href="../../projects/">Back to projects</a></div>',
+    projectViewer(),
     '</main>',
-  ].join('\n');
+  ].filter(Boolean).join('\n');
   return layout({
     title: project.title + ' | ' + name,
     description: project.summary,
     prefix: '../../',
     route: 'work/' + project.slug + '/',
-    socialImage: {
-      url: new URL('media/' + localPath(project.slug) + '/' + localPath(project.cover || first.file), siteUrl).href,
-      alt: project.coverAlt || first.alt,
-    },
+    socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
     body,
-    gallery: true,
   });
 }
 
@@ -411,7 +519,7 @@ function notFoundPage() {
       '<main id="main-content" class="press-page not-found">',
       '  <div class="press-intro">',
       '    <h1>Page not found</h1>',
-      '    <p><a href="/#work">Return to work</a></p>',
+      '    <p><a href="/projects/">Return to projects</a></p>',
       '  </div>',
       '</main>',
     ].join('\n'),
@@ -546,7 +654,7 @@ function pressPage() {
 }
 
 function sitemap() {
-  const paths = ['', 'about/', 'awards/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
+  const paths = ['', 'projects/', 'about/', 'awards/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -590,6 +698,7 @@ async function writePage(path, html) {
 
 await Promise.all([
   writePage('index.html', homePage()),
+  writePage('projects/index.html', projectsPage()),
   writePage('about/index.html', aboutPage()),
   writePage('awards/index.html', awardsPage()),
   ...(press.length ? [writePage('press/index.html', pressPage())] : []),
@@ -599,4 +708,4 @@ await Promise.all([
   writePage('archive-version.json', JSON.stringify(archiveVersions, null, 2) + '\n'),
 ]);
 
-console.log('Built ' + (projects.length + 4 + Number(press.length > 0)) + ' HTML pages and sitemap.');
+console.log('Built ' + (projects.length + 5 + Number(press.length > 0)) + ' HTML pages and sitemap.');
