@@ -238,11 +238,6 @@ p {
   letter-spacing: .0625rem;
 }
 
-.site-footer {
-  font: 400 .75rem/1.25rem var(--sans);
-  letter-spacing: normal;
-  text-transform: none;
-}
 
 @media (max-width: 991px) {
   .portfolio-projects > .section-label,

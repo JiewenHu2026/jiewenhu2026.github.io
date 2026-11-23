@@ -1,14 +1,16 @@
 (() => {
   'use strict';
 
-  const index = document.querySelector('.home-work-index');
-  const collage = document.querySelector('.home-artwork-display');
+  const stage = document.querySelector('.home-reel');
+  const index = stage?.querySelector('.home-work-index');
+  const collage = stage?.querySelector('.home-artworks');
   if (!index || !collage) return;
 
+  const layered = window.matchMedia('(min-width: 768px)');
   const preview = new Image();
   preview.alt = '';
   preview.className = 'home-index-preview';
-  document.body.append(preview);
+  stage.append(preview);
   let current = null;
 
   function hide() {
@@ -17,10 +19,11 @@
   }
 
   function show(link, x, y) {
-    if (collage.open || !link) {
+    if (!link) {
       hide();
       return;
     }
+    if (layered.matches) collage.inert = true;
     if (current !== link) {
       current = link;
       preview.classList.remove('is-visible');
@@ -39,7 +42,7 @@
   }
 
   preview.addEventListener('load', () => {
-    if (current && !collage.open) preview.classList.add('is-visible');
+    if (current) preview.classList.add('is-visible');
   });
   index.addEventListener('pointermove', (event) => {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
@@ -53,7 +56,7 @@
     show(link, bounds.left, bounds.bottom);
   });
   index.addEventListener('focusout', hide);
-  collage.addEventListener('toggle', hide);
+  layered.addEventListener('change', () => { if (!layered.matches) collage.inert = false; });
   window.addEventListener('scroll', hide, { passive: true });
   window.addEventListener('resize', hide);
 })();

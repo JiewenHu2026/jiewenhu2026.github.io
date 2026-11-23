@@ -34,8 +34,7 @@
   background: var(--header-surface);
 }
 
-.site-header .wordmark,
-.site-footer {
+.site-header .wordmark {
   text-transform: none;
 }
 
@@ -132,10 +131,6 @@ dialog::backdrop {
 
 .philadelphia-clock p + p {
   margin-top: 2px;
-}
-
-body:has(.philadelphia-clock) .site-footer {
-  padding-bottom: calc(56px + env(safe-area-inset-bottom));
 }
 
 .project-body:has(.gallery-ready) .philadelphia-clock {

@@ -19,17 +19,15 @@ img[data-image-tone="light"]{cursor:var(--black-dot-cursor),auto}
 .sr-only,.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .skip-link{position:fixed;z-index:50;top:.65rem;left:.65rem;background:var(--ink);color:var(--bg);padding:.65rem .9rem;transform:translateY(-200%)}
 .skip-link:focus{transform:none}
-.eyebrow,.wordmark,.site-nav,.site-footer,.project-caption-meta,.project-footer button,.press-meta,.work-number,.work-year,.work-index,.work-index-line,.work-index-bar{font:400 .73rem/1.35 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.eyebrow,.wordmark,.site-nav,.project-caption-meta,.project-footer button,.press-meta,.work-number,.work-year,.work-index,.work-index-line,.work-index-bar{font:400 .73rem/1.35 var(--mono);letter-spacing:.11em;text-transform:uppercase}
 .eyebrow{color:var(--warm)}
-.site-header,.site-footer{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:0 var(--margin)}
+.site-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:0 var(--margin)}
 .site-header{height:70px;position:relative;z-index:8}
 .site-header nav,.site-nav{display:flex;align-items:center;gap:clamp(13px,3vw,42px)}
 .site-header a{white-space:nowrap}
 .site-header .wordmark{color:var(--ink);letter-spacing:.18em}
 .site-header nav a{color:var(--muted);font:400 .72rem/1.35 var(--mono);letter-spacing:.10em;text-transform:uppercase}
 .site-header a:hover,.site-header a[aria-current="page"]{color:#fff}
-.site-footer{min-height:90px;margin:clamp(62px,9vw,130px) var(--margin) 0;padding:24px 0;border-top:1px solid var(--line);color:var(--quiet)}
-.site-footer a:hover{color:var(--ink)}
 .portfolio-intro,.work-section,.work-index,.press-page,.not-found{width:min(100% - 2 * var(--margin),1536px);margin-inline:auto}
 .portfolio-intro{padding:clamp(58px,8.5vw,137px) 0 clamp(52px,7vw,108px)}
 .portfolio-intro h1,.press-intro h1,.not-found h1{font-size:clamp(4.15rem,12.1vw,12rem);font-weight:400;line-height:.94;letter-spacing:-.085em;margin-block:13px 24px}
@@ -66,7 +64,6 @@ img[data-image-tone="light"]{cursor:var(--black-dot-cursor),auto}
 /* Project gallery: an image, its caption, and a quiet fixed rail. */
 body:has(.gallery-ready){--bg:#000;background:#000;overflow:hidden}
 body:has(.gallery-ready) .site-header{height:62px;background:linear-gradient(#000 37%,transparent)}
-body:has(.gallery-ready) .site-footer{display:none}
 .requires-js{display:none}
 .gallery-ready .requires-js{display:revert}
 .project-slides{width:100%}

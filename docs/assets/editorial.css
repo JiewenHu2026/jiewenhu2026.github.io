@@ -22,10 +22,6 @@
   scroll-margin-top: 62px;
 }
 
-.home-reel:has(.home-artwork-display:not([open])) {
-  min-height: min(58svh, 33rem);
-}
-
 .home-work-index {
   --serif: Georgia, 'Times New Roman', serif;
   --old-style-serif: 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
@@ -75,8 +71,8 @@
 
 .home-index-preview {
   position: fixed;
-  z-index: 12;
-  width: min(36vw, 320px);
+  z-index: 4;
+  width: min(56vw, 680px, calc((100svh - 24px) * 1.3333));
   aspect-ratio: 4 / 3;
   object-fit: cover;
   visibility: hidden;
@@ -87,51 +83,32 @@
 
 .home-index-preview.is-visible {
   visibility: visible;
-  opacity: 1;
+  opacity: .55;
 }
 
-.home-artwork-display,
 .home-artworks {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  transition: opacity .32s ease, visibility .32s;
 }
 
-.home-artwork-display > summary {
-  position: absolute;
-  inset: auto auto 16px var(--reel-inset);
-  z-index: 7;
-  width: max-content;
-  padding: 7px 0;
-  color: var(--muted);
-  font: 400 .75rem/1.4 var(--sans);
-  list-style: none;
-  pointer-events: auto;
-}
-
-.home-artwork-display > summary::-webkit-details-marker {
-  display: none;
-}
-
-.home-artwork-display[open] .home-artwork-show,
-.home-artwork-display:not([open]) .home-artwork-hide {
-  display: none;
+.home-artworks[inert] {
+  visibility: hidden;
+  opacity: 0;
 }
 
 .home-artwork {
   position: absolute;
   z-index: 1;
   opacity: .56;
+  animation: home-artwork-enter .64s ease;
   transition: opacity .28s ease;
 }
 
 .home-artwork:is(:hover, :focus-within) {
   z-index: 5;
   opacity: 1;
-}
-
-.home-artwork-display[open] .home-artwork {
-  animation: home-artwork-enter .64s ease;
 }
 
 @keyframes home-artwork-enter {
@@ -201,12 +178,8 @@
   display: flex;
   justify-content: end;
   width: min(calc(100% - clamp(32px, 5vw, 60px)), 1380px);
-  padding-block: clamp(52px, 8vw, 112px) clamp(24px, 4vw, 44px);
+  padding-block: clamp(52px, 8vw, 112px) calc(56px + env(safe-area-inset-bottom));
   scroll-margin-top: 62px;
-}
-
-.portfolio-home + .site-footer {
-  margin-top: 0;
 }
 
 .home-bio-inner {
@@ -657,8 +630,7 @@
 }
 
 @media (max-width: 767px) {
-  .home-reel,
-  .home-reel:has(.home-artwork-display:not([open])) {
+  .home-reel {
     min-height: 0;
     padding-bottom: 32px;
   }
@@ -667,22 +639,16 @@
     font-size: clamp(1.32rem, 5.9vw, 2rem);
   }
 
-  .home-artwork-display,
   .home-artworks,
-  .home-artwork-display > summary,
   .home-artwork {
     position: static;
-  }
-
-  .home-artwork-display {
-    margin-top: 20px;
   }
 
   .home-artworks {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 28px;
   }
 
   .home-artwork {
@@ -719,7 +685,7 @@
 @media (prefers-reduced-motion: reduce) {
   .home-index-preview,
   .home-artwork,
-  .home-artwork-display[open] .home-artwork {
+  .home-artworks {
     animation: none;
     transition: none;
   }

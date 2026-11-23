@@ -205,7 +205,6 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
     siteHeader(prefix, route),
     body,
   );
-  if (!notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
   if (home) tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
     '  <p>The time in Philadelphia is <time id="philadelphia-clock-time"></time>. <span id="philadelphia-clock-period"></span></p>',
@@ -300,12 +299,9 @@ function homePage() {
       '    <nav class="home-work-index" aria-label="Projects by title">',
       index,
       '    </nav>',
-      '    <details class="home-artwork-display" open>',
-      '      <summary><span class="home-artwork-show">Show artwork</span><span class="home-artwork-hide">Hide artwork</span></summary>',
-      '      <div class="home-artworks">',
+      '    <div class="home-artworks">',
       ...homeArtworks(lead),
-      '      </div>',
-      '    </details>',
+      '    </div>',
       '  </section>',
     ] : []),
     '  <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">',
