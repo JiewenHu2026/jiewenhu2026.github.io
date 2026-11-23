@@ -41,6 +41,14 @@
   text-transform: uppercase;
 }
 
+.site-header a:hover {
+  color: var(--ink);
+}
+
+.site-header nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
 .portfolio-grid .work-card-image {
   background: var(--subtle-surface);
 }

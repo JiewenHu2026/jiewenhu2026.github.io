@@ -41,8 +41,8 @@
   text-transform: none;
 }
 
-.site-header .site-navigation a[aria-current] {
-  font-weight: 600;
+.site-header a[aria-current="page"] {
+  color: var(--accent);
 }
 
 .portfolio-shell {
@@ -82,7 +82,7 @@
 }
 
 .section-label {
-  color: var(--ink);
+  color: var(--accent);
   font: 500 .82rem/1.4 var(--sans);
   text-transform: uppercase;
   letter-spacing: .12em;
@@ -144,6 +144,18 @@
   justify-content: space-between;
   gap: 1rem;
   margin-bottom: 17px;
+}
+
+.section-header a,
+.about-row a,
+.archive-page .award-organization,
+.archive-page .project-link:not(.personal-recognition) {
+  color: var(--accent);
+}
+
+.section-header a:hover,
+.about-row a:hover {
+  color: var(--ink);
 }
 
 .archive-page,
@@ -317,6 +329,14 @@
   font-size: clamp(1rem, 1.55vw, 1.22rem);
   line-height: 1.35;
   text-wrap: pretty;
+}
+
+.coverage-row .press-title a {
+  color: var(--accent);
+}
+
+.coverage-row .press-title a:hover {
+  color: var(--ink);
 }
 
 .coverage-row .coverage-date,
