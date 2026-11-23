@@ -211,8 +211,8 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   );
   if (home) tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
-    '  <p>The time in Philadelphia is <time id="philadelphia-clock-time"></time>. <span id="philadelphia-clock-period"></span></p>',
-    '  <p>The website theme is adjusted accordingly.</p>',
+    '  <p>Philadelphia · <time id="philadelphia-clock-time"></time></p>',
+    '  <p>The site follows the city’s daylight.</p>',
     '</aside>'
   );
   tags.push('</body>', '</html>', '');

@@ -117,24 +117,17 @@
     const themeColor = document.querySelector?.('meta[name="theme-color"]');
     if (themeColor) themeColor.content = theme === 'day' ? '#ffffff' : '#000000';
 
-    const time = document.getElementById('philadelphia-clock-time');
-    const period = document.getElementById('philadelphia-clock-period');
-    const pad = (value) => String(value).padStart(2, '0');
+    const clock = document.getElementById('philadelphia-clock');
+    const time = clock?.querySelector('time');
     if (time) {
+      const pad = (value) => String(value).padStart(2, '0');
       const label = timeFormatter ? timeFormatter.format(now)
         : `${local.hour % 12 || 12}:${pad(local.minute)} ${local.hour < 12 ? 'AM' : 'PM'}`;
       // Keep the real instant in machine-readable UTC. Updating text only when
       // changed avoids unnecessary announcements; markup should use aria-live=off.
       if (time.textContent !== label) time.textContent = label;
       time.dateTime = now.toISOString();
-    }
-    if (period) {
-      const label = daylight ? 'It is light.' : 'It is dark and misty.';
-      if (period.textContent !== label) period.textContent = label;
-    }
-    if (time && period) {
-      const clock = document.getElementById('philadelphia-clock');
-      if (clock) clock.hidden = false;
+      clock.hidden = false;
     }
 
     clearTimeout(timer);
