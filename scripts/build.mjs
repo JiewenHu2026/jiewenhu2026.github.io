@@ -303,11 +303,10 @@ function projectIndexCard(project, index) {
     '          <span class="selected-project-caption">',
     '            <span class="selected-project-title" data-project="' + project.slug + '">' + escape(project.title) + '</span>',
     '            <span class="selected-project-location">' + escape(project.location) + '</span>',
-    project.year ? '            <span class="selected-project-meta">' + escape(project.year) + '</span>' : '',
     '          </span>',
     '        </a>',
     '      </li>',
-  ].filter(Boolean).join('\n');
+  ].join('\n');
 }
 
 function projectsPage() {

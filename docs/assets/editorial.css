@@ -236,8 +236,7 @@
   text-transform: uppercase;
 }
 
-.selected-project-location,
-.selected-project-meta {
+.selected-project-location {
   color: var(--ink);
   font: 400 .75rem/1.4 var(--sans);
 }
@@ -255,8 +254,7 @@
     object-fit: contain;
   }
 
-  .selected-project-location,
-  .selected-project-meta {
+  .selected-project-location {
     color: var(--muted);
   }
 
@@ -298,8 +296,7 @@
     padding: 12px 0 0;
   }
 
-  .selected-project-location,
-  .selected-project-meta {
+  .selected-project-location {
     display: none;
   }
 }
