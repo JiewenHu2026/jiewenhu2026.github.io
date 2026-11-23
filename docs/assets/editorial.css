@@ -201,7 +201,7 @@
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: var(--subtle-surface);
-  opacity: 0;
+  opacity: .25;
   pointer-events: none;
   transition: opacity .36s ease;
 }
@@ -238,43 +238,27 @@
 
 .selected-project-location,
 .selected-project-meta {
-  color: var(--muted);
+  color: var(--ink);
   font: 400 .75rem/1.4 var(--sans);
 }
 
-.selected-project-card:focus-visible .selected-project-image {
-  opacity: 1;
-  pointer-events: auto;
-}
-
-.selected-project-card:focus-visible .selected-project-caption {
-  opacity: 0;
-}
-
-@media (hover: hover) {
-  .selected-project-card:hover .selected-project-image {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  .selected-project-card:hover .selected-project-caption {
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .selected-project-image {
     opacity: 0;
   }
-}
 
-@media (hover: none) {
-  .selected-project-image {
+  .selected-project-location,
+  .selected-project-meta {
+    color: var(--muted);
+  }
+
+  .selected-project-card:is(:hover, :focus-visible) .selected-project-image {
     opacity: 1;
     pointer-events: auto;
   }
 
-  .selected-project-card .selected-project-caption {
-    grid-area: 2 / 1;
-    padding: 10px 0 0;
-  }
-
-  .selected-project-card:focus-visible .selected-project-caption {
-    opacity: 1;
+  .selected-project-card:is(:hover, :focus-visible) .selected-project-caption {
+    opacity: 0;
   }
 }
 
