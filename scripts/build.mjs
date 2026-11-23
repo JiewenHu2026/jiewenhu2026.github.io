@@ -54,6 +54,7 @@ const aboutRevealVersion = assetVersion(aboutRevealScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
 const projectGalleryStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'project-gallery.css')));
 const galleryScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'gallery.js')));
+const imageCursorScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'image-cursor.js')));
 const cvPath = 'files/jiewen-hu-cv.pdf';
 const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
@@ -183,6 +184,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/reference-type.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js?v=' + archiveFreshnessVersion + '"></script>');
+  tags.push('  <script defer src="' + prefix + 'assets/image-cursor.js?v=' + imageCursorScriptVersion + '"></script>');
   if (about) tags.push(
     '  <link rel="stylesheet" href="' + prefix + 'assets/about.css?v=' + aboutStylesVersion + '">',
     '  <script defer src="' + prefix + 'assets/about-reveal.js?v=' + aboutRevealVersion + '"></script>',
