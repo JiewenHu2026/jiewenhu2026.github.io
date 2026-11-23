@@ -273,6 +273,29 @@
   .selected-projects { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 }
 
+@media (max-width: 767px), (pointer: coarse) {
+  .selected-projects {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 36rem;
+    gap: 38px;
+    margin-inline: auto;
+  }
+
+  .selected-project-image {
+    opacity: .45;
+  }
+
+  .selected-project-caption {
+    grid-area: 2 / 1;
+    padding: 12px 0 0;
+  }
+
+  .selected-project-location,
+  .selected-project-meta {
+    display: none;
+  }
+}
+
 .contact-page {
   min-height: 64svh;
   padding-block: clamp(74px, 13vh, 146px) 48px;
@@ -559,11 +582,6 @@
     margin-right: auto;
   }
 
-  .selected-projects {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
   .project-essay-heading,
   .project-section {
     grid-template-columns: 1fr;
@@ -575,12 +593,6 @@
 @media (prefers-reduced-motion: reduce) {
   .home-index-preview {
     transition: none;
-  }
-}
-
-@media (min-width: 560px) and (max-width: 767px) {
-  .selected-projects {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

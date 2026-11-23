@@ -299,11 +299,11 @@ function projectIndexCard(project, index) {
     '          <span class="selected-project-caption">',
     '            <span class="selected-project-title">' + escape(project.title) + '</span>',
     '            <span class="selected-project-location">' + escape(project.location) + '</span>',
-    '            <span class="selected-project-meta">' + [project.year, project.type].filter(Boolean).map(escape).join(' · ') + '</span>',
+    project.year ? '            <span class="selected-project-meta">' + escape(project.year) + '</span>' : '',
     '          </span>',
     '        </a>',
     '      </li>',
-  ].join('\n');
+  ].filter(Boolean).join('\n');
 }
 
 function projectsPage() {
