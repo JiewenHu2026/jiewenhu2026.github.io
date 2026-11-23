@@ -308,7 +308,7 @@
 
 .archive-page .press-group > .section-label {
   margin-bottom: 12px;
-  color: var(--accent);
+  color: var(--ink);
   font: 500 .875rem/1.4 var(--sans);
   letter-spacing: .095em;
 }

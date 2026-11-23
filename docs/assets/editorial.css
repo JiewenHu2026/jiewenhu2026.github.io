@@ -137,6 +137,7 @@
 
 .home-bio-inner h2 {
   margin-bottom: 14px;
+  color: var(--ink);
 }
 
 .home-bio-inner p + p {
