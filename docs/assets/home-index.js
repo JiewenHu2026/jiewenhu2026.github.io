@@ -3,10 +3,26 @@
 
   const stage = document.querySelector('.home-reel');
   const index = stage?.querySelector('.home-work-index');
-  const collage = stage?.querySelector('.home-artworks');
-  if (!index || !collage) return;
+  const notice = document.querySelector('.home-status');
 
-  const layered = window.matchMedia('(min-width: 768px)');
+  function showNotice() {
+    if (typeof notice?.showModal !== 'function') return;
+    const key = 'portfolio-wip-dismissed';
+    try {
+      if (sessionStorage.getItem(key) === '1') return;
+    } catch {
+      // The notice can still be dismissed when storage is unavailable.
+    }
+    notice.addEventListener('close', () => {
+      try { sessionStorage.setItem(key, '1'); }
+      catch { /* The current page stays usable without storage. */ }
+    }, { once: true });
+    notice.showModal();
+  }
+
+  showNotice();
+  if (!index) return;
+
   const preview = new Image();
   preview.alt = '';
   preview.className = 'home-index-preview';
@@ -19,11 +35,10 @@
   }
 
   function show(link, x, y) {
-    if (!link) {
+    if (!link || notice?.open) {
       hide();
       return;
     }
-    if (layered.matches) collage.inert = true;
     if (current !== link) {
       current = link;
       preview.classList.remove('is-visible');
@@ -42,21 +57,15 @@
   }
 
   preview.addEventListener('load', () => {
-    if (current) preview.classList.add('is-visible');
+    if (current && !notice?.open) preview.classList.add('is-visible');
   });
-  index.addEventListener('pointermove', (event) => {
+  function updatePreview(event) {
     if (event.pointerType !== 'mouse' && event.pointerType !== 'pen') return;
     show(event.target.closest('a[data-preview]'), event.clientX, event.clientY);
-  }, { passive: true });
+  }
+  index.addEventListener('pointerover', updatePreview, { passive: true });
+  index.addEventListener('pointermove', updatePreview, { passive: true });
   index.addEventListener('pointerleave', hide);
-  index.addEventListener('focusin', (event) => {
-    const link = event.target.closest('a[data-preview]:focus-visible');
-    if (!link) return;
-    const bounds = link.getBoundingClientRect();
-    show(link, bounds.left, bounds.bottom);
-  });
-  index.addEventListener('focusout', hide);
-  layered.addEventListener('change', () => { if (!layered.matches) collage.inert = false; });
   window.addEventListener('scroll', hide, { passive: true });
   window.addEventListener('resize', hide);
 })();

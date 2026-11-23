@@ -86,92 +86,37 @@
   opacity: .55;
 }
 
-.home-artworks {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  transition: opacity .32s ease, visibility .32s;
+.home-status {
+  width: min(calc(100% - 36px), 400px);
+  padding: 28px 24px 20px;
+  border: 1px solid var(--control-line);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: center;
 }
 
-.home-artworks[inert] {
-  visibility: hidden;
-  opacity: 0;
+.home-status::backdrop {
+  background: rgb(0 0 0 / 40%);
 }
 
-.home-artwork {
-  position: absolute;
-  z-index: 1;
-  opacity: .56;
-  animation: home-artwork-enter .64s ease;
-  transition: opacity .28s ease;
+.home-status p {
+  font: 400 1rem/1.45 var(--sans);
 }
 
-.home-artwork:is(:hover, :focus-within) {
-  z-index: 5;
-  opacity: 1;
+.home-status form {
+  margin-top: 16px;
 }
 
-@keyframes home-artwork-enter {
-  from { opacity: 0; }
+.home-status button {
+  min-width: 64px;
+  min-height: 44px;
+  padding-inline: 12px;
+  color: var(--accent);
+  font: 500 .75rem/1.4 var(--sans);
 }
 
-.home-artwork-lead {
-  z-index: 3;
-  top: 34%;
-  left: 50%;
-  width: min(38%, 500px);
-  transform: translateX(-50%);
-  opacity: .82;
-}
-
-.home-artwork-woodland {
-  top: 47%;
-  left: 6%;
-  width: min(38%, 510px);
-}
-
-.home-artwork-forest {
-  top: 17%;
-  right: 6%;
-  width: min(29%, 385px);
-}
-
-.home-artwork-commons {
-  top: 30%;
-  left: 15%;
-  width: min(29%, 395px);
-}
-
-.home-artwork-harbour {
-  right: 6%;
-  bottom: 12%;
-  width: min(33%, 440px);
-}
-
-.reel-image-link {
-  display: block;
-  aspect-ratio: 4 / 3;
-  overflow: hidden;
-  pointer-events: auto;
-}
-
-.home-artwork img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.home-artwork-lead .reel-image-link {
-  aspect-ratio: 6 / 5;
-}
-
-.home-artwork-lead img {
-  object-position: center 47%;
-}
-
-.reel-image-link:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: -3px;
+.home-status button:hover {
+  color: var(--ink);
 }
 
 .home-bio {
@@ -229,26 +174,11 @@
   padding-block: clamp(48px, 7vw, 96px) clamp(32px, 5vw, 72px);
 }
 
-.project-index-heading {
-  margin-bottom: clamp(28px, 4vw, 60px);
-  text-align: center;
-}
-
-.project-index-heading p,
 .project-section > h2 {
   color: var(--quiet);
   font-size: .75rem;
   font-weight: 500;
   letter-spacing: .08em;
-  text-transform: uppercase;
-}
-
-.project-index-heading h1 {
-  margin-top: 3px;
-  font-size: 1.25rem;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: .13em;
   text-transform: uppercase;
 }
 
@@ -639,30 +569,6 @@
     font-size: clamp(1.32rem, 5.9vw, 2rem);
   }
 
-  .home-artworks,
-  .home-artwork {
-    position: static;
-  }
-
-  .home-artworks {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    margin-top: 28px;
-  }
-
-  .home-artwork {
-    width: 100%;
-    opacity: 1;
-  }
-
-  .home-artwork-lead {
-    grid-column: 1 / -1;
-    width: min(100%, 385px);
-    justify-self: center;
-    transform: none;
-  }
-
   .home-bio-inner {
     width: 100%;
     max-width: 52ch;
@@ -683,10 +589,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .home-index-preview,
-  .home-artwork,
-  .home-artworks {
-    animation: none;
+  .home-index-preview {
     transition: none;
   }
 }

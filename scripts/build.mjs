@@ -240,68 +240,18 @@ function orderedProjects() {
   ];
 }
 
-function homeHeroImage() {
-  const featured = projects.find(({ slug }) => slug === 'leaving-traces');
-  if (featured) {
-    return {
-      project: featured,
-      src: 'media/home/wax-heat-and-light.jpg',
-      alt: 'Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency.',
-      width: 2339,
-      height: 3304,
-    };
-  }
-  const [project] = projects;
-  return project && { project, ...projectCover(project) };
-}
-
-function reelFrame({ project, src, alt, width, height, placement }) {
-  const dimensions = width && height ? ' width="' + width + '" height="' + height + '"' : '';
-  const loading = placement === 'lead' ? ' fetchpriority="high"' : ' loading="lazy"';
-  return [
-    '        <figure class="home-artwork home-artwork-' + placement + '">',
-    '          <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
-    '            <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async"' + loading + '>',
-    '          </a>',
-    '        </figure>',
-  ].join('\n');
-}
-
-function homeArtworks(lead) {
-  const placements = [
-    ['woodland', 'leaving-traces', 'signal-valley.webp'],
-    ['forest', 'back-to-roots'],
-    ['commons', 'soil-holds'],
-    ['harbour', 'ground-in-friction'],
-  ];
-  return [
-    reelFrame({ ...lead, placement: 'lead' }),
-    ...placements.flatMap(([placement, slug, file]) => {
-      const project = projects.find((item) => item.slug === slug);
-      if (!project) return [];
-      const slide = project.slides.find((item) => item.file === file);
-      const artwork = slide ? { src: projectMedia(project, slide.file), alt: slide.alt } : projectCover(project);
-      return reelFrame({ project, ...artwork, placement });
-    }),
-  ];
-}
-
 function homePage() {
-  const lead = homeHeroImage();
   const index = orderedProjects().map((project) =>
     '      <a href="./work/' + localPath(project.slug) + '/" data-project="' + project.slug + '" data-preview="./' + projectCover(project).src + '">' + escape(project.title) + '</a>'
   ).join('\n      <span aria-hidden="true">·</span>\n');
   const body = [
     '<main id="main-content" class="portfolio-home">',
     '  <h1 class="sr-only">' + name + ' | Landscape Architecture</h1>',
-    ...(lead ? [
+    ...(index ? [
       '  <section class="home-reel" id="work" aria-label="Selected projects">',
       '    <nav class="home-work-index" aria-label="Projects by title">',
       index,
       '    </nav>',
-      '    <div class="home-artworks">',
-      ...homeArtworks(lead),
-      '    </div>',
       '  </section>',
     ] : []),
     '  <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">',
@@ -316,6 +266,10 @@ function homePage() {
     '      </p>',
     '    </div>',
     '  </section>',
+    '  <dialog class="home-status" aria-labelledby="home-status-message">',
+    '    <p id="home-status-message">This website is a work in progress.</p>',
+    '    <form method="dialog"><button type="submit" autofocus>Close</button></form>',
+    '  </dialog>',
     '</main>',
   ].filter(Boolean).join('\n');
   return layout({
@@ -323,7 +277,10 @@ function homePage() {
     description: introduction,
     prefix: './',
     route: '',
-    socialImage: lead ? { url: new URL(lead.src, siteUrl).href, alt: lead.alt } : undefined,
+    socialImage: {
+      url: new URL('media/home/wax-heat-and-light.jpg', siteUrl).href,
+      alt: 'Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency.',
+    },
     body,
   });
 }
@@ -349,7 +306,7 @@ function projectsPage() {
   const body = [
     '<main id="main-content" class="project-index">',
     '  <section class="editorial-shell project-index-selected" id="project-archive" aria-labelledby="selected-projects">',
-    '    <header class="project-index-heading"><p>Selected</p><h1 id="selected-projects">Projects</h1></header>',
+    '    <h1 class="sr-only" id="selected-projects">Projects</h1>',
     '    <ul class="selected-projects">',
     ...orderedProjects().map(projectIndexCard),
     '    </ul>',
