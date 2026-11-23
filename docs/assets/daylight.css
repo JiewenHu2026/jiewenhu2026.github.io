@@ -1,0 +1,152 @@
+/* Philadelphia daylight controls the palette independently of the visitor's locale. */
+:root {
+  color-scheme: dark;
+  --surface: #000;
+  --bg: var(--surface);
+  --ink: #f3f2ef;
+  --muted: #b3b6b4;
+  --quiet: #9a9e9b;
+  --line: #353936;
+  --warm: #bdc8e3;
+  --accent: #bdc8e3;
+  --subtle-surface: #121412;
+  --control-line: #6e756f;
+  --header-surface: rgb(0 0 0 / 94%);
+  --dialog-veil: rgb(0 0 0 / 77%);
+}
+
+:root[data-theme="day"] {
+  color-scheme: light;
+  --surface: #fff;
+  --ink: #171a18;
+  --muted: #535a56;
+  --quiet: #626862;
+  --line: #daddd9;
+  --warm: #294a75;
+  --accent: #294a75;
+  --subtle-surface: #f3f5f3;
+  --control-line: #858e87;
+  --header-surface: rgb(255 255 255 / 94%);
+  --dialog-veil: rgb(20 27 23 / 64%);
+}
+
+.site-header {
+  background: var(--header-surface);
+}
+
+.site-header a:hover {
+  color: var(--ink);
+}
+
+.site-header nav a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.portfolio-grid .work-card-image,
+.press-search input {
+  background: var(--subtle-surface);
+}
+
+.press-search input {
+  border-color: var(--control-line);
+}
+
+body:has(.gallery-ready) {
+  --bg: var(--surface);
+  background: var(--surface);
+}
+
+.gallery-ready.project-page {
+  background: var(--surface);
+}
+
+body:has(.gallery-ready) .site-header {
+  background: var(--header-surface);
+}
+
+.gallery-ready .project-footer {
+  background: linear-gradient(transparent, var(--surface) 18%);
+}
+
+.slide-navigation a::before {
+  background: var(--quiet);
+}
+
+.slide-navigation a[aria-current]::before,
+.slide-navigation a:hover::before {
+  background: var(--ink);
+}
+
+.project-footer button:hover {
+  color: var(--ink);
+}
+
+dialog,
+.drawing-viewer {
+  background: var(--surface);
+}
+
+dialog::backdrop {
+  background: var(--dialog-veil);
+}
+
+#project-info,
+.drawing-viewer,
+.intro-heading {
+  border-color: var(--line);
+}
+
+#project-info,
+.gallery-ready .story-slide,
+.viewer-canvas {
+  scrollbar-color: var(--control-line) var(--surface);
+}
+
+.philadelphia-clock {
+  position: fixed;
+  z-index: 7;
+  inset-inline-end: max(16px, env(safe-area-inset-right));
+  inset-block-end: calc(12px + env(safe-area-inset-bottom));
+  max-width: calc(100vw - 32px);
+  padding: 5px 7px;
+  background: var(--surface);
+  color: var(--muted);
+  text-align: end;
+  font: 500 .75rem/1.35 var(--sans);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.philadelphia-clock p:first-child {
+  color: var(--ink);
+}
+
+.philadelphia-clock p + p {
+  margin-top: 2px;
+}
+
+body:not(.project-body) .site-footer {
+  padding-bottom: calc(56px + env(safe-area-inset-bottom));
+}
+
+.project-body:has(.gallery-ready) .philadelphia-clock {
+  inset-block-end: calc(81px + env(safe-area-inset-bottom));
+}
+
+.gallery-ready .project-slides {
+  bottom: calc(130px + env(safe-area-inset-bottom));
+}
+
+@media (max-height: 490px) {
+  .project-body:has(.gallery-ready) .philadelphia-clock {
+    inset-block-end: calc(58px + env(safe-area-inset-bottom));
+  }
+
+  .gallery-ready .project-slides {
+    bottom: calc(105px + env(safe-area-inset-bottom));
+  }
+}
+
+.archive-page h2[id] {
+  scroll-margin-top: 78px;
+}

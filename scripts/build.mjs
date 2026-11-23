@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -24,6 +25,23 @@ const [projects, pressRecords, honors] = await Promise.all([
   readOptionalContent('press.json'),
   readOptionalContent('honors.json'),
 ]);
+
+const sharedArchiveSources = await Promise.all([
+  readFile(fileURLToPath(import.meta.url)),
+  ...['site.css', 'portfolio.css', 'reference-type.css', 'daylight.css', 'philadelphia-clock.js', 'archive-freshness.js', 'press.js']
+    .map((file) => readFile(join(docs, 'assets', file))),
+]);
+
+function archiveVersion(data) {
+  const hash = createHash('sha256').update(JSON.stringify(data));
+  for (const source of sharedArchiveSources) hash.update(source);
+  return hash.digest('hex').slice(0, 16);
+}
+
+const archiveVersions = {
+  press: archiveVersion(pressRecords),
+  awards: archiveVersion([projects.map(({ slug, title, year, awards }) => ({ slug, title, year, awards })), honors]),
+};
 
 const entities = {
   '&': '&amp;',
@@ -87,6 +105,8 @@ function siteHeader(prefix, home, route) {
 }
 
 function layout({ body, title, description, prefix, route, socialImage, home = false, gallery = false, notFound = false }) {
+  const archive = route === 'press/' ? 'press' : route === 'awards/' ? 'awards' : '';
+  const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
   const tags = [
     '<!doctype html>',
     '<html lang="en">',
@@ -95,7 +115,8 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
     '  <meta name="viewport" content="width=device-width, initial-scale=1">',
     '  <title>' + escape(title) + '</title>',
     '  <meta name="description" content="' + escape(description) + '">',
-    '  <meta name="theme-color" content="#080909">',
+    '  <meta name="theme-color" content="#000000">',
+    '  <script src="' + prefix + 'assets/philadelphia-clock.js"></script>',
     '  <link rel="icon" type="image/svg+xml" href="' + prefix + 'assets/mark.svg">',
   ];
   if (notFound) {
@@ -116,17 +137,26 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
   }
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/site.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/reference-type.css">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css">');
+  tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js"></script>');
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (gallery) tags.push('  <script defer src="' + prefix + 'assets/gallery.js"></script>');
   tags.push(
     '</head>',
-    '<body' + (gallery ? ' class="project-body"' : '') + '>',
+    '<body' + (gallery ? ' class="project-body"' : '') + archiveAttributes + '>',
     '<a class="skip-link" href="#main-content">Skip to content</a>',
     siteHeader(prefix, home, route),
     body,
   );
   if (!gallery && !notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
-  tags.push('</body>', '</html>', '');
+  tags.push(
+    '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
+    '  <p>Philadelphia <span aria-hidden="true">·</span> <time id="philadelphia-clock-time"></time></p>',
+    '  <p id="philadelphia-clock-period"></p>',
+    '</aside>',
+    '</body>', '</html>', ''
+  );
   return tags.join('\n');
 }
 
@@ -548,6 +578,7 @@ await Promise.all([
   ...projects.map((project) => writePage('work/' + project.slug + '/index.html', projectPage(project))),
   writePage('404.html', notFoundPage()),
   writePage('sitemap.xml', sitemap()),
+  writePage('archive-version.json', JSON.stringify(archiveVersions, null, 2) + '\n'),
 ]);
 
 console.log('Built ' + (projects.length + 4 + Number(press.length > 0)) + ' HTML pages and sitemap.');

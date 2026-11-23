@@ -1,0 +1,279 @@
+/*
+ * Typography measured from Joe Russell Architecture's shared Webflow CSS.
+ * Source: https://www.joerussellarchitecture.com/about
+ * Also checked against the home, projects, project detail, and press pages.
+ * Values use rem so the browser's preferred root font size remains effective.
+ * At the default 16px root, 0.75rem = 12px and 1.75rem = 28px.
+ */
+
+body {
+  font-family: var(--sans);
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+}
+
+p {
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.site-header .wordmark {
+  font: 700 .75rem/1.25rem var(--sans);
+  letter-spacing: .0625rem;
+  text-transform: uppercase;
+}
+
+.site-header nav a {
+  font: 500 .75rem/1.25rem var(--sans);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* The masthead serves the same role as the reference's page headings. */
+.portfolio-masthead h1,
+.archive-heading h1,
+.portfolio-intro h1,
+.press-intro h1,
+.not-found h1 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: .075rem;
+  text-transform: uppercase;
+}
+
+.portfolio-masthead p,
+.portfolio-intro p:not(.eyebrow),
+.press-intro p:not(.eyebrow),
+.about-bio p,
+.about-bio .about-lead {
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: normal;
+}
+
+.section-label {
+  font: 700 .875rem/1.55 var(--sans);
+  letter-spacing: .09375rem;
+  text-transform: uppercase;
+}
+
+.about-section .section-label,
+.archive-page .press-group > .section-label {
+  font: 600 .875rem/1.25rem var(--sans);
+  letter-spacing: .0625rem;
+}
+
+.eyebrow,
+.press-group > h2,
+.work-index-line,
+.work-index-bar,
+.index-line,
+.work-heading {
+  font: 500 .75rem/1.25rem var(--sans);
+  letter-spacing: .0625rem;
+  text-transform: uppercase;
+}
+
+.award-year-group > .award-year {
+  font-weight: 600;
+  letter-spacing: normal;
+}
+
+.section-header a,
+.about-actions a,
+.press-link,
+.award-links,
+.award-row .project-link,
+.award-organization,
+.award-announcements,
+.press-search label {
+  font: 500 .75rem/1.25rem var(--sans);
+  letter-spacing: normal;
+}
+
+.press-search input {
+  font: 400 .875rem/1.25rem var(--sans);
+}
+
+.work-card h2,
+.work-card h3,
+.work-title,
+.work-card-title,
+.portfolio-grid .work-card-title,
+.portfolio-grid .work-card-featured .work-card-title {
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .0625rem;
+  text-transform: uppercase;
+}
+
+.work-number,
+.work-year,
+.work-card-number,
+.work-card-year,
+.portfolio-grid .work-card-year {
+  font: 400 .75rem/1.25rem var(--sans);
+  letter-spacing: normal;
+}
+
+.about-row h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  letter-spacing: normal;
+}
+
+.about-row p {
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.about-row h3 + p {
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.about-row .about-meta {
+  font-size: .75rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.about-meta time {
+  font-weight: 600;
+}
+
+.press-title,
+.coverage-row .press-title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+.press-entry p:not(.press-meta),
+.coverage-row .coverage-story p {
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.press-meta,
+.coverage-row .coverage-date,
+.coverage-row .coverage-publisher {
+  font: 500 .75rem/1.25rem var(--sans);
+  letter-spacing: .0625rem;
+}
+
+.home-press .coverage-publisher {
+  font-size: .875rem;
+  font-weight: 600;
+  letter-spacing: normal;
+}
+
+.award-row .award-distinction {
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+/* Project prose follows the reference's compact project statement text. */
+.story-slide,
+.gallery-ready .story-slide,
+.intro-panel > p,
+.project-description,
+.intro-panel ul,
+.project-info-fallback {
+  font-size: .75rem;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.story-slide h2,
+.story-slide h3,
+.intro-panel h3 {
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .0625rem;
+}
+
+.intro-heading h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: normal;
+}
+
+.intro-heading p,
+.project-credits dt,
+.project-credits dd,
+.image-caption,
+.project-caption p,
+.project-caption-meta,
+.viewer-toolbar,
+.viewer-toolbar p,
+[data-count],
+.project-footer [data-info] {
+  font: 500 .75rem/1.25rem var(--sans);
+  letter-spacing: normal;
+}
+
+.project-credits dt {
+  letter-spacing: .0625rem;
+}
+
+.project-caption h1,
+.project-caption-title {
+  font-size: .875rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: .0625rem;
+}
+
+.site-footer {
+  font: 400 .75rem/1.25rem var(--sans);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+@media (max-width: 991px) {
+  .portfolio-projects > .section-label,
+  .home-press .section-label {
+    font-size: .75rem;
+  }
+}
+
+@media (max-width: 479px) {
+  .portfolio-masthead h1,
+  .archive-heading h1,
+  .portfolio-intro h1,
+  .press-intro h1,
+  .not-found h1 {
+    font-size: 1.875rem;
+  }
+
+  .eyebrow {
+    font-size: .625rem;
+  }
+
+  .project-caption h1,
+  .project-caption-title {
+    font-size: .75rem;
+  }
+
+  .image-caption,
+  .project-caption p,
+  .project-caption-meta,
+  [data-count],
+  .project-footer [data-info] {
+    font-size: .625rem;
+  }
+}
