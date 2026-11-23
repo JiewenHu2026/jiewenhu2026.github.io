@@ -35,7 +35,7 @@ function assetVersion(source) {
   return createHash('sha256').update(source).digest('hex').slice(0, 12);
 }
 
-const [siteStyles, portfolioStyles, daylightStyles, clockScript, archiveFreshnessScript, aboutStyles, aboutRevealScript] = await Promise.all([
+const [siteStyles, portfolioStyles, daylightStyles, clockScript, archiveFreshnessScript, aboutStyles, aboutRevealScript, pressScript] = await Promise.all([
   readVersionSource(join(docs, 'assets', 'site.css')),
   readVersionSource(join(docs, 'assets', 'portfolio.css')),
   readVersionSource(join(docs, 'assets', 'daylight.css')),
@@ -43,6 +43,7 @@ const [siteStyles, portfolioStyles, daylightStyles, clockScript, archiveFreshnes
   readVersionSource(join(docs, 'assets', 'archive-freshness.js')),
   readVersionSource(join(docs, 'assets', 'about.css')),
   readVersionSource(join(docs, 'assets', 'about-reveal.js')),
+  readVersionSource(join(docs, 'assets', 'press.js')),
 ]);
 const siteStylesVersion = assetVersion(siteStyles);
 const portfolioStylesVersion = assetVersion(portfolioStyles);
@@ -51,6 +52,7 @@ const clockScriptVersion = assetVersion(clockScript);
 const archiveFreshnessVersion = assetVersion(archiveFreshnessScript);
 const aboutStylesVersion = assetVersion(aboutStyles);
 const aboutRevealVersion = assetVersion(aboutRevealScript);
+const pressScriptVersion = assetVersion(pressScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
 const projectGalleryStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'project-gallery.css')));
 const galleryScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'gallery.js')));
@@ -66,8 +68,8 @@ const sharedArchiveSources = await Promise.all([
   daylightStyles,
   clockScript,
   archiveFreshnessScript,
-  ...['reference-type.css', 'press.js']
-    .map((file) => readVersionSource(join(docs, 'assets', file))),
+  readVersionSource(join(docs, 'assets', 'reference-type.css')),
+  pressScript,
 ]);
 
 function archiveVersion(data) {
@@ -196,7 +198,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
     '  <link rel="stylesheet" href="' + prefix + 'assets/about.css?v=' + aboutStylesVersion + '">',
     '  <script defer src="' + prefix + 'assets/about-reveal.js?v=' + aboutRevealVersion + '"></script>',
   );
-  if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
+  if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js?v=' + pressScriptVersion + '"></script>');
   if (editorial) tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/editorial.css?v=' + editorialStylesVersion + '">');
   if (project) tags.push(
     '  <link rel="stylesheet" href="' + prefix + 'assets/project-gallery.css?v=' + projectGalleryStylesVersion + '">',
@@ -635,13 +637,14 @@ function pressDate(entry) {
   const date = entry.date || entry.year;
   if (!date) return '';
   if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    const formatted = new Intl.DateTimeFormat('en-US', {
+    const formatter = new Intl.DateTimeFormat('en-US', {
       timeZone: 'UTC',
       month: 'short',
       day: 'numeric',
       year: 'numeric',
-    }).format(new Date(date));
-    return '<time datetime="' + escape(date) + '">' + escape(formatted) + '</time>';
+    });
+    if (entry.endDate) return escape(formatter.formatRange(new Date(date), new Date(entry.endDate)));
+    return '<time datetime="' + escape(date) + '">' + escape(formatter.format(new Date(date))) + '</time>';
   }
   if (/^\d{4}-\d{2}$/.test(date)) {
     const formatted = new Intl.DateTimeFormat('en-US', { timeZone: 'UTC', month: 'short', year: 'numeric' }).format(new Date(date + '-01'));
@@ -652,11 +655,12 @@ function pressDate(entry) {
 
 function pressEntry(entry) {
   const date = pressDate(entry);
+  const dateNote = entry.dateNote ? '<span class="coverage-date-note">' + escape(entry.dateNote) + '</span>' : '';
   const url = safeUrl(entry.url);
   if (!url) throw new Error('Press entries require a source URL: ' + entry.title);
   return [
-    '      <li class="press-entry coverage-row">',
-    '        <p class="coverage-date">' + date + '</p>',
+    '      <li class="press-entry coverage-row" data-press-publisher="' + escape(entry.publisher) + '">',
+    '        <p class="coverage-date">' + date + dateNote + '</p>',
     '        <div class="coverage-story">',
     '          <h3 class="press-title"><a href="' + url + '">' + escape(entry.title) + '</a></h3>',
     entry.description ? '          <p>' + escape(entry.description) + '</p>' : '',
@@ -666,25 +670,42 @@ function pressEntry(entry) {
   ].filter(Boolean).join('\n');
 }
 
+function pressFilter(id, label, fallback, options) {
+  return [
+    '      <label class="press-filter" for="' + id + '">',
+    '        ' + label,
+    '        <span class="press-filter-control">',
+    '          <select id="' + id + '">',
+    '            <option value="">' + fallback + '</option>',
+    ...options.map((option) => '            <option value="' + escape(option) + '">' + escape(option) + '</option>'),
+    '          </select>',
+    '        </span>',
+    '      </label>',
+  ];
+}
+
 function pressPage() {
   const years = new Map();
+  const publishers = new Set();
   for (const entry of press) {
-    const year = String(entry.date ?? entry.year ?? 'Undated').slice(0, 4);
+    const year = String(entry.date ?? entry.year ?? '').match(/^\d{4}(?=-|$)/)?.[0] ?? 'Undated';
     if (!years.has(year)) years.set(year, []);
     years.get(year).push(entry);
+    if (entry.publisher) publishers.add(entry.publisher);
   }
   const body = [
     '<main id="main-content" class="press-page archive-page" data-press-index>',
     '  <header class="archive-heading press-heading">',
     '    <h1>Press</h1>',
-    '    <div class="press-search" data-press-search hidden>',
-    '      <label for="press-query">Search the archive</label>',
-    '      <input id="press-query" type="search" autocomplete="off" placeholder="Title, publisher, or year">',
+    '    <div class="press-filters" data-press-filters role="group" aria-label="Filter the press archive" hidden>',
+    ...pressFilter('press-year', 'Year', 'All years', [...years.keys()]),
+    ...pressFilter('press-publisher', 'Publisher', 'All publishers', [...publishers].sort((a, b) => a.localeCompare(b, 'en'))),
     '    </div>',
     '  </header>',
-    '  <p class="press-empty" data-press-empty role="status" hidden>No entries match your search.</p>',
+    '  <p class="sr-only" data-press-status role="status"></p>',
+    '  <p class="press-empty" data-press-empty hidden>No press entries match these filters.</p>',
     ...Array.from(years, ([year, entries]) => [
-      '  <section class="press-group" data-press-year aria-labelledby="press-' + escape(year) + '">',
+      '  <section class="press-group" data-press-year="' + escape(year) + '" aria-labelledby="press-' + escape(year) + '">',
       '    <h2 class="section-label" id="press-' + escape(year) + '">' + escape(year) + '</h2>',
       '    <ul class="press-list">',
       ...entries.map(pressEntry),
@@ -760,9 +781,9 @@ for (const project of projects) {
   for (const award of project.awards ?? []) addAward(award, project);
 }
 for (const honor of honors) addAward(honor);
-const press = [...pressRecords].sort((a, b) => (
-  String(b.date ?? b.year ?? '').localeCompare(String(a.date ?? a.year ?? ''))
-));
+const press = pressRecords
+  .map((entry) => ({ ...entry, publisher: String(entry.publisher ?? '').trim() }))
+  .sort((a, b) => String(b.date ?? b.year ?? '').localeCompare(String(a.date ?? a.year ?? '')));
 
 async function writePage(path, html) {
   const destination = join(docs, path);

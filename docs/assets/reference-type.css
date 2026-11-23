@@ -89,14 +89,9 @@ p {
 .award-links,
 .award-row .project-link,
 .award-organization,
-.award-announcements,
-.press-search label {
+.award-announcements {
   font: 500 .75rem/1.25rem var(--sans);
   letter-spacing: normal;
-}
-
-.press-search input {
-  font: 400 .875rem/1.25rem var(--sans);
 }
 
 .work-card h2,

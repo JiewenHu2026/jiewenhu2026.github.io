@@ -138,7 +138,8 @@
   {
     "title": "2026 Country Pick",
     "publisher": "BLT Built Design Awards",
-    "year": 2026,
+    "date": "2026-11-18",
+    "dateNote": "Winners announced",
     "kind": "Award / exhibition",
     "description": "The BLT Country Pick directory includes Leaving Traces in its United States listing and credits Jiewen Hu.",
     "url": "https://bltawards.com/country-pick/?comp_year=blt-2026"
@@ -146,7 +147,9 @@
   {
     "title": "Peter-Joseph-Lenné-Preis: Protokoll des Preisgerichts vom 30. und 31. Juli 2026",
     "publisher": "Berlin Senate",
-    "year": 2026,
+    "date": "2026-07-30",
+    "endDate": "2026-07-31",
+    "dateNote": "Jury meeting",
     "kind": "Award / exhibition",
     "description": "The jury minutes evaluate The Latent Ground as entry 107 and name Jiewen Hu and her collaborators in the appendix recording the Karl Foerster commendation.",
     "url": "https://www.berlin.de/sen/uvk/_assets/natur-gruen/stadtgruen/peter-joseph-lenne-preis/2026/protokoll_lenne_2026.pdf#page=70"

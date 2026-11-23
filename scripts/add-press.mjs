@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 // Get-Content -Raw verified-press.json | node scripts/add-press.mjs
 // Verification of identity, credit, relevance and syndication happens before input.
 const destination = fileURLToPath(new URL('../content/press.json', import.meta.url));
-const fields = new Set(['title', 'publisher', 'date', 'year', 'kind', 'description', 'url']);
+const fields = new Set(['title', 'publisher', 'date', 'endDate', 'dateNote', 'year', 'kind', 'description', 'url']);
 const trackingParameters = new Set([
   'fbclid', 'gclid', 'dclid', 'msclkid', 'mc_cid', 'mc_eid', 'igshid', 'yclid', '_ga', '_gl',
 ]);
@@ -71,6 +71,13 @@ function validateEntry(entry, index) {
   }
   if (entry.date !== undefined && !validDate(entry.date)) {
     throw new Error(label + ' date must be a valid YYYY, YYYY-MM or YYYY-MM-DD value.');
+  }
+  if (entry.endDate !== undefined &&
+    (entry.date?.length !== 10 || !validDate(entry.endDate) || entry.endDate.length !== 10 || entry.endDate <= entry.date)) {
+    throw new Error(label + ' endDate requires a full date after the start date.');
+  }
+  if (entry.dateNote !== undefined && (typeof entry.dateNote !== 'string' || !entry.dateNote.trim())) {
+    throw new Error(label + ' dateNote must be nonempty text.');
   }
   if (entry.year !== undefined &&
     (!['number', 'string'].includes(typeof entry.year) || !/^[1-9]\d{3}$/.test(String(entry.year)))) {

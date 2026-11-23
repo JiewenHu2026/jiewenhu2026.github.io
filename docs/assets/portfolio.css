@@ -241,39 +241,69 @@
   justify-items: start;
 }
 
-.press-search {
-  width: min(100%, 340px);
+.press-filters {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) minmax(0, 2fr);
+  gap: .75rem;
+  width: min(100%, 390px);
   justify-self: end;
 }
 
-.press-search label {
-  display: block;
-  margin-bottom: 7px;
+.press-filter {
+  display: grid;
+  gap: .375rem;
+  min-width: 0;
   color: var(--muted);
-  font-size: .875rem;
+  font: 500 .8125rem/1.25rem var(--sans);
 }
 
-.press-search input {
+.press-filter-control {
+  position: relative;
+  min-width: 0;
+}
+
+.press-filter-control::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: 1rem;
+  inset-block-start: 50%;
+  width: .45rem;
+  height: .45rem;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: translateY(-75%) rotate(45deg);
+  pointer-events: none;
+}
+
+.press-filter select {
+  display: block;
   width: 100%;
   min-height: 46px;
   appearance: none;
   color: var(--ink);
-  border: 1px solid #5a5e5c;
+  border: 1px solid var(--control-line);
   border-radius: 0;
-  background: #101211;
-  font: inherit;
-  padding: .65rem .85rem;
-  cursor: text;
+  background: var(--subtle-surface);
+  font: 400 .875rem/1.25rem var(--sans);
+  padding: .65rem 2rem .65rem .85rem;
+  cursor: pointer;
+  text-overflow: ellipsis;
 }
 
-.press-search input:focus-visible {
+.press-filter select:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
-.press-search input::placeholder {
-  color: var(--quiet);
-  opacity: 1;
+@media (forced-colors: active) {
+  .press-filter select {
+    appearance: auto;
+    padding-inline-end: .85rem;
+  }
+
+  .press-filter-control::after {
+    display: none;
+  }
 }
 
 .archive-page .press-group > .section-label {
@@ -319,6 +349,13 @@
   font-variant-numeric: tabular-nums;
 }
 
+.coverage-date-note {
+  display: block;
+  margin-top: .25rem;
+  font-size: .75rem;
+  letter-spacing: normal;
+}
+
 .coverage-row .coverage-story p {
   margin-top: .4rem;
   font-size: .96rem;
@@ -362,8 +399,12 @@
   }
 
   .portfolio-masthead p,
-  .press-search {
+  .press-filters {
     justify-self: start;
+  }
+
+  .press-filter select {
+    font-size: 1rem;
   }
 
   .portfolio-grid .work-card-featured .work-card-image {

@@ -46,13 +46,8 @@
   color: var(--accent);
 }
 
-.portfolio-grid .work-card-image,
-.press-search input {
+.portfolio-grid .work-card-image {
   background: var(--subtle-surface);
-}
-
-.press-search input {
-  border-color: var(--control-line);
 }
 
 body:has(.gallery-ready) {
