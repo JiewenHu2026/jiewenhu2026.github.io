@@ -4,8 +4,6 @@
   function initialize() {
     const about = document.querySelector('.about-page');
     if (!about || !('IntersectionObserver' in window)) return;
-    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (motion.matches) return;
     const targets = [...about.querySelectorAll('[data-about-reveal]')];
     if (!targets.length) return;
     let observer;
@@ -38,7 +36,7 @@
         entries.forEach((entry) => {
           if (entry.isIntersecting) reveal(entry.target);
         });
-      }, { threshold: 0.01, rootMargin: '0px 0px -12px 0px' });
+      }, { threshold: 0, rootMargin: '0px 0px -36px 0px' });
       targets.forEach((target) => {
         target.setAttribute('data-about-reveal-state', 'pending');
         observer.observe(target);
@@ -54,11 +52,6 @@
     about.addEventListener('focusin', (event) => revealAncestors(event.target));
     window.addEventListener('hashchange', revealHash);
     window.addEventListener('beforeprint', () => {
-      targets.forEach((target) => reveal(target, true));
-      observer.disconnect();
-    });
-    motion.addEventListener('change', () => {
-      if (!motion.matches) return;
       targets.forEach((target) => reveal(target, true));
       observer.disconnect();
     });

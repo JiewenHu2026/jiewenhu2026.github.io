@@ -273,6 +273,11 @@
   outline-offset: 3px;
 }
 
+.press-search input::placeholder {
+  color: var(--quiet);
+  opacity: 1;
+}
+
 .archive-page .press-group > .section-label {
   margin-bottom: 12px;
   color: var(--accent);

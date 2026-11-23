@@ -355,8 +355,8 @@ function aboutPage() {
     '    </div>',
     '  </header>',
     '  <section class="about-section" aria-labelledby="practice">',
-    '    <h2 class="section-label" id="practice" data-about-reveal>Practice</h2>',
-    '    <div class="about-row" data-about-reveal>',
+    '    <h2 class="section-label" id="practice" data-about-reveal data-about-reveal-delay="section">Practice</h2>',
+    '    <div class="about-row" data-about-reveal data-about-reveal-delay="section">',
     '      <p class="about-meta">Philadelphia, PA</p>',
     '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer II</p></div>',
     '    </div>',
@@ -378,6 +378,7 @@ function aboutPage() {
     description: 'Biography, practice, education, awards, and official announcements for Jiewen Hu, a landscape designer based in Philadelphia.',
     prefix: '../',
     route: 'about/',
+    fixedTheme: 'day',
     body,
   });
 }
@@ -677,6 +678,7 @@ function pressPage() {
     description: 'Press, publications, and official coverage featuring landscape work by ' + name + '.',
     prefix: '../',
     route: 'press/',
+    fixedTheme: 'day',
     body,
   });
 }

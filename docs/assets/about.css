@@ -134,7 +134,7 @@
 }
 
 /* Only JavaScript-marked targets are concealed. Unenhanced content is visible. */
-.about-page [data-about-reveal][data-about-reveal-state] {
+.about-page [data-about-reveal][data-about-reveal-state="visible"] {
   opacity: 1;
   transform: none;
   transition: opacity 500ms ease-in-out, transform 500ms ease-in-out;
@@ -142,6 +142,10 @@
 
 .about-page [data-about-reveal][data-about-reveal-delay="intro"] {
   transition-delay: 200ms;
+}
+
+.about-page [data-about-reveal][data-about-reveal-delay="section"] {
+  transition-delay: 400ms;
 }
 
 .about-page [data-about-reveal][data-about-reveal-state="pending"] {
@@ -181,10 +185,13 @@
     scroll-behavior: auto;
   }
 
-  .about-page [data-about-reveal][data-about-reveal-state] {
-    opacity: 1;
+  .about-page [data-about-reveal][data-about-reveal-state="pending"] {
     transform: none;
-    transition: none;
+  }
+
+  /* Keep the reveal as an opacity change when movement is reduced. */
+  .about-page [data-about-reveal][data-about-reveal-state="visible"]:not([data-about-reveal-immediate]) {
+    transition: opacity 500ms ease-in-out !important;
   }
 }
 
