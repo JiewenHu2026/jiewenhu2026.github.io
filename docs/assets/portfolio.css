@@ -41,7 +41,7 @@
   text-transform: none;
 }
 
-.site-header nav a[aria-current] {
+.site-header .site-navigation a[aria-current] {
   font-weight: 600;
 }
 
