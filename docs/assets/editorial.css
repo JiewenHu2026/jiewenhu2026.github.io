@@ -217,7 +217,7 @@
 
 .project-art a {
   display: block;
-  cursor: zoom-in;
+  cursor: var(--dot-cursor), zoom-in;
 }
 
 .project-art img {
@@ -305,7 +305,6 @@
 
 .project-extra-story summary {
   color: var(--accent);
-  cursor: pointer;
 }
 
 .project-facts > div {
@@ -406,7 +405,7 @@
 
 .project-viewer-controls button:disabled {
   opacity: .45;
-  cursor: default;
+  cursor: var(--dot-cursor), default;
 }
 
 .project-viewer-controls [data-viewer-close] {

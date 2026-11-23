@@ -263,6 +263,7 @@
   background: #101211;
   font: inherit;
   padding: .65rem .85rem;
+  cursor: text;
 }
 
 .press-search input:focus-visible {

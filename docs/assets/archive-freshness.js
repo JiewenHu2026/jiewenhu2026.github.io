@@ -9,10 +9,18 @@
   const navigationParameter = '__archive_nav';
   const refreshParameter = '__archive_refresh';
   const manifestUrl = new URL('archive-version.json', siteRoot);
-  const archivePaths = new Set(['press', 'about', 'awards'].flatMap((archive) => {
-    const path = new URL(archive + '/', siteRoot).pathname;
+  const pagePaths = new Set(['', 'projects/', 'press/', 'about/', 'awards/'].flatMap((route) => {
+    const path = new URL(route, siteRoot).pathname;
     return [path, path.slice(0, -1), path + 'index.html'];
   }));
+  const workPath = new URL('work/', siteRoot).pathname;
+
+  function isSitePage(url) {
+    if (url.origin !== siteRoot.origin) return false;
+    if (pagePaths.has(url.pathname)) return true;
+    return url.pathname.startsWith(workPath) &&
+      /^[a-z0-9-]+(?:\/(?:index\.html)?)?$/.test(url.pathname.slice(workPath.length));
+  }
 
   function nonce() {
     return window.crypto?.randomUUID?.() || Date.now().toString(36) + Math.random().toString(36).slice(2);
@@ -29,7 +37,7 @@
     }
   }
 
-  function installArchiveLinks() {
+  function installPageLinks() {
     document.addEventListener('click', (event) => {
       if (event.defaultPrevented || event.button !== 0 ||
         event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -41,7 +49,7 @@
       } catch {
         return;
       }
-      if (destination.origin !== siteRoot.origin || !archivePaths.has(destination.pathname)) return;
+      if (!isSitePage(destination)) return;
       const current = new URL(window.location.href);
       if (destination.pathname === current.pathname && destination.search === current.search && destination.hash) return;
 
@@ -62,7 +70,6 @@
     const currentVersion = document.body?.dataset.archiveVersion;
     if (!['press', 'awards'].includes(archive) || !currentVersion) return;
 
-    removeMarker(navigationParameter);
     let request = null;
     let generation = 0;
     let navigating = false;
@@ -127,7 +134,8 @@
   }
 
   function initialize() {
-    installArchiveLinks();
+    removeMarker(navigationParameter);
+    installPageLinks();
     installFreshnessCheck();
   }
 
