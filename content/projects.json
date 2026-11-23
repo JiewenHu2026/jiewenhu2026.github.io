@@ -139,6 +139,12 @@
     ],
     "slides": [
       {
+        "file": "web/06-commons.jpg",
+        "alt": "Sunset perspective of the Commons at Angel’s Knoll, with visitors and seating overlooking a planted plaza and the downtown skyline.",
+        "caption": "Commons",
+        "label": "Commons"
+      },
+      {
         "file": "web/01-site-plan.webp",
         "alt": "SOIL HOLDS site plan showing planted soil patches, accessible paths and gathering spaces at Angel’s Knoll",
         "caption": "Project overview",
@@ -169,12 +175,6 @@
         "label": "Geology and memory"
       },
       {
-        "file": "web/06-commons.webp",
-        "alt": "Commons perspective with people gathering on reclaimed timber terraces beside an ecological seed garden",
-        "caption": "Commons",
-        "label": "Commons"
-      },
-      {
         "file": "web/07-hillside-stewardship.webp",
         "alt": "Hillside perspective showing accessible paths, planted soil patches and recovered material outcrops",
         "caption": "Hillside stewardship",
@@ -198,9 +198,7 @@
         "summary": "Soil Holds: Matter, Memory, Commons tied for second place for its proposal for Angel’s Knoll in Los Angeles."
       }
     ],
-    "source": "https://yuehui-gong.github.io/project.html?slug=JH_261011_ASLA%20EP%202026",
-    "cover": "cover.webp",
-    "coverAlt": "SOIL HOLDS site plan showing planted soil patches, accessible paths and gathering spaces at Angel’s Knoll"
+    "source": "https://yuehui-gong.github.io/project.html?slug=JH_261011_ASLA%20EP%202026"
   },
   {
     "slug": "ground-in-friction",
