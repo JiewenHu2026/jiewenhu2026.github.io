@@ -283,7 +283,7 @@
   }
 
   .selected-project-image {
-    opacity: .45;
+    opacity: 1;
   }
 
   .selected-project-caption {
