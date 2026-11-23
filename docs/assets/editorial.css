@@ -258,6 +258,10 @@
     object-fit: contain;
   }
 
+  .selected-project-caption {
+    align-self: start;
+  }
+
   .selected-project-location {
     color: var(--muted);
   }
