@@ -26,9 +26,13 @@ const [projects, pressRecords, honors] = await Promise.all([
   readOptionalContent('honors.json'),
 ]);
 
+const daylightStyles = await readFile(join(docs, 'assets', 'daylight.css'));
+const daylightStylesVersion = createHash('sha256').update(daylightStyles).digest('hex').slice(0, 12);
+
 const sharedArchiveSources = await Promise.all([
   readFile(fileURLToPath(import.meta.url)),
-  ...['site.css', 'portfolio.css', 'reference-type.css', 'daylight.css', 'philadelphia-clock.js', 'archive-freshness.js', 'press.js']
+  daylightStyles,
+  ...['site.css', 'portfolio.css', 'reference-type.css', 'philadelphia-clock.js', 'archive-freshness.js', 'press.js']
     .map((file) => readFile(join(docs, 'assets', file))),
 ]);
 
@@ -138,7 +142,7 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/site.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/reference-type.css">');
-  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js"></script>');
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (gallery) tags.push('  <script defer src="' + prefix + 'assets/gallery.js"></script>');
