@@ -282,8 +282,8 @@
   appearance: none;
   color: var(--ink);
   border: 1px solid var(--control-line);
-  border-radius: 0;
-  background: var(--subtle-surface);
+  border-radius: 8px;
+  background: var(--surface);
   font: 400 .875rem/1.25rem var(--sans);
   padding: .65rem 2rem .65rem .85rem;
   cursor: pointer;
