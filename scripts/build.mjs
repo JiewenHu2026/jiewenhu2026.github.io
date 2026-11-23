@@ -136,8 +136,8 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
     '  <meta name="viewport" content="width=device-width, initial-scale=1">',
     '  <title>' + escape(title) + '</title>',
     '  <meta name="description" content="' + escape(description) + '">',
-    '  <meta name="theme-color" content="#000000">',
-    '  <script src="' + prefix + 'assets/philadelphia-clock.js?v=' + clockScriptVersion + '"></script>',
+    '  <meta name="theme-color" content="' + (fixedTheme === 'day' ? '#ffffff' : '#000000') + '">',
+    ...(!fixedTheme ? ['  <script src="' + prefix + 'assets/philadelphia-clock.js?v=' + clockScriptVersion + '"></script>'] : []),
     '  <link rel="icon" type="image/svg+xml" href="' + prefix + 'assets/mark.svg">',
   ];
   if (notFound) {
@@ -173,13 +173,13 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
     body,
   );
   if (!notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
-  tags.push(
+  if (home) tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
     '  <p>The time in Philadelphia is <time id="philadelphia-clock-time"></time>. <span id="philadelphia-clock-period"></span></p>',
     '  <p>The website theme is adjusted accordingly.</p>',
-    '</aside>',
-    '</body>', '</html>', ''
+    '</aside>'
   );
+  tags.push('</body>', '</html>', '');
   return tags.join('\n');
 }
 
@@ -327,6 +327,7 @@ function projectsPage() {
     description: 'Selected landscape architecture projects and an archive of work by ' + name + '.',
     prefix: '../',
     route: 'projects/',
+    fixedTheme: 'day',
     body,
   });
 }

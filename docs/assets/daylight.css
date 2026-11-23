@@ -134,7 +134,7 @@ dialog::backdrop {
   margin-top: 2px;
 }
 
-body:not(.project-body) .site-footer {
+body:has(.philadelphia-clock) .site-footer {
   padding-bottom: calc(56px + env(safe-area-inset-bottom));
 }
 
