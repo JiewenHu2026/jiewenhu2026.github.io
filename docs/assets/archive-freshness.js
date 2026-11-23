@@ -9,7 +9,7 @@
   const navigationParameter = '__archive_nav';
   const refreshParameter = '__archive_refresh';
   const manifestUrl = new URL('archive-version.json', siteRoot);
-  const pagePaths = new Set(['', 'projects/', 'press/', 'about/', 'awards/'].flatMap((route) => {
+  const pagePaths = new Set(['', 'projects/', 'press/', 'about/', 'contact/', 'awards/'].flatMap((route) => {
     const path = new URL(route, siteRoot).pathname;
     return [path, path.slice(0, -1), path + 'index.html'];
   }));

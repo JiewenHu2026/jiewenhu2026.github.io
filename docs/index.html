@@ -19,9 +19,10 @@
   <link rel="stylesheet" href="./assets/portfolio.css?v=566a05bcea11">
   <link rel="stylesheet" href="./assets/reference-type.css">
   <link rel="stylesheet" href="./assets/daylight.css?v=bdc1259b4ee0">
-  <script defer src="./assets/archive-freshness.js?v=6e6d39f01669"></script>
+  <script defer src="./assets/archive-freshness.js?v=7875fafa3340"></script>
   <script defer src="./assets/image-cursor.js?v=63b57ab210dd"></script>
-  <link rel="stylesheet" href="./assets/editorial.css?v=96d98185435a">
+  <script defer src="./assets/home-index.js?v=4514e7e33c6e"></script>
+  <link rel="stylesheet" href="./assets/editorial.css?v=f7c714c503aa">
 </head>
 <body>
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -32,16 +33,63 @@
     <a href="./projects/">Projects</a>
     <a href="./press/">Press</a>
     <a href="./about/">About</a>
+    <a href="./contact/">Contact</a>
   </nav>
 </header>
 <main id="main-content" class="portfolio-home">
   <h1 class="sr-only">Jiewen Hu | Landscape Architecture</h1>
-  <section class="home-reel" id="work" aria-label="Featured project">
-    <figure class="reel-frame centered-artwork">
-      <a class="reel-image-link" href="./work/leaving-traces/" aria-label="View Leaving Traces">
-        <img src="./media/home/wax-heat-and-light.jpg" alt="Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency." width="2339" height="3304" decoding="async" fetchpriority="high">
-      </a>
-    </figure>
+  <section class="home-reel" id="work" aria-label="Selected projects">
+    <nav class="home-work-index" aria-label="Projects by title">
+      <a href="./work/leaving-traces/" data-project="leaving-traces" data-preview="./media/leaving-traces/signal-valley-cover.jpg">Leaving Traces</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/back-to-roots/" data-project="back-to-roots" data-preview="./media/back-to-roots/comic-spread5.jpg">Back to Roots</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/from-ruins-to-roots/" data-project="from-ruins-to-roots" data-preview="./media/from-ruins-to-roots/cover.webp">From Ruins to Roots</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/ground-in-friction/" data-project="ground-in-friction" data-preview="./media/ground-in-friction/cover.webp">Ground in Friction</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/soil-holds/" data-project="soil-holds" data-preview="./media/soil-holds/web/06-commons.jpg">Soil Holds: Matter, Memory, Commons</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/from-separation-to-ambiguity/" data-project="from-separation-to-ambiguity" data-preview="./media/from-separation-to-ambiguity/cover.webp">From Separation to Ambiguity</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/stitching-kingston/" data-project="stitching-kingston" data-preview="./media/stitching-kingston/cover.webp">Stitching Kingston, Community to Coast</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/the-latent-ground/" data-project="the-latent-ground" data-preview="./media/the-latent-ground/cover.webp">The Latent Ground: Restaging Tilla-Durieux Park for Ecological Emergence</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/not-quite-order/" data-project="not-quite-order" data-preview="./media/not-quite-order/cover.webp">Not Quite Order</a>
+      <span aria-hidden="true">·</span>
+      <a href="./work/whispers-beyond-the-looking-glass/" data-project="whispers-beyond-the-looking-glass" data-preview="./media/whispers-beyond-the-looking-glass/cover.webp">Whispers Beyond the Looking Glass</a>
+    </nav>
+    <details class="home-artwork-display" open>
+      <summary><span class="home-artwork-show">Show artwork</span><span class="home-artwork-hide">Hide artwork</span></summary>
+      <div class="home-artworks">
+        <figure class="home-artwork home-artwork-lead">
+          <a class="reel-image-link" href="./work/leaving-traces/" aria-label="View Leaving Traces">
+            <img src="./media/home/wax-heat-and-light.jpg" alt="Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency." width="2339" height="3304" decoding="async" fetchpriority="high">
+          </a>
+        </figure>
+        <figure class="home-artwork home-artwork-woodland">
+          <a class="reel-image-link" href="./work/leaving-traces/" aria-label="View Leaving Traces">
+            <img src="./media/leaving-traces/signal-valley.webp" alt="Signal Valley: an owl flies above a misty woodland, with a stream, stormwater basins, and a seasonal habitat timeline below." decoding="async" loading="lazy">
+          </a>
+        </figure>
+        <figure class="home-artwork home-artwork-forest">
+          <a class="reel-image-link" href="./work/back-to-roots/" aria-label="View Back to Roots">
+            <img src="./media/back-to-roots/comic-spread5.jpg" alt="Four forest panels in green, tan, red, and cream with a poem and a bird in flight" decoding="async" loading="lazy">
+          </a>
+        </figure>
+        <figure class="home-artwork home-artwork-commons">
+          <a class="reel-image-link" href="./work/soil-holds/" aria-label="View Soil Holds: Matter, Memory, Commons">
+            <img src="./media/soil-holds/web/06-commons.jpg" alt="Sunset perspective of the Commons at Angel’s Knoll, with visitors and seating overlooking a planted plaza and the downtown skyline." decoding="async" loading="lazy">
+          </a>
+        </figure>
+        <figure class="home-artwork home-artwork-harbour">
+          <a class="reel-image-link" href="./work/ground-in-friction/" aria-label="View Ground in Friction">
+            <img src="./media/ground-in-friction/cover.webp" alt="Tidal waterfront landscape at Victoria Harbour" decoding="async" loading="lazy">
+          </a>
+        </figure>
+      </div>
+    </details>
   </section>
   <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">
     <div class="home-bio-inner">

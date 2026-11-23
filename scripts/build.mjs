@@ -55,6 +55,7 @@ const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, '
 const projectGalleryStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'project-gallery.css')));
 const galleryScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'gallery.js')));
 const imageCursorScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'image-cursor.js')));
+const homeIndexScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'home-index.js')));
 const cvPath = 'files/jiewen-hu-cv.pdf';
 const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
@@ -128,6 +129,7 @@ function siteHeader(prefix, route) {
     [prefix + 'projects/', 'Projects', 'projects/'],
     ...(press.length ? [[prefix + 'press/', 'Press', 'press/']] : []),
     [prefix + 'about/', 'About', 'about/'],
+    [prefix + 'contact/', 'Contact', 'contact/'],
   ];
   return [
     '<header class="site-header">',
@@ -147,7 +149,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   const home = route === '';
   const about = route === 'about/';
   const project = route?.startsWith('work/');
-  const editorial = home || project || route === 'projects/';
+  const editorial = home || project || route === 'projects/' || route === 'contact/';
   const themeAttributes = fixedTheme ? ' data-theme="' + fixedTheme + '" data-theme-lock="' + fixedTheme + '"' : '';
   const archive = route === 'press/' ? 'press' : about ? 'awards' : '';
   const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
@@ -185,6 +187,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js?v=' + archiveFreshnessVersion + '"></script>');
   tags.push('  <script defer src="' + prefix + 'assets/image-cursor.js?v=' + imageCursorScriptVersion + '"></script>');
+  if (home) tags.push('  <script defer src="' + prefix + 'assets/home-index.js?v=' + homeIndexScriptVersion + '"></script>');
   if (about) tags.push(
     '  <link rel="stylesheet" href="' + prefix + 'assets/about.css?v=' + aboutStylesVersion + '">',
     '  <script defer src="' + prefix + 'assets/about-reveal.js?v=' + aboutRevealVersion + '"></script>',
@@ -227,6 +230,17 @@ function projectCover(project) {
   return { src: projectMedia(project, project.cover || slide.file), alt: project.coverAlt || slide.alt };
 }
 
+function orderedProjects() {
+  const featured = featuredSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
+  const last = lastProjectSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
+  const entries = [...projects].sort((a, b) => Number(b.year) - Number(a.year));
+  return [
+    ...featured,
+    ...entries.filter(({ slug }) => !featuredSlugs.includes(slug) && !lastProjectSlugs.includes(slug)),
+    ...last,
+  ];
+}
+
 function homeHeroImage() {
   const featured = projects.find(({ slug }) => slug === 'leaving-traces');
   if (featured) {
@@ -236,33 +250,62 @@ function homeHeroImage() {
       alt: 'Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency.',
       width: 2339,
       height: 3304,
-      centeredArtwork: true,
     };
   }
   const [project] = projects;
   return project && { project, ...projectCover(project) };
 }
 
-function reelFrame({ project, src, alt, width, height, centeredArtwork }) {
+function reelFrame({ project, src, alt, width, height, placement }) {
   const dimensions = width && height ? ' width="' + width + '" height="' + height + '"' : '';
-  const frameClass = centeredArtwork ? 'reel-frame centered-artwork' : 'reel-frame';
+  const loading = placement === 'lead' ? ' fetchpriority="high"' : ' loading="lazy"';
   return [
-    '    <figure class="' + frameClass + '">',
-    '      <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
-    '        <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async" fetchpriority="high">',
-    '      </a>',
-    '    </figure>',
+    '        <figure class="home-artwork home-artwork-' + placement + '">',
+    '          <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
+    '            <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async"' + loading + '>',
+    '          </a>',
+    '        </figure>',
   ].join('\n');
+}
+
+function homeArtworks(lead) {
+  const placements = [
+    ['woodland', 'leaving-traces', 'signal-valley.webp'],
+    ['forest', 'back-to-roots'],
+    ['commons', 'soil-holds'],
+    ['harbour', 'ground-in-friction'],
+  ];
+  return [
+    reelFrame({ ...lead, placement: 'lead' }),
+    ...placements.flatMap(([placement, slug, file]) => {
+      const project = projects.find((item) => item.slug === slug);
+      if (!project) return [];
+      const slide = project.slides.find((item) => item.file === file);
+      const artwork = slide ? { src: projectMedia(project, slide.file), alt: slide.alt } : projectCover(project);
+      return reelFrame({ project, ...artwork, placement });
+    }),
+  ];
 }
 
 function homePage() {
   const lead = homeHeroImage();
+  const index = orderedProjects().map((project) =>
+    '      <a href="./work/' + localPath(project.slug) + '/" data-project="' + project.slug + '" data-preview="./' + projectCover(project).src + '">' + escape(project.title) + '</a>'
+  ).join('\n      <span aria-hidden="true">·</span>\n');
   const body = [
     '<main id="main-content" class="portfolio-home">',
     '  <h1 class="sr-only">' + name + ' | Landscape Architecture</h1>',
     ...(lead ? [
-      '  <section class="home-reel" id="work" aria-label="Featured project">',
-      reelFrame(lead),
+      '  <section class="home-reel" id="work" aria-label="Selected projects">',
+      '    <nav class="home-work-index" aria-label="Projects by title">',
+      index,
+      '    </nav>',
+      '    <details class="home-artwork-display" open>',
+      '      <summary><span class="home-artwork-show">Show artwork</span><span class="home-artwork-hide">Hide artwork</span></summary>',
+      '      <div class="home-artworks">',
+      ...homeArtworks(lead),
+      '      </div>',
+      '    </details>',
       '  </section>',
     ] : []),
     '  <section class="portfolio-shell home-bio" id="about" aria-labelledby="home-about-title">',
@@ -291,60 +334,35 @@ function homePage() {
 
 function projectIndexCard(project, index) {
   const cover = projectCover(project);
-  const loading = index >= 3 ? ' loading="lazy"' : '';
+  const loading = index >= 4 ? ' loading="lazy"' : '';
   return [
     '      <li>',
     '        <a class="selected-project-card" href="../work/' + localPath(project.slug) + '/">',
-    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt="' + escape(cover.alt) + '"' + loading + ' decoding="async"></span>',
-    '          <span class="selected-project-title">' + escape(project.title) + '</span>',
-    '          <span class="selected-project-location">' + escape(project.location) + '</span>',
+    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt=""' + loading + ' decoding="async"></span>',
+    '          <span class="selected-project-caption">',
+    '            <span class="selected-project-title">' + escape(project.title) + '</span>',
+    '            <span class="selected-project-location">' + escape(project.location) + '</span>',
+    '            <span class="selected-project-meta">' + [project.year, project.type].filter(Boolean).map(escape).join(' · ') + '</span>',
+    '          </span>',
     '        </a>',
     '      </li>',
   ].join('\n');
 }
 
-function projectIndexRow(project) {
-  return [
-    '        <tr>',
-    '          <th scope="row"><a href="../work/' + localPath(project.slug) + '/">' + escape(project.title) + '</a></th>',
-    '          <td>' + escape(project.location) + '</td>',
-    '          <td>' + escape(project.year) + '</td>',
-    '          <td>' + escape(project.type) + '</td>',
-    '        </tr>',
-  ].join('\n');
-}
-
 function projectsPage() {
-  const featured = featuredSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
-  const last = lastProjectSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
-  const entries = [...projects].sort((a, b) => Number(b.year) - Number(a.year));
-  const gallery = [
-    ...featured,
-    ...entries.filter(({ slug }) => !featuredSlugs.includes(slug) && !lastProjectSlugs.includes(slug)),
-    ...last,
-  ];
   const body = [
     '<main id="main-content" class="project-index">',
-    '  <section class="editorial-shell project-index-selected" aria-labelledby="selected-projects">',
+    '  <section class="editorial-shell project-index-selected" id="project-archive" aria-labelledby="selected-projects">',
     '    <header class="project-index-heading"><p>Selected</p><h1 id="selected-projects">Projects</h1></header>',
     '    <ul class="selected-projects">',
-    ...gallery.map(projectIndexCard),
+    ...orderedProjects().map(projectIndexCard),
     '    </ul>',
-    '  </section>',
-    '  <section class="editorial-shell project-index-archive" aria-labelledby="project-archive">',
-    '    <header class="project-index-heading archive-index-heading"><p>Projects</p><h2 id="project-archive">Archive</h2></header>',
-    '    <table class="project-index-table">',
-    '      <thead><tr><th scope="col">Title</th><th scope="col">Location</th><th scope="col">Year</th><th scope="col">Type</th></tr></thead>',
-    '      <tbody>',
-    ...entries.map(projectIndexRow),
-    '      </tbody>',
-    '    </table>',
     '  </section>',
     '</main>',
   ].join('\n');
   return layout({
     title: 'Projects | ' + name,
-    description: 'Landscape architecture projects and the project archive of ' + name + '.',
+    description: 'An index of landscape design and research projects by ' + name + '.',
     prefix: '../',
     route: 'projects/',
     fixedTheme: 'day',
@@ -725,8 +743,32 @@ function pressPage() {
   });
 }
 
+function contactPage() {
+  const email = 'jiewen.hu@hotmail.com';
+  const instagram = 'jiewenhu59';
+  const linkedIn = safeUrl('https://www.linkedin.com/in/jiewen-hu-3b416222b/');
+  const body = [
+    '<main id="main-content" class="contact-page editorial-shell">',
+    '  <h1>Contact</h1>',
+    '  <dl class="contact-links">',
+    '    <div><dt>Email</dt><dd><a href="mailto:' + escape(email) + '">' + escape(email) + '</a></dd></div>',
+    '    <div><dt>Instagram</dt><dd><a href="' + safeUrl('https://www.instagram.com/' + instagram + '/') + '">@' + escape(instagram) + '</a></dd></div>',
+    '    <div><dt>LinkedIn</dt><dd><a href="' + linkedIn + '">' + name + '</a></dd></div>',
+    '  </dl>',
+    '</main>',
+  ].join('\n');
+  return layout({
+    title: 'Contact | ' + name,
+    description: 'Professional contact and profile links for ' + name + ', a landscape designer based in Philadelphia.',
+    prefix: '../',
+    route: 'contact/',
+    fixedTheme: 'day',
+    body,
+  });
+}
+
 function sitemap() {
-  const paths = ['', 'projects/', 'about/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
+  const paths = ['', 'projects/', 'about/', 'contact/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -772,6 +814,7 @@ await Promise.all([
   writePage('index.html', homePage()),
   writePage('projects/index.html', projectsPage()),
   writePage('about/index.html', aboutPage()),
+  writePage('contact/index.html', contactPage()),
   writePage('awards/index.html', awardsRedirectPage()),
   ...(press.length ? [writePage('press/index.html', pressPage())] : []),
   ...projects.map((project) => writePage('work/' + project.slug + '/index.html', projectPage(project))),
@@ -780,4 +823,4 @@ await Promise.all([
   writePage('archive-version.json', JSON.stringify(archiveVersions, null, 2) + '\n'),
 ]);
 
-console.log('Built ' + (projects.length + 5 + Number(press.length > 0)) + ' HTML pages and sitemap.');
+console.log('Built ' + (projects.length + 6 + Number(press.length > 0)) + ' HTML pages and sitemap.');
