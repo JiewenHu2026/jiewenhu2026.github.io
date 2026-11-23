@@ -112,7 +112,7 @@ dialog::backdrop {
   background: var(--surface);
   color: var(--muted);
   text-align: end;
-  font: 400 .625rem/1.35 var(--sans);
+  font: 200 .625rem/1.35 var(--sans);
   font-variant-numeric: tabular-nums;
   pointer-events: none;
 }

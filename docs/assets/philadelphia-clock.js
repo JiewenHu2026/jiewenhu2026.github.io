@@ -128,7 +128,7 @@
       time.dateTime = now.toISOString();
     }
     if (period) {
-      const label = daylight ? 'Daylight' : 'Nighttime';
+      const label = daylight ? 'It is light.' : 'It is dark and misty.';
       if (period.textContent !== label) period.textContent = label;
     }
     if (time && period) {

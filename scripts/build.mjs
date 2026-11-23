@@ -31,13 +31,22 @@ async function readVersionSource(path) {
   return text.replace(/\r\n/g, '\n');
 }
 
-const daylightStyles = await readVersionSource(join(docs, 'assets', 'daylight.css'));
-const daylightStylesVersion = createHash('sha256').update(daylightStyles).digest('hex').slice(0, 12);
+function assetVersion(source) {
+  return createHash('sha256').update(source).digest('hex').slice(0, 12);
+}
+
+const [daylightStyles, clockScript] = await Promise.all([
+  readVersionSource(join(docs, 'assets', 'daylight.css')),
+  readVersionSource(join(docs, 'assets', 'philadelphia-clock.js')),
+]);
+const daylightStylesVersion = assetVersion(daylightStyles);
+const clockScriptVersion = assetVersion(clockScript);
 
 const sharedArchiveSources = await Promise.all([
   readVersionSource(fileURLToPath(import.meta.url)),
   daylightStyles,
-  ...['site.css', 'portfolio.css', 'reference-type.css', 'philadelphia-clock.js', 'archive-freshness.js', 'press.js']
+  clockScript,
+  ...['site.css', 'portfolio.css', 'reference-type.css', 'archive-freshness.js', 'press.js']
     .map((file) => readVersionSource(join(docs, 'assets', file))),
 ]);
 
@@ -125,7 +134,7 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
     '  <title>' + escape(title) + '</title>',
     '  <meta name="description" content="' + escape(description) + '">',
     '  <meta name="theme-color" content="#000000">',
-    '  <script src="' + prefix + 'assets/philadelphia-clock.js"></script>',
+    '  <script src="' + prefix + 'assets/philadelphia-clock.js?v=' + clockScriptVersion + '"></script>',
     '  <link rel="icon" type="image/svg+xml" href="' + prefix + 'assets/mark.svg">',
   ];
   if (notFound) {
@@ -161,8 +170,8 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
   if (!gallery && !notFound) tags.push('<footer class="site-footer">' + name + '</footer>');
   tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
-    '  <p>Philadelphia <span aria-hidden="true">·</span> <time id="philadelphia-clock-time"></time></p>',
-    '  <p id="philadelphia-clock-period"></p>',
+    '  <p>The time in Philadelphia is <time id="philadelphia-clock-time"></time>. <span id="philadelphia-clock-period"></span></p>',
+    '  <p>The website theme is adjusted accordingly.</p>',
     '</aside>',
     '</body>', '</html>', ''
   );
