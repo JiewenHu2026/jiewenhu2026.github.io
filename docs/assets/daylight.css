@@ -34,6 +34,11 @@
   background: var(--header-surface);
 }
 
+.site-header .wordmark,
+.site-footer {
+  text-transform: none;
+}
+
 .site-header a:hover {
   color: var(--ink);
 }

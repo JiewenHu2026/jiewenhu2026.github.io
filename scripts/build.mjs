@@ -121,15 +121,16 @@ function siteHeader(prefix, route) {
   ].join('\n');
 }
 
-function layout({ body, title, description, prefix, route, socialImage, notFound = false }) {
+function layout({ body, title, description, prefix, route, socialImage, fixedTheme, notFound = false }) {
   const home = route === '';
   const project = route?.startsWith('work/');
   const editorial = home || project || route === 'projects/';
+  const themeAttributes = fixedTheme ? ' data-theme="' + fixedTheme + '" data-theme-lock="' + fixedTheme + '"' : '';
   const archive = route === 'press/' ? 'press' : route === 'awards/' ? 'awards' : '';
   const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
   const tags = [
     '<!doctype html>',
-    '<html lang="en">',
+    '<html lang="en"' + themeAttributes + '>',
     '<head>',
     '  <meta charset="utf-8">',
     '  <meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -504,6 +505,7 @@ function projectPage(project) {
     description: project.summary,
     prefix: '../../',
     route: 'work/' + project.slug + '/',
+    fixedTheme: ['leaving-traces', 'back-to-roots'].includes(project.slug) ? 'night' : 'day',
     socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
     body,
   });

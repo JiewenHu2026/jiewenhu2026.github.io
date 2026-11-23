@@ -74,6 +74,7 @@
 }
 
 .home-reel-wordmark h1 {
+  text-transform: none;
   font-size: .875rem;
   font-weight: 700;
   line-height: 1.35;
