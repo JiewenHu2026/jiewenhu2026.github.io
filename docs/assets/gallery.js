@@ -10,12 +10,11 @@
 
   const nav = gallery.querySelector('.slide-navigation');
   const dots = [...(nav?.querySelectorAll('[data-slide-link]') || [])];
-  const count = gallery.querySelector('[data-count]');
+  const arrows = viewport.querySelector('[data-gallery-arrows]');
+  const previousButton = arrows?.querySelector('[data-prev]');
+  const nextButton = arrows?.querySelector('[data-next]');
   const info = document.getElementById('project-info');
   const narrative = document.getElementById('project-narrative');
-  const previousButtons = [...gallery.querySelectorAll('[data-prev]')];
-  const nextButtons = [...gallery.querySelectorAll('[data-next]')];
-  const drawingButtons = [...gallery.querySelectorAll('[data-open-drawing]')];
   let status = gallery.querySelector('[data-gallery-status]');
   if (!status) {
     status = document.createElement('p');
@@ -39,7 +38,6 @@
     catch { return location.hash.slice(1); }
   }
   const dotIndex = dot => byId.get((dot.getAttribute('href') || '').replace(/^#/, '')) ?? dots.indexOf(dot);
-  const number = value => String(value).padStart(2, '0');
   const modified = event => event.ctrlKey || event.metaKey || event.altKey || event.shiftKey;
   const blocked = () => Boolean(document.querySelector('dialog[open]'));
   const clamp = index => Math.max(0, Math.min(index, slides.length - 1));
@@ -51,16 +49,25 @@
       ? preferred : gallery;
     target.focus({ preventScroll: true });
   }
-  function drawingFor(slide) {
-    const image = slide?.querySelector('img');
-    if (!image) return null;
-    const link = image.closest('a');
-    return { image, link, url: link?.href || image.currentSrc || image.src };
+  function positionArrows() {
+    if (!arrows) return;
+    const image = slides[active]?.querySelector('img');
+    if (!image?.naturalWidth) {
+      for (const property of ['--previous-x', '--next-x', '--arrow-y']) arrows.style.removeProperty(property);
+      return;
+    }
+    const stage = viewport.getBoundingClientRect();
+    const box = image.getBoundingClientRect();
+    const displayedWidth = Math.min(box.width, box.height * image.naturalWidth / image.naturalHeight);
+    const center = box.left - stage.left + box.width / 2;
+    const gap = stage.width <= 680 ? 18 : 26;
+    const railLeft = (nav?.getBoundingClientRect().left ?? stage.right) - stage.left;
+    const nextLimit = railLeft - (nextButton?.offsetWidth ?? 0) / 2;
+    arrows.style.setProperty('--previous-x', Math.max(gap, center - displayedWidth / 2 - gap) + 'px');
+    arrows.style.setProperty('--next-x', Math.min(nextLimit, center + displayedWidth / 2 + gap) + 'px');
+    arrows.style.setProperty('--arrow-y', box.top - stage.top + box.height / 2 + 'px');
   }
-  function setUnavailable(control, unavailable) {
-    control.setAttribute('aria-disabled', String(unavailable));
-    if ('disabled' in control) control.disabled = unavailable;
-  }
+
   function show(index, syncUrl = true, focus = false) {
     const next = clamp(index);
     const previous = slides[active];
@@ -75,23 +82,17 @@
         else slide.setAttribute('aria-hidden', 'true');
       });
       active = next;
+      if (previousButton) previousButton.disabled = active === 0;
+      if (nextButton) nextButton.disabled = active === slides.length - 1;
+      positionArrows();
       dots.forEach(dot => {
         if (dotIndex(dot) === active) dot.setAttribute('aria-current', 'location');
         else dot.removeAttribute('aria-current');
       });
-      if (count) count.textContent = number(active + 1) + ' / ' + number(slides.length);
-      const caption = slides[active].getAttribute('aria-label') || slides[active].querySelector('figcaption, h2')?.textContent.trim() || 'Project page';
+      const caption = slides[active].getAttribute('aria-label') ||
+        slides[active].querySelector('figcaption, h2')?.textContent.trim() ||
+        slides[active].querySelector('img')?.alt || 'Project page';
       status.textContent = (active + 1) + ' of ' + slides.length + ': ' + caption;
-      previousButtons.forEach(button => setUnavailable(button, active === 0));
-      nextButtons.forEach(button => setUnavailable(button, active === slides.length - 1));
-      const drawing = drawingFor(slides[active]);
-      drawingButtons.forEach(button => {
-        setUnavailable(button, !drawing);
-        if (button.tagName === 'A') {
-          if (drawing) button.href = drawing.url;
-          else button.removeAttribute('href');
-        }
-      });
       const dot = dots.find(item => dotIndex(item) === active);
       if (dot && nav) {
         if (dot.offsetTop < nav.scrollTop) nav.scrollTop = dot.offsetTop;
@@ -111,7 +112,7 @@
     if (syncUrl) history.replaceState(null, '', '#' + slides[active].id);
   }
 
-  function bindDialog(dialog, triggers) {
+  function bindDialog(dialog, triggers = []) {
     if (!dialog) return () => {};
     let trigger = null;
     const open = element => {
@@ -138,55 +139,26 @@
     });
     return open;
   }
-  const openInfo = bindDialog(info, [...gallery.querySelectorAll('[data-info]')]);
+  const openInfo = bindDialog(info);
   bindDialog(narrative, [...gallery.querySelectorAll('[data-narrative]')]);
-
-  const viewer = document.createElement('dialog');
-  viewer.className = 'drawing-viewer';
-  viewer.setAttribute('aria-label', 'Drawing viewer');
-  viewer.innerHTML = '<div class="viewer-toolbar"><p>Drawing</p><div class="viewer-actions"><button type="button" data-zoom aria-label="Show full size" aria-pressed="false">＋</button><button class="dialog-close" type="button" aria-label="Close drawing viewer" autofocus>×</button></div></div><div class="viewer-canvas"><img alt=""></div>';
-  document.body.append(viewer);
-  const canvas = viewer.querySelector('.viewer-canvas');
-  const viewerImage = canvas.querySelector('img');
-  const zoom = viewer.querySelector('[data-zoom]');
-  let viewerTrigger = null;
-  function setZoom(state) {
-    canvas.classList.toggle('is-zoomed', state);
-    zoom.setAttribute('aria-pressed', String(state));
-    zoom.setAttribute('aria-label', state ? 'Fit drawing to window' : 'Show full size');
-    zoom.textContent = state ? '−' : '＋';
-    if (!state) canvas.scrollTo({ top: 0, left: 0 });
-  }
-  zoom.addEventListener('click', () => setZoom(!canvas.classList.contains('is-zoomed')));
-  viewer.querySelector('.dialog-close').addEventListener('click', () => viewer.close());
-  viewer.addEventListener('click', event => { if (event.target === viewer) viewer.close(); });
-  viewer.addEventListener('close', () => {
-    setZoom(false);
-    viewerImage.removeAttribute('src');
-    focusSafely(viewerTrigger);
-  });
-  drawingButtons.forEach(button => button.addEventListener('click', event => {
-    if (modified(event) && button.tagName === 'A') return;
-    event.preventDefault();
-    const drawing = drawingFor(slides[active]);
-    if (!drawing || blocked()) return;
-    viewerTrigger = button;
-    viewer.querySelector('.viewer-toolbar p').textContent = slides[active].querySelector('figcaption')?.textContent.trim() || 'Drawing';
-    viewerImage.alt = drawing.image.alt;
-    viewerImage.src = drawing.url;
-    viewer.showModal();
-  }));
 
   gallery.classList.add('gallery-ready');
   show(byId.get(hashId()) ?? 0, false);
   if (!location.hash || hashId() === 'details-title') openInfo(null);
+  if (previousButton && nextButton) {
+    previousButton.addEventListener('click', () => { if (!blocked()) show(active - 1); });
+    nextButton.addEventListener('click', () => { if (!blocked()) show(active + 1); });
+    viewport.addEventListener('load', (event) => {
+      if (slides[active].contains(event.target)) positionArrows();
+    }, true);
+    addEventListener('resize', positionArrows);
+  }
   addEventListener('hashchange', () => {
     const id = hashId();
     if (id === 'details-title') { openInfo(null); return; }
     if (byId.has(id) || !id) {
       if (info?.open) info.close();
       if (narrative?.open) narrative.close();
-      if (viewer.open) viewer.close();
       show(byId.get(id) ?? 0, false);
     }
   });
@@ -194,14 +166,6 @@
     if (modified(event)) return;
     event.preventDefault();
     if (!blocked()) show(dotIndex(dot));
-  }));
-  previousButtons.forEach(button => button.addEventListener('click', event => {
-    event.preventDefault();
-    if (!blocked()) show(active - 1);
-  }));
-  nextButtons.forEach(button => button.addEventListener('click', event => {
-    event.preventDefault();
-    if (!blocked()) show(active + 1);
   }));
 
   function scrollable(target, direction, axis = 'y') {
@@ -229,7 +193,7 @@
     const target = event.target instanceof Element ? event.target : event.target.parentElement;
     if (target.closest('button, input, textarea, select, summary, details, [contenteditable="true"]')) return;
     const link = target.closest('a');
-    if (link && link !== drawingFor(slides[active])?.link) return;
+    if (link && link !== slides[active].querySelector('img')?.closest('a')) return;
     const selection = getSelection();
     if (selection && !selection.isCollapsed && gallery.contains(selection.anchorNode)) return;
     // Text remains a reading surface; only its empty background at the end advances.

@@ -30,6 +30,12 @@
     ],
     "slides": [
       {
+        "file": "signal-valley-cover.jpg",
+        "alt": "An owl in flight above a woodland and wetland at dusk, with a white topographic profile in the foreground.",
+        "caption": "",
+        "label": "Cover"
+      },
+      {
         "file": "signal-valley.webp",
         "alt": "Signal Valley: an owl flies above a misty woodland, with a stream, stormwater basins, and a seasonal habitat timeline below.",
         "caption": "Signal Valley — Owl-call wayfinding and nocturnal birding connect Underground Railroad histories with stormwater storage, bird habitat, and participatory restoration.",
@@ -1050,8 +1056,8 @@
     ],
     "slides": [
       {
-        "file": "comic-cover.jpg",
-        "alt": "Back to Roots graphic novel cover, with a red landscape strip against black",
+        "file": "comic-spread5.jpg",
+        "alt": "Four forest panels in green, tan, red, and cream with a poem and a bird in flight",
         "caption": "Cover",
         "label": "Cover"
       },
@@ -1105,8 +1111,6 @@
       }
     ],
     "awards": [],
-    "source": "https://yuehui-gong.github.io/project.html?slug=JH_261011_Back%20to%20Roots",
-    "cover": "cover.webp",
-    "coverAlt": "Back to Roots graphic novel cover, with a red landscape strip against black"
+    "source": "https://yuehui-gong.github.io/project.html?slug=JH_261011_Back%20to%20Roots"
   }
 ]

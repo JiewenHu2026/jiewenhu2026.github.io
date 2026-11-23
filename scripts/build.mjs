@@ -229,20 +229,22 @@ function homeHeroImage() {
   if (featured) {
     return {
       project: featured,
-      src: 'media/home/leaving-traces-hero.jpg',
-      alt: 'An owl in flight over a woodland and wetland at dusk, with a white topographic profile in the foreground.',
-      width: 4000,
-      height: 2588,
+      src: 'media/home/wax-heat-and-light.jpg',
+      alt: 'Four backlit wax samples from Leaving Traces, held by hand to show their textures and translucency.',
+      width: 2339,
+      height: 3304,
+      centeredArtwork: true,
     };
   }
   const [project] = projects;
   return project && { project, ...projectCover(project) };
 }
 
-function reelFrame({ project, src, alt, width, height }) {
+function reelFrame({ project, src, alt, width, height, centeredArtwork }) {
   const dimensions = width && height ? ' width="' + width + '" height="' + height + '"' : '';
+  const frameClass = centeredArtwork ? 'reel-frame centered-artwork' : 'reel-frame';
   return [
-    '    <figure class="reel-frame">',
+    '    <figure class="' + frameClass + '">',
     '      <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
     '        <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async" fetchpriority="high">',
     '      </a>',
@@ -399,8 +401,8 @@ const leavingTracesImageAnchors = {
 function projectDrawing(project, slide, index) {
   const id = 'slide-' + (index === 0 ? 1 : index + 2);
   const path = '../../' + projectMedia(project, slide.file);
-  const label = slide.label || slide.alt;
-  const caption = slide.caption || label;
+  const label = slide.label && slide.label !== 'Project overview' ? slide.label : slide.alt;
+  const caption = slide.caption === 'Project overview' ? '' : slide.caption ?? label;
   const imageLoading = index === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
   const aliases = [
     index === 1 ? 'drawings-title' : '',
@@ -417,9 +419,9 @@ function projectDrawing(project, slide, index) {
       '      <a class="drawing-link" href="' + path + '">',
       '        <img src="' + path + '" alt="' + escape(slide.alt) + '" decoding="async"' + imageLoading + '>',
       '      </a>',
-      '      <figcaption class="image-caption">' + escape(caption) + narrative + '</figcaption>',
+      caption || narrative ? '      <figcaption class="image-caption">' + escape(caption) + narrative + '</figcaption>' : '',
       '    </figure>',
-    ].join('\n'),
+    ].filter(Boolean).join('\n'),
   };
 }
 
@@ -431,7 +433,6 @@ function projectInformation(project) {
   const basicDetails = [
     { label: 'Location', value: project.location },
     { label: 'Year', value: project.year },
-    { label: 'Type', value: project.type },
   ].filter(({ value }) => value);
   const credits = (project.credits ?? []).filter(({ label }) => (
     !basicDetails.some((detail) => detail.label.toLowerCase() === label.toLowerCase())
@@ -440,14 +441,12 @@ function projectInformation(project) {
     const display = escape(distinction ? label + ' — ' + distinction : label);
     return '        <li>' + (url ? '<a href="' + safeUrl(url) + '">' + display + '</a>' : display) + '</li>';
   });
-  const source = safeUrl(project.source);
   return [
     '      <p class="project-description">' + escape(project.summary) + '</p>',
     '      <dl class="project-credits">',
     ...[...basicDetails, ...credits].map(({ label, value }) => detailRow(label, value)),
     '      </dl>',
     awards.length ? '      <div class="project-awards"><h3>Recognition</h3><ul>\n' + awards.join('\n') + '\n      </ul></div>' : '',
-    source ? '      <p class="dialog-source"><a href="' + source + '">Original project page <span aria-hidden="true">↗</span></a></p>' : '',
   ].filter(Boolean).join('\n');
 }
 
@@ -492,7 +491,6 @@ function projectNarrativeDialog(narrative) {
 function projectPage(project) {
   const [lead, ...drawings] = project.slides.map((slide, index) => projectDrawing(project, slide, index));
   const slides = [lead, projectStorySlide(project), ...drawings];
-  const count = String(slides.length).padStart(2, '0');
   const info = projectInformation(project);
   const cover = projectCover(project);
   const body = [
@@ -506,6 +504,10 @@ function projectPage(project) {
     '  </section>',
     '  <div class="project-slides">',
     ...slides.map(({ html }) => html),
+    '    <div class="gallery-arrows requires-js" data-gallery-arrows role="group" aria-label="Slide controls">',
+    '      <button type="button" data-prev aria-label="Previous slide"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m11 3-7 7 7 7"/></svg></button>',
+    '      <button type="button" data-next aria-label="Next slide"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m5 3 7 7-7 7"/></svg></button>',
+    '    </div>',
     '  </div>',
     '  <nav class="slide-navigation" aria-label="Project slides">',
     ...slides.map(({ id, label }, index) => (
@@ -514,17 +516,10 @@ function projectPage(project) {
     )),
     '  </nav>',
     '  <footer class="project-footer requires-js">',
-    '    <div class="project-controls" data-gallery-controls>',
-    '      <button type="button" data-prev aria-label="Previous slide"><span aria-hidden="true">←</span></button>',
-    '      <output data-count aria-label="Slide number">01 / ' + count + '</output>',
-    '      <button type="button" data-next aria-label="Next slide"><span aria-hidden="true">→</span></button>',
-    '    </div>',
     '    <div class="project-caption">',
     '      <p class="project-caption-title">' + escape(project.title) + '</p>',
-    '      <p class="project-caption-meta">' + escape(project.type) + (project.location ? ' <span class="project-caption-location">· ' + escape(project.location) + '</span>' : '') + '</p>',
-    '      <button class="project-open-drawing" type="button" data-open-drawing aria-haspopup="dialog">Full image</button>',
+    project.location ? '      <p class="project-caption-meta">' + escape(project.location) + '</p>' : '',
     '    </div>',
-    '    <button class="project-info-button" type="button" data-info aria-haspopup="dialog" aria-controls="project-info"><span class="info-label-long">Information</span><span class="info-label-short">Info</span></button>',
     '  </footer>',
     '  <dialog id="project-info" class="project-info" aria-labelledby="project-info-title">',
     '    <div class="intro-panel">',
