@@ -121,7 +121,7 @@
 
 .home-bio {
   display: flex;
-  justify-content: end;
+  justify-content: center;
   width: min(calc(100% - clamp(32px, 5vw, 60px)), 1380px);
   padding-block: clamp(52px, 8vw, 112px) calc(56px + env(safe-area-inset-bottom));
   scroll-margin-top: 62px;
@@ -133,6 +133,7 @@
   font-size: .75rem;
   font-weight: 600;
   line-height: 1.55;
+  text-align: center;
 }
 
 .home-bio-inner h2 {
@@ -146,7 +147,7 @@
 .home-bio-links {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
   padding-top: 12px;
 }
@@ -579,7 +580,6 @@
   .home-bio-inner {
     width: 100%;
     max-width: 52ch;
-    margin-right: auto;
   }
 
   .project-essay-heading,
