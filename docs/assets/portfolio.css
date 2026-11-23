@@ -1,0 +1,402 @@
+/* Portfolio pages share the gallery's dark canvas and use wider editorial grids. */
+:root {
+  --bg: #080909;
+  --ink: #f3f2ef;
+  --muted: #adaeaa;
+  --line: #2c2e2d;
+  --accent: #c6ccd9;
+  --portfolio-width: 1320px;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  height: 64px;
+  background: rgb(8 9 9 / 94%);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(12px);
+}
+
+.site-header .wordmark {
+  font: 600 .89rem/1.2 var(--sans);
+  letter-spacing: .105em;
+}
+
+.site-header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font: 400 .91rem/1.3 var(--sans);
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.site-header a[aria-current="page"] {
+  color: var(--accent);
+}
+
+.portfolio-shell {
+  width: min(100% - 2 * var(--margin), var(--portfolio-width));
+  margin-inline: auto;
+}
+
+.portfolio-masthead {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  align-items: end;
+  gap: 24px;
+  padding-block: clamp(48px, 7vw, 106px) clamp(34px, 4.7vw, 64px);
+}
+
+.portfolio-masthead h1,
+.archive-heading h1 {
+  font-weight: 400;
+  font-size: clamp(3.2rem, 7.9vw, 7.3rem);
+  line-height: .92;
+  letter-spacing: -.075em;
+  text-wrap: balance;
+}
+
+.portfolio-masthead p {
+  width: min(100%, 27ch);
+  justify-self: end;
+  padding-bottom: .12em;
+  font-size: clamp(1rem, 1.65vw, 1.35rem);
+  line-height: 1.42;
+  color: var(--muted);
+  text-wrap: pretty;
+}
+
+.portfolio-projects {
+  scroll-margin-top: 84px;
+}
+
+.section-label {
+  color: var(--accent);
+  font: 500 .82rem/1.4 var(--sans);
+  text-transform: uppercase;
+  letter-spacing: .12em;
+}
+
+.portfolio-projects > .section-label {
+  padding-block: 0 13px;
+}
+
+.portfolio-grid {
+  column-gap: clamp(14px, 2vw, 30px);
+  row-gap: clamp(34px, 5vw, 68px);
+}
+
+.portfolio-grid .work-card-featured {
+  grid-column: 1 / -1;
+}
+
+.portfolio-grid .work-card-image {
+  background: #131614;
+  aspect-ratio: 1.5;
+}
+
+.portfolio-grid .work-card-featured .work-card-image {
+  aspect-ratio: 2.42;
+}
+
+.portfolio-grid .work-card-featured img {
+  object-position: center 34%;
+}
+
+.portfolio-grid .work-card-caption {
+  gap: .8rem;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.portfolio-grid .work-card-title {
+  font-size: clamp(1rem, 1.55vw, 1.25rem);
+}
+
+.portfolio-grid .work-card-featured .work-card-title {
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
+}
+
+.portfolio-grid .work-card-year {
+  color: var(--muted);
+  font: 400 .8rem/1.4 var(--sans);
+  letter-spacing: .02em;
+}
+
+.home-press {
+  margin-top: clamp(75px, 13vw, 175px);
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 17px;
+}
+
+.section-header a,
+.about-row a,
+.archive-page .award-organization,
+.archive-page .project-link:not(.personal-recognition) {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: .2em;
+  text-decoration-color: #777c86;
+}
+
+.section-header a:hover,
+.about-row a:hover {
+  color: var(--ink);
+}
+
+.archive-page,
+.press-page.archive-page {
+  width: min(100% - 2 * var(--margin), 1040px);
+  margin-inline: auto;
+}
+
+.archive-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  align-items: end;
+  column-gap: clamp(24px, 6vw, 100px);
+  row-gap: 28px;
+  padding-block: clamp(75px, 12vw, 150px) clamp(62px, 8vw, 106px);
+}
+
+.archive-heading h1 {
+  font-size: clamp(3.05rem, 7vw, 6.15rem);
+}
+
+.about-heading {
+  align-items: start;
+}
+
+.about-bio {
+  padding-top: clamp(40px, 6.8vw, 86px);
+  color: var(--muted);
+}
+
+.about-bio p + p {
+  margin-top: 1.2rem;
+}
+
+.about-bio .about-lead {
+  color: var(--ink);
+  font-size: clamp(1.15rem, 2.25vw, 1.7rem);
+  line-height: 1.42;
+  letter-spacing: -.015em;
+}
+
+.about-section {
+  display: grid;
+  grid-template-columns: minmax(118px, .78fr) minmax(0, 1.7fr);
+  column-gap: clamp(24px, 5vw, 70px);
+  row-gap: 14px;
+  padding-block: clamp(23px, 4vw, 48px);
+  border-top: 1px solid var(--line);
+}
+
+.about-section h2 {
+  padding-top: .35rem;
+}
+
+.about-row {
+  display: grid;
+  grid-template-columns: minmax(100px, .56fr) minmax(0, 1.44fr);
+  gap: .8rem 1.5rem;
+}
+
+.about-row h3 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.about-row p {
+  margin-top: .35rem;
+  color: var(--muted);
+}
+
+.about-row .about-meta {
+  font-size: .875rem;
+}
+
+.about-actions {
+  display: grid;
+  grid-column: 2;
+  gap: .65rem;
+  justify-items: start;
+}
+
+.press-search {
+  width: min(100%, 340px);
+  justify-self: end;
+}
+
+.press-search label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: .875rem;
+}
+
+.press-search input {
+  width: 100%;
+  min-height: 46px;
+  appearance: none;
+  color: var(--ink);
+  border: 1px solid #5a5e5c;
+  border-radius: 0;
+  background: #101211;
+  font: inherit;
+  padding: .65rem .85rem;
+}
+
+.press-search input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.archive-page .press-group > .section-label {
+  margin-bottom: 12px;
+  color: var(--accent);
+  font: 500 .875rem/1.4 var(--sans);
+  letter-spacing: .095em;
+}
+
+.press-entry.coverage-row {
+  display: grid;
+  grid-template-columns: minmax(105px, .6fr) minmax(0, 2.55fr) minmax(132px, 1.1fr);
+  align-items: baseline;
+  gap: 8px clamp(16px, 3vw, 36px);
+  padding-block: 21px;
+}
+
+.press-entry.coverage-row p {
+  margin-top: 0;
+}
+
+.coverage-row .press-title {
+  font-size: clamp(1rem, 1.55vw, 1.22rem);
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+
+.coverage-row .coverage-date,
+.coverage-row .coverage-publisher {
+  font-size: .875rem;
+  color: var(--muted);
+}
+
+.coverage-row .coverage-date {
+  font-variant-numeric: tabular-nums;
+}
+
+.coverage-row .coverage-story p {
+  margin-top: .4rem;
+  font-size: .96rem;
+}
+
+.press-empty {
+  min-height: 24vh;
+  color: var(--muted);
+}
+
+.project-body .site-header {
+  position: relative;
+}
+
+@media (max-width: 680px) {
+  .site-header {
+    height: 58px;
+  }
+
+  .site-header .wordmark {
+    font-size: .78rem;
+    letter-spacing: .065em;
+  }
+
+  .site-header nav {
+    gap: clamp(10px, 3vw, 18px);
+  }
+
+  .site-header nav a {
+    font-size: .82rem;
+  }
+
+  .portfolio-masthead,
+  .archive-heading,
+  .about-section {
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-masthead {
+    gap: 17px;
+  }
+
+  .portfolio-masthead p,
+  .press-search {
+    justify-self: start;
+  }
+
+  .portfolio-grid .work-card-featured .work-card-image {
+    aspect-ratio: 1.5;
+  }
+
+  .about-bio {
+    padding-top: 2px;
+  }
+
+  .archive-heading {
+    padding-block: clamp(58px, 13vw, 90px) 57px;
+  }
+
+  .about-row {
+    grid-template-columns: minmax(94px, .55fr) minmax(0, 1.45fr);
+  }
+
+  .about-actions {
+    grid-column: 1 / -1;
+  }
+
+  .press-entry.coverage-row {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    row-gap: 7px;
+  }
+
+  .coverage-row .coverage-date {
+    grid-area: 1 / 1;
+  }
+
+  .coverage-row .coverage-publisher {
+    grid-area: 1 / 2;
+    text-align: right;
+  }
+
+  .coverage-row .coverage-story {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 360px) {
+  .site-header {
+    gap: 8px;
+    padding-inline: 13px;
+  }
+}
+
+.about-section .additional-profile-row {
+  grid-column: 2;
+  border-top: 1px solid var(--line);
+  padding-top: 1.15rem;
+  margin-top: .65rem;
+}
+
+@media (max-width: 680px) {
+  .about-section .additional-profile-row {
+    grid-column: 1;
+  }
+}

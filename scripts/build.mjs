@@ -67,19 +67,23 @@ function metadata(project) {
 }
 
 function siteHeader(prefix, home, route) {
-  const workHref = home ? '#work' : prefix + '#work';
-  const awardsCurrent = route === 'awards/' ? ' aria-current="page"' : '';
-  const pressCurrent = route === 'press/' ? ' aria-current="page"' : '';
+  const navigation = [
+    [home ? '#work' : prefix + '#work', 'Projects', ''],
+    [prefix + 'about/', 'About', 'about/'],
+    [prefix + 'awards/', 'Awards', 'awards/'],
+    ...(press.length ? [[prefix + 'press/', 'Press', 'press/']] : []),
+  ];
   return [
     '<header class="site-header">',
-    '  <a class="wordmark" href="' + prefix + '">' + name + '</a>',
+    '  <a class="wordmark" href="' + prefix + '" aria-label="Jiewen Hu home">' + name + '</a>',
     '  <nav class="site-navigation" aria-label="Main navigation">',
-    '    <a href="' + workHref + '">Work</a>',
-    '    <a href="' + prefix + 'awards/"' + awardsCurrent + '>Awards</a>',
-    press.length ? '    <a href="' + prefix + 'press/"' + pressCurrent + '>Press</a>' : '',
+    ...navigation.map(([href, label, path]) => {
+      const current = path && route === path ? ' aria-current="page"' : '';
+      return '    <a href="' + href + '"' + current + '>' + label + '</a>';
+    }),
     '  </nav>',
     '</header>',
-  ].filter(Boolean).join('\n');
+  ].join('\n');
 }
 
 function layout({ body, title, description, prefix, route, socialImage, home = false, gallery = false, notFound = false }) {
@@ -111,6 +115,8 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
     }
   }
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/site.css">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css">');
+  if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (gallery) tags.push('  <script defer src="' + prefix + 'assets/gallery.js"></script>');
   tags.push(
     '</head>',
@@ -124,53 +130,108 @@ function layout({ body, title, description, prefix, route, socialImage, home = f
   return tags.join('\n');
 }
 
-function workCard(project, index) {
-  const firstSlide = project.slides[0];
-  const cover = project.cover || firstSlide.file;
-  const coverAlt = project.coverAlt || firstSlide.alt;
-  const coverUrl = './media/' + localPath(project.slug) + '/' + localPath(cover);
-  const loading = index > 1 ? ' loading="lazy"' : '';
-  const priority = index === 0 ? ' fetchpriority="high"' : '';
+const introduction = 'Landscape design and research on how places hold memory and change over time.';
+
+function projectCover(project) {
+  const slide = project.slides[0];
+  return {
+    src: 'media/' + localPath(project.slug) + '/' + localPath(project.cover || slide.file),
+    alt: project.coverAlt || slide.alt,
+  };
+}
+
+function workCard(project, featured = false) {
+  const cover = projectCover(project);
+  const load = featured ? ' fetchpriority="high"' : ' loading="lazy"';
   return [
-    '<li class="work-card">',
+    '<li class="work-card' + (featured ? ' work-card-featured' : '') + '">',
     '  <a class="work-card-link" href="./work/' + localPath(project.slug) + '/">',
-    '    <span class="work-card-number" aria-hidden="true">' + String(index + 1).padStart(2, '0') + '</span>',
-    '    <span class="work-card-image"><img src="' + coverUrl + '" alt="' + escape(coverAlt) + '" decoding="async"' + loading + priority + '></span>',
+    '    <span class="work-card-image"><img src="./' + cover.src + '" alt="' + escape(cover.alt) + '" decoding="async"' + load + '></span>',
     '    <span class="work-card-caption">',
     '      <span class="work-card-title">' + escape(project.title) + '</span>',
-    project.year ? '      <span class="work-card-year">' + escape(project.year) + '</span>' : '',
+    '      <span class="work-card-year">' + [featured ? project.type : '', project.year].filter(Boolean).map(escape).join(' / ') + '</span>',
     '    </span>',
     '  </a>',
     '</li>',
-  ].filter(Boolean).join('\n');
+  ].join('\n');
 }
 
 function homePage() {
-  const strapline = 'Landscape design, research, and the relationship between place and memory.';
+  const [featured, ...otherProjects] = projects;
+  const cover = projectCover(featured);
   const body = [
     '<main id="main-content" class="portfolio-page">',
-    '  <div class="portfolio-intro">',
-    '    <p class="eyebrow">Landscape architecture</p>',
+    '  <div class="portfolio-masthead portfolio-shell">',
     '    <h1>' + name + '</h1>',
-    '    <p class="portfolio-strapline">' + strapline + '</p>',
+    '    <p>' + introduction + '</p>',
     '  </div>',
-    '  <section class="work-index" id="work" aria-labelledby="work-title">',
-    '    <div class="index-line">',
-    '      <h2 id="work-title">Selected work</h2>',
-    '      <span>' + projects.length + ' projects</span>',
-    '    </div>',
-    '    <ol class="work-grid">',
-    projects.map(workCard).join('\n'),
-    '    </ol>',
+    '  <section class="portfolio-shell portfolio-projects" id="work" aria-labelledby="work-title">',
+    '    <h2 class="section-label" id="work-title">Selected projects</h2>',
+    '    <ul class="work-grid portfolio-grid">',
+    workCard(featured, true),
+    ...otherProjects.map((project) => workCard(project)),
+    '    </ul>',
     '  </section>',
+    ...(press.length ? [
+      '  <section class="portfolio-shell home-press" aria-labelledby="latest-press">',
+      '    <div class="section-header"><h2 class="section-label" id="latest-press">Latest press</h2><a href="./press/">Press archive</a></div>',
+      '    <ul class="press-list">',
+      ...press.slice(0, 4).map((entry) => pressEntry(entry, 'h3', false)),
+      '    </ul>',
+      '  </section>',
+    ] : []),
     '</main>',
   ].join('\n');
   return layout({
     title: name + ' | Landscape Architecture',
-    description: strapline,
+    description: introduction,
     prefix: './',
     route: '',
     home: true,
+    socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
+    body,
+  });
+}
+
+function aboutPage() {
+  const body = [
+    '<main id="main-content" class="portfolio-shell archive-page about-page">',
+    '  <header class="archive-heading about-heading">',
+    '    <h1>About</h1>',
+    '    <div class="about-bio">',
+    '      <p class="about-lead">Jiewen Hu is a landscape designer based in Philadelphia. Her work explores how landscapes hold memory and how ecological repair can support communities.</p>',
+    '      <p>Across landscape design, drawing, and research, her projects examine the relationships between material change, histories of place, and collective stewardship.</p>',
+    '    </div>',
+    '  </header>',
+    '  <section class="about-section" aria-labelledby="practice">',
+    '    <h2 class="section-label" id="practice">Practice</h2>',
+    '    <div class="about-row">',
+    '      <p class="about-meta">Philadelphia, PA</p>',
+    '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer</p><p>Project team member on the <a href="https://theolinstudio.com/projects/la-park-needs-assessment/">Los Angeles Park Needs Assessment</a>.</p></div>',
+    '    </div>',
+    "    <div class=\"about-row additional-profile-row\"><p class=\"about-meta\">Previous experience</p><div><h3>Studio Outside, Jonathan Alderson Landscape Architects, and SWA Group</h3><p>Design practice and an internship at SWA Group.</p></div></div>",
+    '  </section>',
+    '  <section class="about-section" aria-labelledby="education">',
+    '    <h2 class="section-label" id="education">Education</h2>',
+    '    <div class="about-row">',
+    '      <p class="about-meta"><time datetime="2024">2024</time><br>Philadelphia, PA</p>',
+    '      <div><h3><a href="https://www.design.upenn.edu/yes2024/jiewen-hu">University of Pennsylvania</a></h3><p>Master of Landscape Architecture</p><p>Certificate in GIS and Spatial Analysis</p></div>',
+    '    </div>',
+    "    <div class=\"about-row additional-profile-row\"><p class=\"about-meta\">Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
+    '  </section>',
+    '  <section class="about-section" aria-labelledby="recognition">',
+    '    <h2 class="section-label" id="recognition">Recognition</h2>',
+    '    <div class="about-row">',
+    '      <div class="about-actions"><a href="../awards/">Awards and official announcements</a><a href="../press/">Press and publications</a></div>',
+    '    </div>',
+    '  </section>',
+    '</main>',
+  ].join('\n');
+  return layout({
+    title: 'About | ' + name,
+    description: 'Practice and education of Jiewen Hu, a landscape designer based in Philadelphia.',
+    prefix: '../',
+    route: 'about/',
     body,
   });
 }
@@ -349,8 +410,8 @@ function awardsPage() {
     '  </section>',
   ].join('\n'));
   const body = [
-    '<main id="main-content" class="press-page awards-page">',
-    '  <header class="press-intro awards-heading"><h1>Awards</h1></header>',
+    '<main id="main-content" class="press-page archive-page awards-page">',
+    '  <header class="archive-heading"><h1>Awards</h1></header>',
     '  <div class="awards-list">',
     sections.length ? sections.join('\n') : '    <p class="awards-status">No project awards are listed.</p>',
     '  </div>',
@@ -384,44 +445,52 @@ function pressDate(entry) {
   return escape(date);
 }
 
-function pressEntry(entry, heading) {
+function pressEntry(entry, heading, includeDescription = true) {
   const date = pressDate(entry);
   const url = safeUrl(entry.url);
   if (!url) throw new Error('Press entries require a source URL: ' + entry.title);
   return [
-    '      <li class="press-entry">',
-    '        <p class="press-meta">' + [escape(entry.publisher), date].filter(Boolean).join(' / ') + '</p>',
-    '        <' + heading + ' class="press-title"><a href="' + url + '">' + escape(entry.title) + '</a></' + heading + '>',
-    entry.description ? '        <p>' + escape(entry.description) + '</p>' : '',
+    '      <li class="press-entry coverage-row">',
+    '        <p class="coverage-date">' + date + '</p>',
+    '        <div class="coverage-story">',
+    '          <' + heading + ' class="press-title"><a href="' + url + '">' + escape(entry.title) + '</a></' + heading + '>',
+    includeDescription && entry.description ? '          <p>' + escape(entry.description) + '</p>' : '',
+    '        </div>',
+    '        <p class="coverage-publisher">' + escape(entry.publisher) + '</p>',
     '      </li>',
   ].filter(Boolean).join('\n');
 }
 
-function pressGroup(title, entries) {
-  if (!entries.length) return '';
-  return [
-    '  <section class="press-group">',
-    title ? '    <h2 class="eyebrow">' + title + '</h2>' : '',
-    '    <ul class="press-list">',
-    entries.map((entry) => pressEntry(entry, title ? 'h3' : 'h2')).join('\n'),
-    '    </ul>',
-    '  </section>',
-  ].filter(Boolean).join('\n');
-}
-
 function pressPage() {
-  const reporting = press.filter((entry) => entry.kind !== 'Award / exhibition');
-  const otherRecords = press.filter((entry) => entry.kind === 'Award / exhibition');
+  const years = new Map();
+  for (const entry of press) {
+    const year = String(entry.date ?? entry.year ?? 'Undated').slice(0, 4);
+    if (!years.has(year)) years.set(year, []);
+    years.get(year).push(entry);
+  }
   const body = [
-    '<main id="main-content" class="press-page">',
-    '  <header class="press-intro"><h1>Press</h1></header>',
-    pressGroup(otherRecords.length ? 'Coverage' : '', reporting),
-    pressGroup('Other awards &amp; exhibitions', otherRecords),
+    '<main id="main-content" class="press-page archive-page" data-press-index>',
+    '  <header class="archive-heading press-heading">',
+    '    <h1>Press</h1>',
+    '    <div class="press-search" data-press-search hidden>',
+    '      <label for="press-query">Search the archive</label>',
+    '      <input id="press-query" type="search" autocomplete="off" placeholder="Title, publisher, or year">',
+    '    </div>',
+    '  </header>',
+    '  <p class="press-empty" data-press-empty role="status" hidden>No entries match your search.</p>',
+    ...Array.from(years, ([year, entries]) => [
+      '  <section class="press-group" data-press-year aria-labelledby="press-' + escape(year) + '">',
+      '    <h2 class="section-label" id="press-' + escape(year) + '">' + escape(year) + '</h2>',
+      '    <ul class="press-list">',
+      ...entries.map((entry) => pressEntry(entry, 'h3')),
+      '    </ul>',
+      '  </section>',
+    ].join('\n')),
     '</main>',
-  ].filter(Boolean).join('\n');
+  ].join('\n');
   return layout({
     title: 'Press | ' + name,
-    description: 'Publisher and institutional coverage featuring landscape work by ' + name + '.',
+    description: 'Press, publications, and official coverage featuring landscape work by ' + name + '.',
     prefix: '../',
     route: 'press/',
     body,
@@ -429,7 +498,7 @@ function pressPage() {
 }
 
 function sitemap() {
-  const paths = ['', 'awards/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
+  const paths = ['', 'about/', 'awards/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -441,7 +510,6 @@ function sitemap() {
 
 const slugs = new Set();
 const awardsByYear = new Map();
-const awardUrls = new Set();
 
 function addAward(award, project) {
   if (!award.label?.trim() || award.label.trim() === '-') return;
@@ -449,10 +517,6 @@ function addAward(award, project) {
     .find((value) => /^\d{4}$/.test(value)) || 'Undated';
   if (!awardsByYear.has(year)) awardsByYear.set(year, []);
   awardsByYear.get(year).push({ award, project });
-  if (award.url) awardUrls.add(safeUrl(award.url));
-  for (const announcement of award.announcements ?? []) {
-    awardUrls.add(safeUrl(announcement.url));
-  }
 }
 
 for (const project of projects) {
@@ -466,8 +530,8 @@ for (const project of projects) {
   for (const award of project.awards ?? []) addAward(award, project);
 }
 for (const honor of honors) addAward(honor);
-const press = pressRecords.filter((entry) => (
-  entry.kind !== 'Award / exhibition' || !awardUrls.has(safeUrl(entry.url))
+const press = [...pressRecords].sort((a, b) => (
+  String(b.date ?? b.year ?? '').localeCompare(String(a.date ?? a.year ?? ''))
 ));
 
 async function writePage(path, html) {
@@ -478,6 +542,7 @@ async function writePage(path, html) {
 
 await Promise.all([
   writePage('index.html', homePage()),
+  writePage('about/index.html', aboutPage()),
   writePage('awards/index.html', awardsPage()),
   ...(press.length ? [writePage('press/index.html', pressPage())] : []),
   ...projects.map((project) => writePage('work/' + project.slug + '/index.html', projectPage(project))),
@@ -485,4 +550,4 @@ await Promise.all([
   writePage('sitemap.xml', sitemap()),
 ]);
 
-console.log('Built ' + (projects.length + 3 + Number(press.length > 0)) + ' HTML pages and sitemap.');
+console.log('Built ' + (projects.length + 4 + Number(press.length > 0)) + ' HTML pages and sitemap.');
