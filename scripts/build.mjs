@@ -35,12 +35,18 @@ function assetVersion(source) {
   return createHash('sha256').update(source).digest('hex').slice(0, 12);
 }
 
-const [daylightStyles, clockScript] = await Promise.all([
+const [daylightStyles, clockScript, archiveFreshnessScript, aboutStyles, aboutRevealScript] = await Promise.all([
   readVersionSource(join(docs, 'assets', 'daylight.css')),
   readVersionSource(join(docs, 'assets', 'philadelphia-clock.js')),
+  readVersionSource(join(docs, 'assets', 'archive-freshness.js')),
+  readVersionSource(join(docs, 'assets', 'about.css')),
+  readVersionSource(join(docs, 'assets', 'about-reveal.js')),
 ]);
 const daylightStylesVersion = assetVersion(daylightStyles);
 const clockScriptVersion = assetVersion(clockScript);
+const archiveFreshnessVersion = assetVersion(archiveFreshnessScript);
+const aboutStylesVersion = assetVersion(aboutStyles);
+const aboutRevealVersion = assetVersion(aboutRevealScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
 const cvPath = 'files/jiewen-hu-cv.pdf';
 const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
@@ -49,7 +55,8 @@ const sharedArchiveSources = await Promise.all([
   readVersionSource(fileURLToPath(import.meta.url)),
   daylightStyles,
   clockScript,
-  ...['site.css', 'portfolio.css', 'reference-type.css', 'archive-freshness.js', 'press.js']
+  archiveFreshnessScript,
+  ...['site.css', 'portfolio.css', 'reference-type.css', 'press.js']
     .map((file) => readVersionSource(join(docs, 'assets', file))),
 ]);
 
@@ -61,7 +68,12 @@ function archiveVersion(data) {
 
 const archiveVersions = {
   press: archiveVersion(pressRecords),
-  awards: archiveVersion([projects.map(({ slug, title, year, awards }) => ({ slug, title, year, awards })), honors]),
+  awards: archiveVersion([
+    projects.map(({ slug, title, year, awards }) => ({ slug, title, year, awards })),
+    honors,
+    aboutStylesVersion,
+    aboutRevealVersion,
+  ]),
 };
 
 const entities = {
@@ -105,7 +117,6 @@ function siteHeader(prefix, route) {
   const navigation = [
     [prefix, 'Home', ''],
     [prefix + 'projects/', 'Projects', 'projects/'],
-    [prefix + 'awards/', 'Awards', 'awards/'],
     ...(press.length ? [[prefix + 'press/', 'Press', 'press/']] : []),
     [prefix + 'about/', 'About', 'about/'],
   ];
@@ -125,10 +136,11 @@ function siteHeader(prefix, route) {
 
 function layout({ body, title, description, prefix, route, socialImage, fixedTheme, notFound = false }) {
   const home = route === '';
+  const about = route === 'about/';
   const project = route?.startsWith('work/');
   const editorial = home || project || route === 'projects/';
   const themeAttributes = fixedTheme ? ' data-theme="' + fixedTheme + '" data-theme-lock="' + fixedTheme + '"' : '';
-  const archive = route === 'press/' ? 'press' : route === 'awards/' ? 'awards' : '';
+  const archive = route === 'press/' ? 'press' : about ? 'awards' : '';
   const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
   const tags = [
     '<!doctype html>',
@@ -162,7 +174,11 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/reference-type.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
-  tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js"></script>');
+  tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js?v=' + archiveFreshnessVersion + '"></script>');
+  if (about) tags.push(
+    '  <link rel="stylesheet" href="' + prefix + 'assets/about.css?v=' + aboutStylesVersion + '">',
+    '  <script defer src="' + prefix + 'assets/about-reveal.js?v=' + aboutRevealVersion + '"></script>',
+  );
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (editorial) tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/editorial.css?v=' + editorialStylesVersion + '">');
   if (project) tags.push('  <script defer src="' + prefix + 'assets/project-viewer.js"></script>');
@@ -329,41 +345,37 @@ function aboutPage() {
   const body = [
     '<main id="main-content" class="portfolio-shell archive-page about-page">',
     '  <header class="archive-heading about-heading">',
-    '    <h1>About</h1>',
-    '    <div class="about-bio">',
+    '    <h1 data-about-reveal>About</h1>',
+    '    <div class="about-bio" data-about-reveal data-about-reveal-delay="intro">',
     "      <p class=\"about-lead\">Jiewen Hu is an internationally recognized landscape designer and researcher whose work explores cultural landscapes, collective memory, and material expression. She examines how public spaces can give form to complex histories and make room for healing, belonging, and shared experience.</p>",
     "      <p>Based in Philadelphia, Hu is a Landscape Designer II at OLIN. She holds a Master of Landscape Architecture from the University of Pennsylvania and previously worked at Studio Outside and Jonathan Alderson Landscape Architects. She also interned at SWA Group.</p>",
     "      <p>Her honors include a category win at the IFLA Global Landscape Architecture Awards, two ASLA National Student Honor Awards, first place in the ASLA Emerging Professionals Design Competition, and Penn Weitzman’s Faculty Acknowledgement Award for Experimentation and Innovation. Her work has also been recognized by World Landscape Architecture, the Peter Joseph Lenné Prize, and the BLT Built Design Awards.</p>",
     "      <p>Her work has been featured by <em>Landscape Architecture Magazine</em>, ASLA LAND, World Landscape Architecture, Landezine, Penn Weitzman, Archinect, Urbanize LA, and Secret Los Angeles. Her projects have been exhibited in Berlin and during Melbourne Design Week. She was invited to present <em>From Ruins to Roots</em> at the 2025 ASLA Conference on Landscape Architecture.</p>",
+    '      <div class="about-actions"><a href="#awards">Awards &amp; announcements <span aria-hidden="true">↓</span></a><a href="../press/">Press and publications <span aria-hidden="true">↗</span></a></div>',
     '    </div>',
     '  </header>',
     '  <section class="about-section" aria-labelledby="practice">',
-    '    <h2 class="section-label" id="practice">Practice</h2>',
-    '    <div class="about-row">',
+    '    <h2 class="section-label" id="practice" data-about-reveal>Practice</h2>',
+    '    <div class="about-row" data-about-reveal>',
     '      <p class="about-meta">Philadelphia, PA</p>',
     '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer II</p><p>Project team member on the <a href="https://theolinstudio.com/projects/la-park-needs-assessment/">Los Angeles Park Needs Assessment</a>.</p></div>',
     '    </div>',
-    "    <div class=\"about-row additional-profile-row\"><p class=\"about-meta\">Previous experience</p><div><h3>Studio Outside, Jonathan Alderson Landscape Architects, and SWA Group</h3><p>Design practice and an internship at SWA Group.</p></div></div>",
+    "    <div class=\"about-row additional-profile-row\" data-about-reveal><p class=\"about-meta\">Previous experience</p><div><h3>Studio Outside, Jonathan Alderson Landscape Architects, and SWA Group</h3><p>Design practice and an internship at SWA Group.</p></div></div>",
     '  </section>',
     '  <section class="about-section" aria-labelledby="education">',
-    '    <h2 class="section-label" id="education">Education</h2>',
-    '    <div class="about-row">',
+    '    <h2 class="section-label" id="education" data-about-reveal>Education</h2>',
+    '    <div class="about-row" data-about-reveal>',
     '      <p class="about-meta"><time datetime="2024">2024</time><br>Philadelphia, PA</p>',
     '      <div><h3><a href="https://www.design.upenn.edu/yes2024/jiewen-hu">University of Pennsylvania</a></h3><p>Master of Landscape Architecture</p><p>Certificate in GIS and Spatial Analysis</p></div>',
     '    </div>',
-    "    <div class=\"about-row additional-profile-row\"><p class=\"about-meta\">Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
+    "    <div class=\"about-row additional-profile-row\" data-about-reveal><p class=\"about-meta\">Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
     '  </section>',
-    '  <section class="about-section" aria-labelledby="recognition">',
-    '    <h2 class="section-label" id="recognition">Recognition</h2>',
-    '    <div class="about-row">',
-    '      <div class="about-actions"><a href="../awards/">Awards and official announcements</a><a href="../press/">Press and publications</a></div>',
-    '    </div>',
-    '  </section>',
+    aboutAwards(),
     '</main>',
   ].join('\n');
   return layout({
     title: 'About | ' + name,
-    description: 'Practice and education of Jiewen Hu, a landscape designer based in Philadelphia.',
+    description: 'Biography, practice, education, awards, and official announcements for Jiewen Hu, a landscape designer based in Philadelphia.',
     prefix: '../',
     route: 'about/',
     body,
@@ -536,9 +548,9 @@ function awardRow({ award, project }) {
     '<li><a href="' + safeUrl(url) + '">' + escape(label) + ' <span aria-hidden="true">↗</span></a></li>'
   ));
   return [
-    '      <li class="press-entry award-row">',
+    '      <li class="award-row" data-about-reveal>',
     '        <div class="award-details">',
-    '          <h3 class="press-title award-name">' + escape(award.label) + '</h3>',
+    '          <h4 class="award-name">' + escape(award.label) + '</h4>',
     distinction,
     official,
     announcements.length ? '          <ul class="award-announcements">\n' + announcements.join('\n') + '\n          </ul>' : '',
@@ -550,34 +562,52 @@ function awardRow({ award, project }) {
   ].filter(Boolean).join('\n');
 }
 
-function awardsPage() {
+function aboutAwards() {
   const sections = [...awardsByYear.entries()].sort(([a], [b]) => {
     if (a === 'Undated') return 1;
     if (b === 'Undated') return -1;
     return Number(b) - Number(a);
-  }).map(([year, entries]) => [
-    '  <section class="press-group award-year-group" aria-labelledby="awards-' + year + '">',
-    '    <h2 class="eyebrow award-year" id="awards-' + year + '">' + year + '</h2>',
-    '    <ul class="press-list award-entries">',
-    entries.map(awardRow).join('\n'),
-    '    </ul>',
-    '  </section>',
-  ].join('\n'));
-  const body = [
-    '<main id="main-content" class="press-page archive-page awards-page">',
-    '  <header class="archive-heading"><h1>Awards</h1></header>',
-    '  <div class="awards-list">',
-    sections.length ? sections.join('\n') : '    <p class="awards-status">No project awards are listed.</p>',
-    '  </div>',
-    '</main>',
-  ].join('\n');
-  return layout({
-    title: 'Awards | ' + name,
-    description: 'Awards and recognition for landscape architecture projects by ' + name + '.',
-    prefix: '../',
-    route: 'awards/',
-    body,
+  }).map(([year, entries]) => {
+    const yearLabel = year === 'Undated' ? year : '<time datetime="' + year + '">' + year + '</time>';
+    return [
+      '      <section class="about-award-year" aria-labelledby="awards-' + year + '">',
+      '        <h3 class="award-year" id="awards-' + year + '" data-about-reveal>' + yearLabel + '</h3>',
+      '        <ul class="award-entries">',
+      ...entries.map(awardRow),
+      '        </ul>',
+      '      </section>',
+    ].join('\n');
   });
+  return [
+    '  <section class="about-section about-awards" id="recognition" aria-labelledby="awards">',
+    '    <h2 class="section-label" id="awards" data-about-reveal>Awards &amp; Official Announcements</h2>',
+    '    <div class="about-award-years">',
+    sections.length ? sections.join('\n') : '      <p>No awards are listed.</p>',
+    '    </div>',
+    '  </section>',
+  ].join('\n');
+}
+
+function awardsRedirectPage() {
+  return [
+    '<!doctype html>',
+    '<html lang="en">',
+    '<head>',
+    '  <meta charset="utf-8">',
+    '  <meta name="viewport" content="width=device-width, initial-scale=1">',
+    '  <meta name="robots" content="noindex">',
+    '  <link rel="canonical" href="' + new URL('about/', siteUrl).href + '">',
+    '  <title>Awards | ' + name + '</title>',
+    '  <script>',
+    '    const awardYear = /^#awards-(?:[0-9]{4}|Undated)$/.test(location.hash);',
+    '    location.replace("../about/" + (awardYear ? location.hash : "#awards"));',
+    '  </script>',
+    '  <noscript><meta http-equiv="refresh" content="0;url=../about/#awards"></noscript>',
+    '</head>',
+    '<body><p><a href="../about/#awards">Awards &amp; Official Announcements</a></p></body>',
+    '</html>',
+    '',
+  ].join('\n');
 }
 
 function pressDate(entry) {
@@ -652,7 +682,7 @@ function pressPage() {
 }
 
 function sitemap() {
-  const paths = ['', 'projects/', 'about/', 'awards/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
+  const paths = ['', 'projects/', 'about/', ...(press.length ? ['press/'] : []), ...projects.map(({ slug }) => 'work/' + slug + '/')];
   return [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
@@ -698,7 +728,7 @@ await Promise.all([
   writePage('index.html', homePage()),
   writePage('projects/index.html', projectsPage()),
   writePage('about/index.html', aboutPage()),
-  writePage('awards/index.html', awardsPage()),
+  writePage('awards/index.html', awardsRedirectPage()),
   ...(press.length ? [writePage('press/index.html', pressPage())] : []),
   ...projects.map((project) => writePage('work/' + project.slug + '/index.html', projectPage(project))),
   writePage('404.html', notFoundPage()),
