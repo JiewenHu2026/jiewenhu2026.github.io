@@ -18,8 +18,8 @@
 
 .project-body .site-header .wordmark {
   flex: none;
-  font: 500 .6875rem/1.3 var(--sans);
-  letter-spacing: .05em;
+  font-size: .6875rem;
+  line-height: 1.3;
 }
 
 .project-body .site-header nav {

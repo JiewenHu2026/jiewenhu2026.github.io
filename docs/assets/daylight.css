@@ -35,7 +35,10 @@
 }
 
 .site-header .wordmark {
-  text-transform: none;
+  font-family: var(--serif);
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: uppercase;
 }
 
 .site-header a:hover {

@@ -1,5 +1,5 @@
 /* Shared editorial system */
-:root{color-scheme:dark;--bg:#080909;--ink:#efede7;--muted:#aaa9a1;--quiet:#898b81;--line:#343630;--warm:#d4d9be;--margin:clamp(20px,5.25vw,86px);--sans:Arial,Helvetica,sans-serif;--mono:"Courier New",monospace}
+:root{color-scheme:dark;--bg:#080909;--ink:#efede7;--muted:#aaa9a1;--quiet:#898b81;--line:#343630;--warm:#d4d9be;--margin:clamp(20px,5.25vw,86px);--sans:Arial,Helvetica,sans-serif;--serif:Georgia,"Times New Roman",serif;--mono:"Courier New",monospace}
 :root{--white-dot-cursor:url("./cursor-dot-white.svg") 8 8;--black-dot-cursor:url("./cursor-dot.svg") 8 8;--dot-cursor:var(--white-dot-cursor)}
 :root[data-theme="day"]{--dot-cursor:var(--black-dot-cursor)}
 *{box-sizing:border-box}
