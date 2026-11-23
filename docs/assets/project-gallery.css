@@ -487,15 +487,10 @@
 
 #project-info .intro-inner a,
 #project-narrative .story-content a {
-  color: var(--accent, var(--warm));
   overflow-wrap: anywhere;
 }
 
 #project-info .intro-inner a:hover,
-#project-narrative .story-content a:hover {
-  color: var(--ink);
-}
-
 #project-info .enter-project {
   display: flex;
   justify-content: center;
