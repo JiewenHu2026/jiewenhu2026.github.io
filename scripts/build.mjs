@@ -52,6 +52,8 @@ const archiveFreshnessVersion = assetVersion(archiveFreshnessScript);
 const aboutStylesVersion = assetVersion(aboutStyles);
 const aboutRevealVersion = assetVersion(aboutRevealScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
+const projectGalleryStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'project-gallery.css')));
+const galleryScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'gallery.js')));
 const cvPath = 'files/jiewen-hu-cv.pdf';
 const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
@@ -187,10 +189,13 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
   );
   if (route === 'press/') tags.push('  <script defer src="' + prefix + 'assets/press.js"></script>');
   if (editorial) tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/editorial.css?v=' + editorialStylesVersion + '">');
-  if (project) tags.push('  <script defer src="' + prefix + 'assets/project-viewer.js"></script>');
+  if (project) tags.push(
+    '  <link rel="stylesheet" href="' + prefix + 'assets/project-gallery.css?v=' + projectGalleryStylesVersion + '">',
+    '  <script defer src="' + prefix + 'assets/gallery.js?v=' + galleryScriptVersion + '"></script>',
+  );
   tags.push(
     '</head>',
-    '<body' + archiveAttributes + '>',
+    '<body' + (project ? ' class="project-body"' : '') + archiveAttributes + '>',
     '<a class="skip-link" href="#main-content">Skip to content</a>',
     siteHeader(prefix, route),
     body,
@@ -311,7 +316,7 @@ function projectsPage() {
   const body = [
     '<main id="main-content" class="project-index">',
     '  <section class="editorial-shell project-index-selected" aria-labelledby="selected-projects">',
-    '    <header class="project-index-heading"><h1 id="selected-projects">Projects</h1></header>',
+    '    <header class="project-index-heading"><p>Selected</p><h1 id="selected-projects">Projects</h1></header>',
     '    <ul class="selected-projects">',
     ...gallery.map(projectIndexCard),
     '    </ul>',
@@ -346,8 +351,8 @@ function aboutPage() {
     '      <p class="about-lead">Jiewen Hu is an internationally recognized landscape designer and researcher working across cultural landscapes, collective memory, and material expression. She explores how public spaces can give form to complex histories and foster healing, belonging, and shared experience.</p>',
     '      <p>Based in Philadelphia, Jiewen is a Landscape Designer II at OLIN. She holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
     '      <p>Her honors include two ASLA National Student Honor Awards, first place in the ASLA Emerging Professionals Design Competition, and a category win in the professional division of the IFLA Global Landscape Architecture Awards. Her projects have also earned first place in World Landscape Architecture’s Design the World You Want competition, the Karl Foerster Commendation at the Peter Joseph Lenné Prize, and a win in the professional Conceptual Landscape category at the BLT Built Design Awards.</p>',
-    '      <p>Her work has been featured by <em>Landscape Architecture Magazine</em>, ASLA LAND, World Landscape Architecture, Landezine, Penn Weitzman, Archinect, Urbanize LA, and Secret Los Angeles. Her projects have been exhibited in Berlin and Hong Kong, and as part of Melbourne Design Week.</p>',
-    '      <div class="about-actions"><a href="#awards">Recognition <span aria-hidden="true">↓</span></a><a href="../press/">Press and publications <span aria-hidden="true">↗</span></a></div>',
+    '      <p>Her work has been <a href="../press/" aria-label="Press and publications">featured by</a> <em>Landscape Architecture Magazine</em>, ASLA LAND, World Landscape Architecture, Landezine, Penn Weitzman, Archinect, Urbanize LA, and Secret Los Angeles. Her projects have been exhibited in Berlin and Hong Kong, and as part of Melbourne Design Week.</p>',
+    '      <div class="about-actions"><a href="#awards">Recognition <span aria-hidden="true">↓</span></a></div>',
     '    </div>',
     '  </header>',
     '  <section class="about-section" aria-labelledby="education">',
@@ -379,25 +384,50 @@ function aboutPage() {
   });
 }
 
-function projectArt(project, { slide, number }, variant) {
+const leavingTracesImageAnchors = {
+  'signal-valley.webp': 'image-1',
+  'cheslen-preserve.webp': 'image-2',
+  'choreography-study.webp': 'image-3',
+  'sheltering-woodland.webp': 'image-4',
+  'sheltering-woodland-section.webp': 'section-2',
+  'shadowed-ditch.webp': 'image-5',
+  'shadowed-ditch-section.webp': 'section-3',
+  'wax-heat-and-light.webp': 'material-study',
+  'storytelling-center.webp': 'storytelling-center',
+};
+
+function projectDrawing(project, slide, index) {
+  const id = 'slide-' + (index === 0 ? 1 : index + 2);
   const path = '../../' + projectMedia(project, slide.file);
-  const caption = slide.caption || slide.label || slide.alt;
-  const imageLoading = variant === 'hero' ? ' fetchpriority="high"' : ' loading="lazy"';
-  return [
-    '    <figure id="slide-' + number + '" class="project-art project-art-' + variant + '">',
-    '      <a href="' + path + '" data-viewer-image data-viewer-caption="' + escape(caption) + '">',
-    '        <img src="' + path + '" alt="' + escape(slide.alt) + '" decoding="async"' + imageLoading + '>',
-    '      </a>',
-    caption ? '      <figcaption>' + escape(caption) + '</figcaption>' : '',
-    '    </figure>',
-  ].filter(Boolean).join('\n');
+  const label = slide.label || slide.alt;
+  const caption = slide.caption || label;
+  const imageLoading = index === 0 ? ' fetchpriority="high"' : ' loading="lazy"';
+  const aliases = [
+    index === 1 ? 'drawings-title' : '',
+    project.slug === 'leaving-traces' ? leavingTracesImageAnchors[slide.file] : '',
+  ].filter(Boolean).join(' ');
+  const narrative = index === project.slides.length - 1 && project.narrative?.paragraphs?.length
+    ? ' <button type="button" class="narrative-trigger requires-js" data-narrative aria-haspopup="dialog" aria-controls="project-narrative">Read narrative</button>'
+    : '';
+  return {
+    id,
+    label,
+    html: [
+      '    <figure class="drawing-slide" id="' + id + '" data-slide' + (aliases ? ' data-slide-aliases="' + aliases + '"' : '') + '>',
+      '      <a class="drawing-link" href="' + path + '">',
+      '        <img src="' + path + '" alt="' + escape(slide.alt) + '" decoding="async"' + imageLoading + '>',
+      '      </a>',
+      '      <figcaption class="image-caption">' + escape(caption) + narrative + '</figcaption>',
+      '    </figure>',
+    ].join('\n'),
+  };
 }
 
 function detailRow(label, value) {
-  return '      <div><dt>' + escape(label) + '</dt><dd>' + escape(value) + '</dd></div>';
+  return '        <div><dt>' + escape(label) + '</dt><dd>' + escape(value) + '</dd></div>';
 }
 
-function projectDetails(project) {
+function projectInformation(project) {
   const basicDetails = [
     { label: 'Location', value: project.location },
     { label: 'Year', value: project.year },
@@ -412,97 +442,104 @@ function projectDetails(project) {
   });
   const source = safeUrl(project.source);
   return [
-    '  <section class="editorial-shell project-section project-details" aria-labelledby="details-title">',
-    '    <h2 id="details-title">Project details</h2>',
-    '    <div class="project-section-content">',
-    '      <dl class="project-facts">',
+    '      <p class="project-description">' + escape(project.summary) + '</p>',
+    '      <dl class="project-credits">',
     ...[...basicDetails, ...credits].map(({ label, value }) => detailRow(label, value)),
     '      </dl>',
-    awards.length ? '      <ul aria-label="Project recognition" class="project-recognitions">\n' + awards.join('\n') + '\n      </ul>' : '',
-    source ? '      <p class="original-project-link"><a href="' + source + '">Original project page</a></p>' : '',
-    '    </div>',
-    '  </section>',
+    awards.length ? '      <div class="project-awards"><h3>Recognition</h3><ul>\n' + awards.join('\n') + '\n      </ul></div>' : '',
+    source ? '      <p class="dialog-source"><a href="' + source + '">Original project page <span aria-hidden="true">↗</span></a></p>' : '',
   ].filter(Boolean).join('\n');
 }
 
-function projectStatement(project) {
+function projectStorySlide(project) {
   const narrative = project.narrative;
-  return [
-    '  <section class="editorial-shell project-section project-statement" id="story" aria-labelledby="statement-title">',
-    '    <h2 id="statement-title">Project statement</h2>',
-    '    <div class="project-section-content">',
-    paragraphs(project.story?.length ? project.story : [project.summary]),
-    narrative?.paragraphs?.length ? [
-      '      <details class="project-extra-story">',
-      '        <summary>' + escape(narrative.title || 'Read the full narrative') + '</summary>',
-      paragraphs(narrative.paragraphs),
-      '      </details>',
-    ].join('\n') : '',
-    '    </div>',
-    '  </section>',
-  ].filter(Boolean).join('\n');
-}
-
-function detailImages(project) {
-  const [first, ...rest] = project.slides;
-  // Keep deep links from the original sequence: the text was position 2.
-  const drawings = rest.map((slide, index) => ({ slide, number: index + 3 }));
-  const highlights = drawings.filter(({ slide }) => !slide.file.includes('/booklet/')).slice(0, 4);
+  const aliases = 'slide-2 statement-title' + (project.slug === 'leaving-traces' ? ' project-introduction' : '');
   return {
-    lead: { slide: first, number: 1 },
-    highlights,
-    archive: drawings.filter((drawing) => !highlights.includes(drawing)),
+    id: 'story',
+    label: 'Project statement',
+    html: [
+      '    <section class="story-slide" id="story" data-slide data-slide-aliases="' + aliases + '" aria-labelledby="statement-title">',
+      '      <div class="story-content">',
+      '        <h2 id="statement-title">' + escape(project.storyTitle || project.title) + '</h2>',
+      paragraphs(project.story?.length ? project.story : [project.summary]),
+      narrative?.paragraphs?.length ? [
+        '        <details class="story-narrative">',
+        '          <summary>' + escape(narrative.title || 'Read the full narrative') + '</summary>',
+        paragraphs(narrative.paragraphs),
+        '        </details>',
+      ].join('\n') : '',
+      '      </div>',
+      '    </section>',
+    ].filter(Boolean).join('\n'),
   };
 }
 
-function projectViewer() {
+function projectNarrativeDialog(narrative) {
+  if (!narrative?.paragraphs?.length) return '';
   return [
-    '  <dialog class="project-viewer" data-project-viewer aria-labelledby="viewer-caption">',
-    '    <div class="project-viewer-controls">',
-    '      <button type="button" data-viewer-prev aria-label="Previous drawing">Previous</button>',
-    '      <button type="button" data-viewer-next aria-label="Next drawing">Next</button>',
-    '      <button type="button" data-viewer-close>Close</button>',
+    '  <dialog class="narrative-dialog" id="project-narrative" aria-labelledby="narrative-title">',
+    '    <div class="narrative-panel">',
+    '      <form method="dialog" class="info-close"><button type="submit" aria-label="Close narrative">×</button></form>',
+    '      <article class="story-content">',
+    '        <h2 id="narrative-title">' + escape(narrative.title || 'Project narrative') + '</h2>',
+    paragraphs(narrative.paragraphs),
+    '      </article>',
     '    </div>',
-    '    <figure>',
-    '      <img data-viewer-full alt="">',
-    '      <figcaption id="viewer-caption">Drawing</figcaption>',
-    '    </figure>',
     '  </dialog>',
   ].join('\n');
 }
 
 function projectPage(project) {
-  const { lead, highlights, archive } = detailImages(project);
+  const [lead, ...drawings] = project.slides.map((slide, index) => projectDrawing(project, slide, index));
+  const slides = [lead, projectStorySlide(project), ...drawings];
+  const count = String(slides.length).padStart(2, '0');
+  const info = projectInformation(project);
   const cover = projectCover(project);
-  const containLead = ['back-to-roots', 'from-ruins-to-roots'].includes(project.slug);
   const body = [
-    '<main id="main-content" class="project-essay" data-project-story>',
-    '  <div class="editorial-shell project-lead' + (containLead ? ' project-lead-contained' : '') + '">',
-    projectArt(project, lead, 'hero'),
+    '<main id="main-content" class="project-page" data-gallery>',
+    '  <h1 class="sr-only" id="gallery-title" tabindex="-1">' + escape(project.title) + '</h1>',
+    '  <p class="sr-only" data-gallery-status aria-live="polite" aria-atomic="true"></p>',
+    '  <section id="details-title" class="project-info-fallback editorial-shell" aria-labelledby="fallback-info-title">',
+    '    <h2 id="fallback-info-title">' + escape(project.title) + '</h2>',
+    project.subtitle ? '    <p>' + escape(project.subtitle) + '</p>' : '',
+    info,
+    '  </section>',
+    '  <div class="project-slides">',
+    ...slides.map(({ html }) => html),
     '  </div>',
-    '  <header class="editorial-shell project-essay-heading">',
-    '    <div><h1>' + escape(project.title) + '</h1>',
-    project.subtitle ? '    <p class="project-essay-subtitle">' + escape(project.subtitle) + '</p>' : '',
+    '  <nav class="slide-navigation" aria-label="Project slides">',
+    ...slides.map(({ id, label }, index) => (
+      '    <a class="slide-dot" href="#' + id + '" data-slide-link aria-label="Slide ' + (index + 1) + ' of ' +
+      slides.length + ': ' + escape(label) + '"><span aria-hidden="true"></span></a>'
+    )),
+    '  </nav>',
+    '  <footer class="project-footer requires-js">',
+    '    <div class="project-controls" data-gallery-controls>',
+    '      <button type="button" data-prev aria-label="Previous slide"><span aria-hidden="true">←</span></button>',
+    '      <output data-count aria-label="Slide number">01 / ' + count + '</output>',
+    '      <button type="button" data-next aria-label="Next slide"><span aria-hidden="true">→</span></button>',
     '    </div>',
-    '    <p class="project-essay-summary">' + escape(project.summary) + '</p>',
-    '  </header>',
-    projectDetails(project),
-    projectStatement(project),
-    highlights.length ? [
-      '  <div class="editorial-shell project-illustrations">',
-      ...highlights.map((drawing) => projectArt(project, drawing, 'inline')),
-      '  </div>',
-    ].join('\n') : '',
-    archive.length ? [
-      '  <section class="editorial-shell project-drawings" aria-labelledby="drawings-title">',
-      '    <h2 id="drawings-title">Drawings and images</h2>',
-      '    <div class="project-thumbnail-grid">',
-      ...archive.map((drawing) => projectArt(project, drawing, 'thumbnail')),
-      '    </div>',
-      '  </section>',
-    ].join('\n') : '',
-    '  <div class="editorial-shell project-back"><a href="../../projects/">Back to projects</a></div>',
-    projectViewer(),
+    '    <div class="project-caption">',
+    '      <p class="project-caption-title">' + escape(project.title) + '</p>',
+    '      <p class="project-caption-meta">' + escape(project.type) + (project.location ? ' <span class="project-caption-location">· ' + escape(project.location) + '</span>' : '') + '</p>',
+    '      <button class="project-open-drawing" type="button" data-open-drawing aria-haspopup="dialog">Full image</button>',
+    '    </div>',
+    '    <button class="project-info-button" type="button" data-info aria-haspopup="dialog" aria-controls="project-info"><span class="info-label-long">Information</span><span class="info-label-short">Info</span></button>',
+    '  </footer>',
+    '  <dialog id="project-info" class="project-info" aria-labelledby="project-info-title">',
+    '    <div class="intro-panel">',
+    '      <form method="dialog" class="info-close"><button type="submit" aria-label="Close introduction" autofocus>×</button></form>',
+    '      <div class="intro-inner">',
+    '        <div class="intro-heading">',
+    '          <h2 id="project-info-title">' + escape(project.title) + '</h2>',
+    project.subtitle ? '          <p class="project-discipline">' + escape(project.subtitle) + '</p>' : '',
+    '        </div>',
+    info,
+    '        <form method="dialog" class="enter-project"><button type="submit">View project <span aria-hidden="true">↓</span></button></form>',
+    '      </div>',
+    '    </div>',
+    '  </dialog>',
+    projectNarrativeDialog(project.narrative),
     '</main>',
   ].filter(Boolean).join('\n');
   return layout({
@@ -535,26 +572,34 @@ function notFoundPage() {
 
 function awardRow({ award, project }, year) {
   const url = safeUrl(award.url);
-  const summary = award.summary ?? award.distinction;
+  const summary = award.summary ?? award.distinction ?? '';
+  const projectPath = project ? '../work/' + localPath(project.slug) + '/' : '';
+  const linkedTitle = project && [project.title, project.title.split(':')[0]]
+    .find((title) => summary.startsWith(title + ' '));
+  const description = linkedTitle
+    ? '<a class="project-link" href="' + projectPath + '">' + escape(linkedTitle) + '</a>' +
+      escape(summary.slice(linkedTitle.length))
+    : escape(summary);
   const yearLabel = year === 'Undated'
     ? '<span class="about-meta">Undated</span>'
     : '<time class="about-meta" datetime="' + year + '">' + year + '</time>';
   const official = url
     ? '<a class="award-organization" href="' + url + '">' +
-      escape(award.organization || 'Official award page') + ' <span aria-hidden="true">↗</span></a>'
+      escape(award.organization || 'Official award page') + '</a>'
     : award.organization ? '<span class="award-organization">' + escape(award.organization) + '</span>' : '';
   const links = (award.announcements ?? []).map(({ label, url }) => (
-    '              <li><a href="' + safeUrl(url) + '">' + escape(label) + ' <span aria-hidden="true">↗</span></a></li>'
+    '              <li><a href="' + safeUrl(url) + '">' + escape(label) + '</a></li>'
   ));
-  if (project) links.push('              <li><a class="project-link" href="../work/' + localPath(project.slug) +
-    '/" aria-label="View project: ' + escape(project.title) + '">View project <span aria-hidden="true">↗</span></a></li>');
+  if (project && !linkedTitle) {
+    links.push('              <li><a class="project-link" href="' + projectPath + '">' + escape(project.title) + '</a></li>');
+  }
   return [
     '        <li class="about-row award-row" data-about-reveal>',
     '          ' + yearLabel,
     '          <div class="award-details">',
     '            <h3 class="award-name">' + escape(award.headline ?? award.label) + '</h3>',
     official ? '            <p class="award-organizer">' + official + '</p>' : '',
-    summary && summary !== '-' && summary !== award.label ? '            <p class="award-distinction">' + escape(summary) + '</p>' : '',
+    summary && summary !== '-' && summary !== award.label ? '            <p class="award-distinction">' + description + '</p>' : '',
     ...(links.length ? ['            <ul class="award-announcements">', ...links, '            </ul>'] : []),
     '          </div>',
     '        </li>',

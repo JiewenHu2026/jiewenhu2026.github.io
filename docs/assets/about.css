@@ -57,6 +57,14 @@ body {
   letter-spacing: normal;
 }
 
+.about-page .about-bio a {
+  color: var(--accent);
+}
+
+.about-page .about-bio a:hover {
+  color: var(--ink);
+}
+
 .about-page .about-actions {
   display: flex;
   flex-wrap: wrap;

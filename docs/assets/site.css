@@ -1,6 +1,7 @@
 /* Shared editorial system */
 :root{color-scheme:dark;--bg:#080909;--ink:#efede7;--muted:#aaa9a1;--quiet:#898b81;--line:#343630;--warm:#d4d9be;--margin:clamp(20px,5.25vw,86px);--sans:Arial,Helvetica,sans-serif;--mono:"Courier New",monospace}
-:root{--dot-cursor:url("./cursor-dot.svg") 8 8}
+:root{--dot-cursor:url("./cursor-dot-white.svg") 8 8}
+:root[data-theme="day"]{--dot-cursor:url("./cursor-dot.svg") 8 8}
 *{box-sizing:border-box}
 html{background:var(--bg);scroll-behavior:smooth;cursor:var(--dot-cursor),auto}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
