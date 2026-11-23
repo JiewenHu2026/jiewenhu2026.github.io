@@ -35,13 +35,17 @@ function assetVersion(source) {
   return createHash('sha256').update(source).digest('hex').slice(0, 12);
 }
 
-const [daylightStyles, clockScript, archiveFreshnessScript, aboutStyles, aboutRevealScript] = await Promise.all([
+const [siteStyles, portfolioStyles, daylightStyles, clockScript, archiveFreshnessScript, aboutStyles, aboutRevealScript] = await Promise.all([
+  readVersionSource(join(docs, 'assets', 'site.css')),
+  readVersionSource(join(docs, 'assets', 'portfolio.css')),
   readVersionSource(join(docs, 'assets', 'daylight.css')),
   readVersionSource(join(docs, 'assets', 'philadelphia-clock.js')),
   readVersionSource(join(docs, 'assets', 'archive-freshness.js')),
   readVersionSource(join(docs, 'assets', 'about.css')),
   readVersionSource(join(docs, 'assets', 'about-reveal.js')),
 ]);
+const siteStylesVersion = assetVersion(siteStyles);
+const portfolioStylesVersion = assetVersion(portfolioStyles);
 const daylightStylesVersion = assetVersion(daylightStyles);
 const clockScriptVersion = assetVersion(clockScript);
 const archiveFreshnessVersion = assetVersion(archiveFreshnessScript);
@@ -53,10 +57,12 @@ const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
 const sharedArchiveSources = await Promise.all([
   readVersionSource(fileURLToPath(import.meta.url)),
+  siteStyles,
+  portfolioStyles,
   daylightStyles,
   clockScript,
   archiveFreshnessScript,
-  ...['site.css', 'portfolio.css', 'reference-type.css', 'press.js']
+  ...['reference-type.css', 'press.js']
     .map((file) => readVersionSource(join(docs, 'assets', file))),
 ]);
 
@@ -170,8 +176,8 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
       if (socialImage.alt) tags.push('  <meta property="og:image:alt" content="' + escape(socialImage.alt) + '">');
     }
   }
-  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/site.css">');
-  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/site.css?v=' + siteStylesVersion + '">');
+  tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/portfolio.css?v=' + portfolioStylesVersion + '">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/reference-type.css">');
   tags.push('  <link rel="stylesheet" href="' + prefix + 'assets/daylight.css?v=' + daylightStylesVersion + '">');
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js?v=' + archiveFreshnessVersion + '"></script>');
@@ -235,7 +241,6 @@ function reelFrame({ project, src, alt, width, height }) {
     '      <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
     '        <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async" fetchpriority="high">',
     '      </a>',
-    '      <figcaption>' + escape(project.title) + '</figcaption>',
     '    </figure>',
   ].join('\n');
 }
@@ -274,12 +279,13 @@ function homePage() {
   });
 }
 
-function projectIndexCard(project) {
+function projectIndexCard(project, index) {
   const cover = projectCover(project);
+  const loading = index >= 3 ? ' loading="lazy"' : '';
   return [
     '      <li>',
     '        <a class="selected-project-card" href="../work/' + localPath(project.slug) + '/">',
-    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt="' + escape(cover.alt) + '" decoding="async"></span>',
+    '          <span class="selected-project-image"><img src="../' + cover.src + '" alt="' + escape(cover.alt) + '"' + loading + ' decoding="async"></span>',
     '          <span class="selected-project-title">' + escape(project.title) + '</span>',
     '          <span class="selected-project-location">' + escape(project.location) + '</span>',
     '        </a>',
@@ -301,12 +307,13 @@ function projectIndexRow(project) {
 function projectsPage() {
   const featured = featuredSlugs.map((slug) => projects.find((project) => project.slug === slug)).filter(Boolean);
   const entries = [...projects].sort((a, b) => Number(b.year) - Number(a.year));
+  const gallery = [...featured, ...entries.filter(({ slug }) => !featuredSlugs.includes(slug))];
   const body = [
     '<main id="main-content" class="project-index">',
     '  <section class="editorial-shell project-index-selected" aria-labelledby="selected-projects">',
-    '    <header class="project-index-heading"><p>Selected</p><h1 id="selected-projects">Projects</h1></header>',
+    '    <header class="project-index-heading"><h1 id="selected-projects">Projects</h1></header>',
     '    <ul class="selected-projects">',
-    ...featured.map(projectIndexCard),
+    ...gallery.map(projectIndexCard),
     '    </ul>',
     '  </section>',
     '  <section class="editorial-shell project-index-archive" aria-labelledby="project-archive">',
@@ -322,7 +329,7 @@ function projectsPage() {
   ].join('\n');
   return layout({
     title: 'Projects | ' + name,
-    description: 'Selected landscape architecture projects and an archive of work by ' + name + '.',
+    description: 'Landscape architecture projects and the project archive of ' + name + '.',
     prefix: '../',
     route: 'projects/',
     fixedTheme: 'day',

@@ -72,9 +72,6 @@ body {
   min-height: 24px;
   color: var(--accent);
   font: 500 .75rem/1.25rem var(--sans);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: .22em;
 }
 
 .about-page .about-actions a:hover {
@@ -158,14 +155,6 @@ body {
   font: 500 .75rem/1.25rem var(--sans);
 }
 
-.about-page .about-row h3 a {
-  text-decoration: none;
-}
-
-.about-page .about-row h3 a:hover {
-  text-decoration: underline;
-}
-
 .about-page .about-award-years {
   min-width: 0;
 }
@@ -214,14 +203,6 @@ body {
   color: var(--accent);
   font: 500 .75rem/1.25rem var(--sans);
   list-style: none;
-}
-
-.about-page .about-awards a.award-organization,
-.about-page .about-awards .award-announcements a,
-.about-page .about-awards a.project-link {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: .22em;
 }
 
 .about-page .about-awards .project-link {

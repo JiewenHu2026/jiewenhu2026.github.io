@@ -151,9 +151,6 @@
 .archive-page .award-organization,
 .archive-page .project-link:not(.personal-recognition) {
   color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: .2em;
-  text-decoration-color: #777c86;
 }
 
 .section-header a:hover,

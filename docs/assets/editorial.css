@@ -6,12 +6,10 @@
 
 .site-header a[aria-current="location"] {
   color: var(--accent);
-  text-decoration: underline;
-  text-underline-offset: 5px;
 }
 
 .home-reel {
-  --hero-caption-height: 48px;
+  --clock-clearance: 52px;
   background: var(--surface);
   color: var(--ink);
   scroll-margin-top: 62px;
@@ -29,18 +27,8 @@
   display: block;
   width: 100%;
   height: auto;
-  max-height: max(1px, calc(100svh - 62px - var(--hero-caption-height) - env(safe-area-inset-bottom)));
+  max-height: max(1px, calc(100svh - 62px - var(--clock-clearance) - env(safe-area-inset-bottom)));
   object-fit: contain;
-}
-
-.reel-frame figcaption {
-  display: flex;
-  align-items: center;
-  min-height: var(--hero-caption-height);
-  padding-inline: clamp(16px, 4.3vw, 64px);
-  font-size: .75rem;
-  font-weight: 500;
-  letter-spacing: .065em;
 }
 
 .reel-image-link:focus-visible {
@@ -48,16 +36,16 @@
   outline-offset: -3px;
 }
 
-.home-bio,
-.home-press-index {
-  width: min(calc(100% - clamp(32px, 5vw, 60px)), 1380px);
-}
-
 .home-bio {
   display: flex;
   justify-content: end;
-  padding-block: 190px;
+  width: min(calc(100% - clamp(32px, 5vw, 60px)), 1380px);
+  padding-block: clamp(52px, 8vw, 112px) clamp(24px, 4vw, 44px);
   scroll-margin-top: 62px;
+}
+
+.portfolio-home + .site-footer {
+  margin-top: 0;
 }
 
 .home-bio-inner {
@@ -88,17 +76,11 @@
 .project-essay a:not([data-viewer-image]),
 .project-index-table a {
   color: var(--accent);
-  text-decoration: underline;
-  text-decoration-color: var(--control-line);
-  text-underline-offset: .2em;
 }
 
-.home-press-index {
-  margin-top: 0;
-}
-
-.home-press-index .coverage-row {
-  padding-block: 13px;
+:is(.home-bio-links, .project-index-table) a:hover,
+.project-essay a:not([data-viewer-image]):hover {
+  color: var(--ink);
 }
 
 .editorial-shell {
@@ -140,7 +122,7 @@
 .selected-projects {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 30px;
+  gap: clamp(36px, 4vw, 62px) 30px;
   list-style: none;
 }
 
@@ -179,8 +161,7 @@
 }
 
 .selected-project-card:hover .selected-project-title {
-  text-decoration: underline;
-  text-underline-offset: .2em;
+  color: var(--accent);
 }
 
 .project-index-archive {
@@ -454,15 +435,10 @@
 
 @media (max-width: 991px) {
   .home-bio-inner { width: 50%; }
-  .home-bio { padding-block: 145px; }
   .project-essay-summary { padding-top: 75px; }
 }
 
 @media (max-width: 767px) {
-  .home-bio {
-    padding-block: 100px;
-  }
-
   .home-bio-inner {
     width: 100%;
     max-width: 52ch;
@@ -488,6 +464,12 @@
   }
 }
 
+@media (min-width: 560px) and (max-width: 767px) {
+  .selected-projects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 479px) {
   .site-header { padding-inline: 13px; }
 
@@ -495,7 +477,6 @@
     gap: 8px;
   }
 
-  .selected-project-image { aspect-ratio: 4 / 5; }
   .project-essay-heading h1 { font-size: 2rem; }
   .project-index-table thead th:nth-child(1) { width: 31%; }
   .project-index-table thead th:nth-child(2) { width: 34%; }
