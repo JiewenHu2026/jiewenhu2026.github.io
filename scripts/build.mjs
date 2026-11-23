@@ -351,7 +351,7 @@ function aboutPage() {
     '      <p class="about-meta"><time datetime="2024">2024</time><br>Philadelphia, PA</p>',
     '      <div><h3><a href="https://www.design.upenn.edu/yes2024/jiewen-hu">University of Pennsylvania</a></h3><p>Master of Landscape Architecture</p><p>Certificate in GIS and Spatial Analysis</p></div>',
     '    </div>',
-    "    <div class=\"about-row additional-profile-row\" data-about-reveal><p class=\"about-meta\">Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
+    "    <div class=\"about-row additional-profile-row\" data-about-reveal><p class=\"about-meta\"><time datetime=\"2021\">2021</time><br>Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
     '  </section>',
     '  <section class="about-section" aria-labelledby="practice">',
     '    <h2 class="section-label" id="practice" data-about-reveal>Practice</h2>',
