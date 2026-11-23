@@ -32,10 +32,15 @@
   object-fit: contain;
 }
 
+.centered-artwork {
+  display: grid;
+  min-height: min(calc(100vw / 1.2), var(--reel-height));
+  place-items: center;
+}
+
 .centered-artwork .reel-image-link {
-  width: min(100%, calc(var(--reel-height) * 1.2));
+  width: min(100%, 500px, calc(var(--reel-height) * 1.2));
   aspect-ratio: 6 / 5;
-  margin-inline: auto;
 }
 
 .centered-artwork img {

@@ -213,7 +213,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
 
 const introduction = 'Landscape design and research on how places hold memory and change over time.';
 const biography = 'Jiewen Hu is a landscape designer based in Philadelphia. Her work explores how landscapes hold memory and how ecological repair can support communities.';
-const featuredSlugs = ['leaving-traces', 'from-ruins-to-roots', 'ground-in-friction'];
+const featuredSlugs = ['leaving-traces', 'back-to-roots', 'from-ruins-to-roots', 'ground-in-friction'];
 
 function projectMedia(project, file) {
   return 'media/' + localPath(project.slug) + '/' + localPath(file);
