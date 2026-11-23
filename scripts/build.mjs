@@ -203,15 +203,6 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
 const introduction = 'Landscape design and research on how places hold memory and change over time.';
 const biography = 'Jiewen Hu is a landscape designer based in Philadelphia. Her work explores how landscapes hold memory and how ecological repair can support communities.';
 const featuredSlugs = ['leaving-traces', 'from-ruins-to-roots', 'ground-in-friction'];
-const homeReelSequence = [
-  ['leaving-traces', 'signal-valley.webp', '45% 35%'],
-  ['ground-in-friction', 'web/perspective-6.webp', '50% 46%'],
-  ['from-separation-to-ambiguity', 'web/01-perspective-1.webp', '50% 50%'],
-  ['not-quite-order', 'web/perspective.webp', '50% 54%'],
-  ['soil-holds', 'web/04-working-ground.webp', '50% 51%'],
-  ['the-latent-ground', 'perspective.jpg', '50% 50%'],
-  ['leaving-traces', 'sheltering-woodland.webp', '50% 38%'],
-];
 
 function projectMedia(project, file) {
   return 'media/' + localPath(project.slug) + '/' + localPath(file);
@@ -223,20 +214,26 @@ function projectCover(project) {
 }
 
 function homeHeroImage() {
-  for (const [slug, file, position] of homeReelSequence) {
-    const project = projects.find((entry) => entry.slug === slug);
-    const slide = project?.slides.find((entry) => entry.file === file);
-    if (slide) return { project, slide, position };
+  const featured = projects.find(({ slug }) => slug === 'leaving-traces');
+  if (featured) {
+    return {
+      project: featured,
+      src: 'media/home/leaving-traces-hero.jpg',
+      alt: 'An owl in flight over a woodland and wetland at dusk, with a white topographic profile in the foreground.',
+      width: 4000,
+      height: 2588,
+    };
   }
   const [project] = projects;
-  return project && { project, slide: project.slides[0], position: '50% 50%' };
+  return project && { project, ...projectCover(project) };
 }
 
-function reelFrame({ project, slide, position }) {
+function reelFrame({ project, src, alt, width, height }) {
+  const dimensions = width && height ? ' width="' + width + '" height="' + height + '"' : '';
   return [
     '    <figure class="reel-frame">',
     '      <a class="reel-image-link" href="./work/' + localPath(project.slug) + '/" aria-label="View ' + escape(project.title) + '">',
-    '        <img src="./' + projectMedia(project, slide.file) + '" alt="' + escape(slide.alt) + '" decoding="async" style="object-position:' + position + '" fetchpriority="high">',
+    '        <img src="./' + src + '" alt="' + escape(alt) + '"' + dimensions + ' decoding="async" fetchpriority="high">',
     '      </a>',
     '      <figcaption>' + escape(project.title) + '</figcaption>',
     '    </figure>',
@@ -265,14 +262,6 @@ function homePage() {
     '      </p>',
     '    </div>',
     '  </section>',
-    ...(press.length ? [
-      '  <section class="portfolio-shell home-press home-press-index" aria-labelledby="latest-press">',
-      '    <div class="section-header"><h2 class="section-label" id="latest-press">Press</h2><a href="./press/">View all press</a></div>',
-      '    <ul class="press-list">',
-      ...press.slice(0, 10).map((entry) => pressEntry(entry, 'h3', false)),
-      '    </ul>',
-      '  </section>',
-    ] : []),
     '</main>',
   ].filter(Boolean).join('\n');
   return layout({
@@ -280,7 +269,7 @@ function homePage() {
     description: introduction,
     prefix: './',
     route: '',
-    socialImage: lead ? { url: new URL(projectMedia(lead.project, lead.slide.file), siteUrl).href, alt: lead.slide.alt } : undefined,
+    socialImage: lead ? { url: new URL(lead.src, siteUrl).href, alt: lead.alt } : undefined,
     body,
   });
 }
@@ -351,24 +340,24 @@ function aboutPage() {
     '      <p>Based in Philadelphia, Jiewen is a Landscape Designer II at OLIN. She holds a Master of Landscape Architecture from the University of Pennsylvania.</p>',
     '      <p>Her honors include two ASLA National Student Honor Awards, first place in the ASLA Emerging Professionals Design Competition, and a category win in the professional division of the IFLA Global Landscape Architecture Awards. Her projects have also earned first place in World Landscape Architecture’s Design the World You Want competition, the Karl Foerster Commendation at the Peter Joseph Lenné Prize, and a win in the professional Conceptual Landscape category at the BLT Built Design Awards.</p>',
     '      <p>Her work has been featured by <em>Landscape Architecture Magazine</em>, ASLA LAND, World Landscape Architecture, Landezine, Penn Weitzman, Archinect, Urbanize LA, and Secret Los Angeles. Her projects have been exhibited in Berlin and Hong Kong, and as part of Melbourne Design Week.</p>',
-    '      <div class="about-actions"><a href="#awards">Awards &amp; announcements <span aria-hidden="true">↓</span></a><a href="../press/">Press and publications <span aria-hidden="true">↗</span></a></div>',
+    '      <div class="about-actions"><a href="#awards">Recognition <span aria-hidden="true">↓</span></a><a href="../press/">Press and publications <span aria-hidden="true">↗</span></a></div>',
     '    </div>',
     '  </header>',
-    '  <section class="about-section" aria-labelledby="practice">',
-    '    <h2 class="section-label" id="practice" data-about-reveal data-about-reveal-delay="section">Practice</h2>',
-    '    <div class="about-row" data-about-reveal data-about-reveal-delay="section">',
-    '      <p class="about-meta">Philadelphia, PA</p>',
-    '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer II</p></div>',
-    '    </div>',
-    '    <div class="about-row additional-profile-row" data-about-reveal><p class="about-meta">Previous experience</p><div><h3>SWA Group, Studio Outside, and Jonathan Alderson Landscape Architects</h3></div></div>',
-    '  </section>',
     '  <section class="about-section" aria-labelledby="education">',
-    '    <h2 class="section-label" id="education" data-about-reveal>Education</h2>',
-    '    <div class="about-row" data-about-reveal>',
+    '    <h2 class="section-label" id="education" data-about-reveal data-about-reveal-delay="section">Education</h2>',
+    '    <div class="about-row" data-about-reveal data-about-reveal-delay="section">',
     '      <p class="about-meta"><time datetime="2024">2024</time><br>Philadelphia, PA</p>',
     '      <div><h3><a href="https://www.design.upenn.edu/yes2024/jiewen-hu">University of Pennsylvania</a></h3><p>Master of Landscape Architecture</p><p>Certificate in GIS and Spatial Analysis</p></div>',
     '    </div>',
     "    <div class=\"about-row additional-profile-row\" data-about-reveal><p class=\"about-meta\">Hangzhou, China</p><div><h3>Zhejiang University</h3><p>Bachelor’s degree in Landscape Gardening</p></div></div>",
+    '  </section>',
+    '  <section class="about-section" aria-labelledby="practice">',
+    '    <h2 class="section-label" id="practice" data-about-reveal>Practice</h2>',
+    '    <div class="about-row" data-about-reveal>',
+    '      <p class="about-meta">Philadelphia, PA</p>',
+    '      <div><h3><a href="https://theolinstudio.com/jiewen-hu/">OLIN</a></h3><p>Landscape Designer II</p></div>',
+    '    </div>',
+    '    <div class="about-row additional-profile-row" data-about-reveal><p class="about-meta">Previous experience</p><div><h3>SWA Group, Studio Outside, and Jonathan Alderson Landscape Architects</h3></div></div>',
     '  </section>',
     aboutAwards(),
     '</main>',
@@ -537,29 +526,31 @@ function notFoundPage() {
   });
 }
 
-function awardRow({ award, project }) {
+function awardRow({ award, project }, year) {
   const url = safeUrl(award.url);
-  const distinction = award.distinction && award.distinction !== '-' && award.distinction !== award.label
-    ? '<p class="award-distinction">' + escape(award.distinction) + '</p>' : '';
+  const summary = award.summary ?? award.distinction;
+  const yearLabel = year === 'Undated'
+    ? '<span class="about-meta">Undated</span>'
+    : '<time class="about-meta" datetime="' + year + '">' + year + '</time>';
   const official = url
     ? '<a class="award-organization" href="' + url + '">' +
       escape(award.organization || 'Official award page') + ' <span aria-hidden="true">↗</span></a>'
     : award.organization ? '<span class="award-organization">' + escape(award.organization) + '</span>' : '';
-  const announcements = (award.announcements ?? []).map(({ label, url }) => (
-    '<li><a href="' + safeUrl(url) + '">' + escape(label) + ' <span aria-hidden="true">↗</span></a></li>'
+  const links = (award.announcements ?? []).map(({ label, url }) => (
+    '              <li><a href="' + safeUrl(url) + '">' + escape(label) + ' <span aria-hidden="true">↗</span></a></li>'
   ));
+  if (project) links.push('              <li><a class="project-link" href="../work/' + localPath(project.slug) +
+    '/" aria-label="View project: ' + escape(project.title) + '">View project <span aria-hidden="true">↗</span></a></li>');
   return [
-    '      <li class="award-row" data-about-reveal>',
-    '        <div class="award-details">',
-    '          <h4 class="award-name">' + escape(award.label) + '</h4>',
-    distinction,
-    official,
-    announcements.length ? '          <ul class="award-announcements">\n' + announcements.join('\n') + '\n          </ul>' : '',
-    '        </div>',
-    project
-      ? '        <a class="project-link" href="../work/' + localPath(project.slug) + '/">' + escape(project.title) + ' <span aria-hidden="true">↗</span></a>'
-      : '        <span class="project-link personal-recognition">Personal recognition</span>',
-    '      </li>',
+    '        <li class="about-row award-row" data-about-reveal>',
+    '          ' + yearLabel,
+    '          <div class="award-details">',
+    '            <h3 class="award-name">' + escape(award.headline ?? award.label) + '</h3>',
+    official ? '            <p class="award-organizer">' + official + '</p>' : '',
+    summary && summary !== '-' && summary !== award.label ? '            <p class="award-distinction">' + escape(summary) + '</p>' : '',
+    ...(links.length ? ['            <ul class="award-announcements">', ...links, '            </ul>'] : []),
+    '          </div>',
+    '        </li>',
   ].filter(Boolean).join('\n');
 }
 
@@ -568,17 +559,13 @@ function aboutAwards() {
     if (a === 'Undated') return 1;
     if (b === 'Undated') return -1;
     return Number(b) - Number(a);
-  }).map(([year, entries]) => {
-    const yearLabel = year === 'Undated' ? year : '<time datetime="' + year + '">' + year + '</time>';
-    return [
-      '      <section class="about-award-year" aria-labelledby="awards-' + year + '">',
-      '        <h3 class="award-year" id="awards-' + year + '" data-about-reveal>' + yearLabel + '</h3>',
-      '        <ul class="award-entries">',
-      ...entries.map(awardRow),
-      '        </ul>',
-      '      </section>',
-    ].join('\n');
-  });
+  }).map(([year, entries]) => [
+    '    <section class="about-award-year" id="awards-' + year + '" aria-label="' + year + ' recognition">',
+    '      <ul class="award-entries">',
+    ...entries.map((entry) => awardRow(entry, year)),
+    '      </ul>',
+    '    </section>',
+  ].join('\n'));
   return [
     '  <section class="about-section about-awards" id="recognition" aria-labelledby="awards">',
     '    <h2 class="section-label" id="awards" data-about-reveal>Recognition</h2>',
@@ -630,7 +617,7 @@ function pressDate(entry) {
   return escape(date);
 }
 
-function pressEntry(entry, heading, includeDescription = true) {
+function pressEntry(entry) {
   const date = pressDate(entry);
   const url = safeUrl(entry.url);
   if (!url) throw new Error('Press entries require a source URL: ' + entry.title);
@@ -638,8 +625,8 @@ function pressEntry(entry, heading, includeDescription = true) {
     '      <li class="press-entry coverage-row">',
     '        <p class="coverage-date">' + date + '</p>',
     '        <div class="coverage-story">',
-    '          <' + heading + ' class="press-title"><a href="' + url + '">' + escape(entry.title) + '</a></' + heading + '>',
-    includeDescription && entry.description ? '          <p>' + escape(entry.description) + '</p>' : '',
+    '          <h3 class="press-title"><a href="' + url + '">' + escape(entry.title) + '</a></h3>',
+    entry.description ? '          <p>' + escape(entry.description) + '</p>' : '',
     '        </div>',
     '        <p class="coverage-publisher">' + escape(entry.publisher) + '</p>',
     '      </li>',
@@ -667,7 +654,7 @@ function pressPage() {
       '  <section class="press-group" data-press-year aria-labelledby="press-' + escape(year) + '">',
       '    <h2 class="section-label" id="press-' + escape(year) + '">' + escape(year) + '</h2>',
       '    <ul class="press-list">',
-      ...entries.map((entry) => pressEntry(entry, 'h3')),
+      ...entries.map(pressEntry),
       '    </ul>',
       '  </section>',
     ].join('\n')),
