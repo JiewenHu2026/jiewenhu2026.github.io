@@ -252,7 +252,7 @@
 
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
   .selected-projects > :nth-child(-n + 3) {
-    --first-row-caption-offset: 14px;
+    --first-row-caption-offset: 22px;
   }
 
   .selected-project-card {
@@ -304,7 +304,7 @@
   .selected-projects { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
   .selected-projects > :nth-child(4) {
-    --first-row-caption-offset: 14px;
+    --first-row-caption-offset: 22px;
   }
 }
 
