@@ -358,6 +358,13 @@
   color: var(--ink);
 }
 
+.contact-page .philadelphia-clock {
+  position: static;
+  margin-block-start: 36px;
+  max-width: none;
+  text-align: inherit;
+}
+
 .project-lead {
   margin-top: clamp(64px, 8vw, 116px);
 }

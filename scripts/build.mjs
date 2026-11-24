@@ -151,6 +151,15 @@ function siteHeader(prefix, route) {
   ].join('\n');
 }
 
+function philadelphiaClock(indent = '') {
+  return [
+    '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
+    '  <p>Philadelphia · <time id="philadelphia-clock-time"></time></p>',
+    '  <p>The site follows the city’s daylight.</p>',
+    '</aside>',
+  ].map((line) => indent + line).join('\n');
+}
+
 function layout({ body, title, description, prefix, route, socialImage, notFound = false }) {
   const home = route === '';
   const about = route === 'about/';
@@ -211,12 +220,7 @@ function layout({ body, title, description, prefix, route, socialImage, notFound
     siteHeader(prefix, route),
     body,
   );
-  if (home || projectIndex) tags.push(
-    '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
-    '  <p>Philadelphia · <time id="philadelphia-clock-time"></time></p>',
-    '  <p>The site follows the city’s daylight.</p>',
-    '</aside>'
-  );
+  if (home || projectIndex) tags.push(philadelphiaClock());
   tags.push('</body>', '</html>', '');
   return tags.join('\n');
 }
@@ -733,6 +737,7 @@ function contactPage() {
     '    <div><dt>Instagram</dt><dd><a href="' + safeUrl('https://www.instagram.com/' + instagram + '/') + '">@' + escape(instagram) + '</a></dd></div>',
     '    <div><dt>LinkedIn</dt><dd><a href="' + linkedIn + '">' + name + '</a></dd></div>',
     '  </dl>',
+    philadelphiaClock('  '),
     '</main>',
   ].join('\n');
   return layout({
