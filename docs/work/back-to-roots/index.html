@@ -21,9 +21,12 @@
   <link rel="stylesheet" href="../../assets/daylight.css?v=ba78f730f37f">
   <script defer src="../../assets/archive-freshness.js?v=7875fafa3340"></script>
   <script defer src="../../assets/image-cursor.js?v=63b57ab210dd"></script>
-  <link rel="stylesheet" href="../../assets/editorial.css?v=70b7c9b77b63">
+  <link rel="stylesheet" href="../../assets/editorial.css?v=07eaf548b2ab">
   <link rel="stylesheet" href="../../assets/project-gallery.css?v=0d9434b0296b">
-  <script defer src="../../assets/gallery.js?v=1a7a2291489a"></script>
+  <script defer src="../../assets/gallery.js?v=60e9336890c8"></script>
+  <link rel="stylesheet" href="../../assets/comic-reader.css?v=f0202b258042">
+  <script defer src="../../assets/vendor/page-flip-2.0.7.browser.js"></script>
+  <script defer src="../../assets/comic-reader.js?v=e9a9a9c63caf"></script>
 </head>
 <body class="project-body">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -50,12 +53,21 @@
       </dl>
   </section>
   <div class="project-slides">
-    <figure class="drawing-slide" id="slide-1" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread5.jpg">
-        <img src="../../media/back-to-roots/comic-spread5.jpg" alt="Four forest panels in green, tan, red, and cream with a poem and a bird in flight" decoding="async" fetchpriority="high">
-      </a>
-      <figcaption class="image-caption">Cover</figcaption>
-    </figure>
+    <section class="project-book-slide" id="project-book" data-slide data-project-book data-book-title="Back to Roots" data-slide-aliases="slide-1 slide-3 slide-4 slide-5 slide-6 slide-7 slide-8 slide-9 slide-10 drawings-title" aria-labelledby="project-book-title">
+      <h2 class="sr-only" id="project-book-title">Graphic novel</h2>
+      <div data-book-reader></div>
+      <ol class="project-book-pages" data-book-pages>
+        <li><a href="../../media/back-to-roots/comic-cover.jpg" data-book-kind="cover" data-book-width="2063" data-book-height="3225" data-book-alt="Back to Roots cover">Cover</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread1.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 1: Osceola remembers his grandmother and stories of displacement">Two Generations</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread2.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 2: archival collage and an imagined elder reflect on removal, boarding schools, and land and water">Land and Memory</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread3.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 3: Osceola at ages five and ninety-two, with a map of Lake Okeechobee">Back to Roots</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread4.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 4: Osceola and landscape architect Allison discuss the preserve and plant gardens">The Preserve</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread5.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 5: four forest scenes trace flooding, tree death, loss, and renewal">Landscape in Time</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread6.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 6: an imagined expansion toward Miccosukee lands and a question about economic consequences">Expansion</a></li>
+        <li><a href="../../media/back-to-roots/comic-spread7.jpg" data-book-kind="spread" data-book-width="4125" data-book-height="3225" data-book-alt="Spread 7: preserve plan with memorial, plant and medicine wheel gardens and visitor center">Appendix</a></li>
+        <li><a href="../../media/back-to-roots/comic-backcover.jpg" data-book-kind="backcover" data-book-width="2063" data-book-height="3225" data-book-alt="Back to Roots back cover">Back cover</a></li>
+      </ol>
+    </section>
     <section class="story-slide" id="story" data-slide data-slide-aliases="slide-2 statement-title" aria-labelledby="statement-title">
       <div class="story-content">
         <h2 id="statement-title">Back to Roots</h2>
@@ -65,70 +77,14 @@
 <p>Through collage, dialogue, maps, and successive landscape scenes, the book makes time part of the design. Its final chapter extends the imagined initiative into landscapes shaped by sugarcane cultivation, while leaving its economic consequences unresolved. Back to Roots asks how cultural continuity might be sustained within a changing landscape, and what responsibilities arise when remembrance becomes a continuing practice of care.</p>
       </div>
     </section>
-    <figure class="drawing-slide" id="slide-3" data-slide data-slide-aliases="drawings-title">
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread1.jpg">
-        <img src="../../media/back-to-roots/comic-spread1.jpg" alt="Spread 1: Osceola remembers his grandmother and stories of displacement" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Two Generations</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-4" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread2.jpg">
-        <img src="../../media/back-to-roots/comic-spread2.jpg" alt="Spread 2: archival collage and an imagined elder reflect on removal, boarding schools, and land and water" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Land and Memory</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-5" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread3.jpg">
-        <img src="../../media/back-to-roots/comic-spread3.jpg" alt="Spread 3: Osceola at ages five and ninety-two, with a map of Lake Okeechobee" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Back to Roots</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-6" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread4.jpg">
-        <img src="../../media/back-to-roots/comic-spread4.jpg" alt="Spread 4: Osceola and landscape architect Allison discuss the preserve and plant gardens" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">The Preserve</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-7" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread5.jpg">
-        <img src="../../media/back-to-roots/comic-spread5.jpg" alt="Spread 5: four forest scenes trace flooding, tree death, loss, and renewal" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Landscape in Time</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-8" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread6.jpg">
-        <img src="../../media/back-to-roots/comic-spread6.jpg" alt="Spread 6: an imagined expansion toward Miccosukee lands and a question about economic consequences" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Expansion</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-9" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-spread7.jpg">
-        <img src="../../media/back-to-roots/comic-spread7.jpg" alt="Spread 7: preserve plan with memorial, plant and medicine wheel gardens and visitor center" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Appendix</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-10" data-slide>
-      <a class="drawing-link" href="../../media/back-to-roots/comic-backcover.jpg">
-        <img src="../../media/back-to-roots/comic-backcover.jpg" alt="Back to Roots back cover" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Back cover</figcaption>
-    </figure>
     <div class="gallery-arrows requires-js" data-gallery-arrows role="group" aria-label="Slide controls">
       <button type="button" data-prev aria-label="Previous slide"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m11 3-7 7 7 7"/></svg></button>
       <button type="button" data-next aria-label="Next slide"><svg viewBox="0 0 16 20" aria-hidden="true"><path d="m5 3 7 7-7 7"/></svg></button>
     </div>
   </div>
   <nav class="slide-navigation" aria-label="Project slides">
-    <a class="slide-dot" href="#slide-1" data-slide-link aria-label="Slide 1 of 10: Cover"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#story" data-slide-link aria-label="Slide 2 of 10: Project statement"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-3" data-slide-link aria-label="Slide 3 of 10: Two Generations"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-4" data-slide-link aria-label="Slide 4 of 10: Land and Memory"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-5" data-slide-link aria-label="Slide 5 of 10: Back to Roots"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-6" data-slide-link aria-label="Slide 6 of 10: The Preserve"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-7" data-slide-link aria-label="Slide 7 of 10: Landscape in Time"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-8" data-slide-link aria-label="Slide 8 of 10: Expansion"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-9" data-slide-link aria-label="Slide 9 of 10: Appendix"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-10" data-slide-link aria-label="Slide 10 of 10: Back cover"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#project-book" data-slide-link aria-label="Slide 1 of 2: Graphic novel"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#story" data-slide-link aria-label="Slide 2 of 2: Project statement"><span aria-hidden="true"></span></a>
   </nav>
   <footer class="project-footer requires-js">
     <div class="project-caption">

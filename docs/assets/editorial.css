@@ -260,6 +260,8 @@
     aspect-ratio: auto;
     background: transparent;
     opacity: 0;
+    /* Move only the preview; the text and grid keep their existing positions. */
+    transform: translateY(var(--project-preview-offset-y, 0px));
   }
 
   .selected-project-image img {
@@ -321,8 +323,12 @@
 }
 
 .contact-page {
-  min-height: 64svh;
-  padding-block: clamp(74px, 13vh, 146px) 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-block-size: calc(100svh - var(--site-header-height));
+  padding-block: clamp(24px, 5svh, 64px);
   text-align: center;
 }
 

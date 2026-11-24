@@ -43,6 +43,12 @@
   const clamp = index => Math.max(0, Math.min(index, slides.length - 1));
   let active = -1;
   let suppressClickUntil = 0;
+  const bookTarget = target => target instanceof Element && target.closest('[data-project-book]');
+  const zoomed = () => window.visualViewport && window.visualViewport.scale > 1.01;
+
+  function updateTouchAction() {
+    viewport.style.touchAction = zoomed() || bookTarget(slides[active]) ? 'auto' : 'pinch-zoom';
+  }
 
   function focusSafely(preferred) {
     const target = preferred?.isConnected && !preferred.closest('[hidden], [inert]') && !preferred.disabled
@@ -50,7 +56,7 @@
     target.focus({ preventScroll: true });
   }
   function positionArrows() {
-    if (!arrows) return;
+    if (!arrows || arrows.hidden) return;
     const image = slides[active]?.querySelector('img');
     if (!image?.naturalWidth) {
       for (const property of ['--previous-x', '--next-x', '--arrow-y']) arrows.style.removeProperty(property);
@@ -82,6 +88,8 @@
         else slide.setAttribute('aria-hidden', 'true');
       });
       active = next;
+      if (arrows) arrows.hidden = Boolean(bookTarget(slides[active]));
+      updateTouchAction();
       if (previousButton) previousButton.disabled = active === 0;
       if (nextButton) nextButton.disabled = active === slides.length - 1;
       positionArrows();
@@ -183,13 +191,13 @@
     return null;
   }
   viewport.addEventListener('click', event => {
-    if (performance.now() < suppressClickUntil) {
+    if (!bookTarget(event.target) && performance.now() < suppressClickUntil) {
       event.preventDefault();
       event.stopImmediatePropagation();
     }
   }, true);
   viewport.addEventListener('click', event => {
-    if (event.defaultPrevented || event.button !== 0 || modified(event) || blocked()) return;
+    if (event.defaultPrevented || event.button !== 0 || modified(event) || blocked() || bookTarget(event.target)) return;
     const target = event.target instanceof Element ? event.target : event.target.parentElement;
     if (target.closest('button, input, textarea, select, summary, details, [contenteditable="true"]')) return;
     const link = target.closest('a');
@@ -206,6 +214,7 @@
   document.addEventListener('keydown', event => {
     if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || blocked()) return;
     const target = event.target;
+    if (bookTarget(target)) return;
     if (target.closest?.('input, textarea, select, [contenteditable="true"]')) return;
     if (event.key === ' ' && target.closest?.('button, a, summary')) return;
     const focusedDot = target.closest?.('[data-slide-link]');
@@ -232,7 +241,7 @@
   let wheelConsumed = false;
   let wheelIdle = 0;
   viewport.addEventListener('wheel', event => {
-    if (blocked() || event.ctrlKey || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (blocked() || event.ctrlKey || bookTarget(event.target) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
     clearTimeout(wheelIdle);
     wheelIdle = setTimeout(() => { wheelDistance = 0; wheelDirection = 0; wheelConsumed = false; }, 240);
     if (scrollable(event.target, event.deltaY)) { wheelConsumed = true; return; }
@@ -248,12 +257,9 @@
   }, { passive: false });
 
   let touch = null;
-  const zoomed = () => window.visualViewport && window.visualViewport.scale > 1.01;
-  function updateTouchAction() { viewport.style.touchAction = zoomed() ? 'auto' : 'pinch-zoom'; }
-  updateTouchAction();
   window.visualViewport?.addEventListener('resize', updateTouchAction);
   viewport.addEventListener('touchstart', event => {
-    if (blocked() || event.touches.length !== 1 || zoomed()) { touch = null; return; }
+    if (blocked() || event.touches.length !== 1 || zoomed() || bookTarget(event.target)) { touch = null; return; }
     const point = event.touches[0];
     touch = { x: point.clientX, y: point.clientY, lastX: point.clientX, lastY: point.clientY, target: event.target, scrolled: false };
   }, { passive: true });

@@ -460,6 +460,12 @@
   },
   {
     "slug": "from-ruins-to-roots",
+    "book": {
+      "label": "Project booklet",
+      "front": "web/booklet/cover.webp",
+      "back": "web/booklet/back-cover.webp",
+      "pageWidth": 2400, "spreadWidth": 4800, "height": 2400
+    },
     "coverSize": { "width": 800, "height": 1000 },
     "title": "From Ruins to Roots",
     "year": 2025,
@@ -1047,6 +1053,14 @@
   },
   {
     "slug": "back-to-roots",
+    "cover": "comic-spread5.jpg",
+    "coverAlt": "Four forest panels in green, tan, red, and cream with a poem and a bird in flight",
+    "book": {
+      "label": "Graphic novel",
+      "front": "comic-cover.jpg",
+      "back": "comic-backcover.jpg",
+      "pageWidth": 2063, "spreadWidth": 4125, "height": 3225
+    },
     "coverSize": { "width": 4125, "height": 3225 },
     "title": "Back to Roots",
     "year": 2024,
@@ -1068,8 +1082,8 @@
     ],
     "slides": [
       {
-        "file": "comic-spread5.jpg",
-        "alt": "Four forest panels in green, tan, red, and cream with a poem and a bird in flight",
+        "file": "comic-cover.jpg",
+        "alt": "Back to Roots cover",
         "caption": "Cover",
         "label": "Cover"
       },

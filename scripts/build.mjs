@@ -56,8 +56,11 @@ const pressScriptVersion = assetVersion(pressScript);
 const editorialStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'editorial.css')));
 const projectGalleryStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'project-gallery.css')));
 const galleryScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'gallery.js')));
+const comicStylesVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'comic-reader.css')));
+const comicScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'comic-reader.js')));
 const imageCursorScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'image-cursor.js')));
 const homeIndexScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'home-index.js')));
+const projectsPreviewScriptVersion = assetVersion(await readVersionSource(join(docs, 'assets', 'projects-preview.js')));
 const cvPath = 'files/jiewen-hu-cv.pdf';
 const cvVersion = assetVersion(await readFile(join(docs, cvPath)));
 
@@ -160,7 +163,7 @@ function philadelphiaClock(indent = '') {
   ].map((line) => indent + line).join('\n');
 }
 
-function layout({ body, title, description, prefix, route, socialImage, notFound = false }) {
+function layout({ body, title, description, prefix, route, socialImage, hasBook = false, notFound = false }) {
   const home = route === '';
   const about = route === 'about/';
   const project = route?.startsWith('work/');
@@ -203,6 +206,7 @@ function layout({ body, title, description, prefix, route, socialImage, notFound
   tags.push('  <script defer src="' + prefix + 'assets/archive-freshness.js?v=' + archiveFreshnessVersion + '"></script>');
   tags.push('  <script defer src="' + prefix + 'assets/image-cursor.js?v=' + imageCursorScriptVersion + '"></script>');
   if (home) tags.push('  <script defer src="' + prefix + 'assets/home-index.js?v=' + homeIndexScriptVersion + '"></script>');
+  if (projectIndex) tags.push('  <script defer src="' + prefix + 'assets/projects-preview.js?v=' + projectsPreviewScriptVersion + '"></script>');
   if (about) tags.push(
     '  <link rel="stylesheet" href="' + prefix + 'assets/about.css?v=' + aboutStylesVersion + '">',
     '  <script defer src="' + prefix + 'assets/about-reveal.js?v=' + aboutRevealVersion + '"></script>',
@@ -212,6 +216,11 @@ function layout({ body, title, description, prefix, route, socialImage, notFound
   if (project) tags.push(
     '  <link rel="stylesheet" href="' + prefix + 'assets/project-gallery.css?v=' + projectGalleryStylesVersion + '">',
     '  <script defer src="' + prefix + 'assets/gallery.js?v=' + galleryScriptVersion + '"></script>',
+  );
+  if (hasBook) tags.push(
+    '  <link rel="stylesheet" href="' + prefix + 'assets/comic-reader.css?v=' + comicStylesVersion + '">',
+    '  <script defer src="' + prefix + 'assets/vendor/page-flip-2.0.7.browser.js"></script>',
+    '  <script defer src="' + prefix + 'assets/comic-reader.js?v=' + comicScriptVersion + '"></script>',
   );
   tags.push(
     '</head>',
@@ -479,8 +488,38 @@ function projectNarrativeDialog(narrative) {
   ].join('\n');
 }
 
+function projectBookSlide(project, drawings) {
+  const { book } = project;
+  const start = project.slides.findIndex(({ file }) => file === book.front);
+  const end = project.slides.findIndex(({ file }) => file === book.back);
+  if (start < 0 || end <= start) throw new Error('Invalid book page order for ' + project.slug);
+  const pages = project.slides.slice(start, end + 1);
+  const aliases = drawings.slice(start, end + 1).map(({ id }) => id);
+  if (start <= 1 && end >= 1) aliases.push('drawings-title');
+  const slide = {
+    id: 'project-book',
+    label: book.label,
+    html: [
+      '    <section class="project-book-slide" id="project-book" data-slide data-project-book data-book-title="' + escape(project.title) + '" data-slide-aliases="' + aliases.join(' ') + '" aria-labelledby="project-book-title">',
+      '      <h2 class="sr-only" id="project-book-title">' + escape(book.label) + '</h2>',
+      '      <div data-book-reader></div>',
+      '      <ol class="project-book-pages" data-book-pages>',
+      ...pages.map(({ file, label, alt }, index) => {
+        const kind = index === 0 ? 'cover' : index === pages.length - 1 ? 'backcover' : 'spread';
+        const width = kind === 'spread' ? book.spreadWidth : book.pageWidth;
+        return '        <li><a href="../../' + projectMedia(project, file) + '" data-book-kind="' + kind +
+          '" data-book-width="' + width + '" data-book-height="' + book.height + '" data-book-alt="' + escape(alt) + '">' + escape(label || alt) + '</a></li>';
+      }),
+      '      </ol>',
+      '    </section>',
+    ].join('\n'),
+  };
+  return [slide, ...drawings.slice(0, start), ...drawings.slice(end + 1)];
+}
+
 function projectPage(project) {
-  const [lead, ...drawings] = project.slides.map((slide, index) => projectDrawing(project, slide, index));
+  const illustrations = project.slides.map((slide, index) => projectDrawing(project, slide, index));
+  const [lead, ...drawings] = project.book ? projectBookSlide(project, illustrations) : illustrations;
   const slides = [lead, projectStorySlide(project), ...drawings];
   const info = projectInformation(project);
   const cover = projectCover(project);
@@ -534,6 +573,7 @@ function projectPage(project) {
     prefix: '../../',
     route: 'work/' + project.slug + '/',
     socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
+    hasBook: Boolean(project.book),
     body,
   });
 }

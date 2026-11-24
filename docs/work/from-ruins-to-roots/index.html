@@ -21,9 +21,12 @@
   <link rel="stylesheet" href="../../assets/daylight.css?v=ba78f730f37f">
   <script defer src="../../assets/archive-freshness.js?v=7875fafa3340"></script>
   <script defer src="../../assets/image-cursor.js?v=63b57ab210dd"></script>
-  <link rel="stylesheet" href="../../assets/editorial.css?v=70b7c9b77b63">
+  <link rel="stylesheet" href="../../assets/editorial.css?v=07eaf548b2ab">
   <link rel="stylesheet" href="../../assets/project-gallery.css?v=0d9434b0296b">
-  <script defer src="../../assets/gallery.js?v=1a7a2291489a"></script>
+  <script defer src="../../assets/gallery.js?v=60e9336890c8"></script>
+  <link rel="stylesheet" href="../../assets/comic-reader.css?v=f0202b258042">
+  <script defer src="../../assets/vendor/page-flip-2.0.7.browser.js"></script>
+  <script defer src="../../assets/comic-reader.js?v=e9a9a9c63caf"></script>
 </head>
 <body class="project-body">
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -57,11 +60,32 @@
       </ul></div>
   </section>
   <div class="project-slides">
-    <figure class="drawing-slide" id="slide-1" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/concept-materiality.webp">
-        <img src="../../media/from-ruins-to-roots/web/concept-materiality.webp" alt="Material palette and collage studies exploring the reuse of war debris in From Ruins to Roots" decoding="async" fetchpriority="high">
-      </a>
-    </figure>
+    <section class="project-book-slide" id="project-book" data-slide data-project-book data-book-title="From Ruins to Roots" data-slide-aliases="slide-3 slide-4 slide-5 slide-6 slide-7 slide-8 slide-9 slide-10 slide-11 slide-12 slide-13 slide-14 slide-15 slide-16 slide-17 slide-18 slide-19 slide-20 slide-21 slide-22 drawings-title" aria-labelledby="project-book-title">
+      <h2 class="sr-only" id="project-book-title">Project booklet</h2>
+      <div data-book-reader></div>
+      <ol class="project-book-pages" data-book-pages>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/cover.webp" data-book-kind="cover" data-book-width="2400" data-book-height="2400" data-book-alt="From Ruins to Roots booklet cover">Cover</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-01.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 2 and 3">Pages 2–3</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-02.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 4 and 5">Pages 4–5</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-03.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 6 and 7">Pages 6–7</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-04.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 8 and 9">Pages 8–9</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-05.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 10 and 11">Pages 10–11</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-06.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 12 and 13">Pages 12–13</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-07.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 14 and 15">Pages 14–15</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-08.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 16 and 17">Pages 16–17</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-09.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 18 and 19">Pages 18–19</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-10.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 20 and 21">Pages 20–21</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-11.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 22 and 23">Pages 22–23</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-12.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 24 and 25">Pages 24–25</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-13.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 26 and 27">Pages 26–27</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-14.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 28 and 29">Pages 28–29</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-15.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 30 and 31">Pages 30–31</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-16.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 32 and 33">Pages 32–33</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-17.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 34 and 35">Pages 34–35</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/spread-18.webp" data-book-kind="spread" data-book-width="4800" data-book-height="2400" data-book-alt="From Ruins to Roots booklet, pages 36 and 37">Pages 36–37</a></li>
+        <li><a href="../../media/from-ruins-to-roots/web/booklet/back-cover.webp" data-book-kind="backcover" data-book-width="2400" data-book-height="2400" data-book-alt="From Ruins to Roots booklet back cover">Back cover</a></li>
+      </ol>
+    </section>
     <section class="story-slide" id="story" data-slide data-slide-aliases="slide-2 statement-title" aria-labelledby="statement-title">
       <div class="story-content">
         <h2 id="statement-title">From Ruins to Roots</h2>
@@ -72,125 +96,10 @@
 <p>The vacant land around Akademika Pavlova Station—serving as both shelter and transit hub—can be reimagined as a flexible public space that addresses immediate needs while laying the groundwork for long-term recovery. It transforms war-induced devastation into an opportunity for more resilient community. At the regional scale, its position along a potential commercial spine and near the Kharkiv River allows it to link economic and ecological systems. Quick-win projects like this can catalyze broader development, delivering visible impact, creating jobs, and rebuilding trust over time.</p>
       </div>
     </section>
-    <figure class="drawing-slide" id="slide-3" data-slide data-slide-aliases="drawings-title">
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/cover.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/cover.webp" alt="From Ruins to Roots booklet cover" decoding="async" loading="lazy">
+    <figure class="drawing-slide" id="slide-1" data-slide>
+      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/concept-materiality.webp">
+        <img src="../../media/from-ruins-to-roots/web/concept-materiality.webp" alt="Material palette and collage studies exploring the reuse of war debris in From Ruins to Roots" decoding="async" fetchpriority="high">
       </a>
-      <figcaption class="image-caption">Cover</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-4" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-01.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-01.webp" alt="From Ruins to Roots booklet, pages 2 and 3" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 2–3</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-5" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-02.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-02.webp" alt="From Ruins to Roots booklet, pages 4 and 5" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 4–5</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-6" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-03.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-03.webp" alt="From Ruins to Roots booklet, pages 6 and 7" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 6–7</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-7" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-04.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-04.webp" alt="From Ruins to Roots booklet, pages 8 and 9" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 8–9</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-8" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-05.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-05.webp" alt="From Ruins to Roots booklet, pages 10 and 11" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 10–11</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-9" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-06.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-06.webp" alt="From Ruins to Roots booklet, pages 12 and 13" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 12–13</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-10" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-07.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-07.webp" alt="From Ruins to Roots booklet, pages 14 and 15" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 14–15</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-11" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-08.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-08.webp" alt="From Ruins to Roots booklet, pages 16 and 17" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 16–17</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-12" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-09.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-09.webp" alt="From Ruins to Roots booklet, pages 18 and 19" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 18–19</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-13" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-10.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-10.webp" alt="From Ruins to Roots booklet, pages 20 and 21" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 20–21</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-14" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-11.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-11.webp" alt="From Ruins to Roots booklet, pages 22 and 23" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 22–23</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-15" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-12.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-12.webp" alt="From Ruins to Roots booklet, pages 24 and 25" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 24–25</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-16" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-13.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-13.webp" alt="From Ruins to Roots booklet, pages 26 and 27" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 26–27</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-17" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-14.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-14.webp" alt="From Ruins to Roots booklet, pages 28 and 29" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 28–29</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-18" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-15.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-15.webp" alt="From Ruins to Roots booklet, pages 30 and 31" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 30–31</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-19" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-16.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-16.webp" alt="From Ruins to Roots booklet, pages 32 and 33" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 32–33</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-20" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-17.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-17.webp" alt="From Ruins to Roots booklet, pages 34 and 35" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 34–35</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-21" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/spread-18.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/spread-18.webp" alt="From Ruins to Roots booklet, pages 36 and 37" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Pages 36–37</figcaption>
-    </figure>
-    <figure class="drawing-slide" id="slide-22" data-slide>
-      <a class="drawing-link" href="../../media/from-ruins-to-roots/web/booklet/back-cover.webp">
-        <img src="../../media/from-ruins-to-roots/web/booklet/back-cover.webp" alt="From Ruins to Roots booklet back cover" decoding="async" loading="lazy">
-      </a>
-      <figcaption class="image-caption">Back cover</figcaption>
     </figure>
     <figure class="drawing-slide" id="slide-23" data-slide>
       <a class="drawing-link" href="../../media/from-ruins-to-roots/web/concept-phasing.webp">
@@ -234,34 +143,15 @@
     </div>
   </div>
   <nav class="slide-navigation" aria-label="Project slides">
-    <a class="slide-dot" href="#slide-1" data-slide-link aria-label="Slide 1 of 28: Material palette and collage studies exploring the reuse of war debris in From Ruins to Roots"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#story" data-slide-link aria-label="Slide 2 of 28: Project statement"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-3" data-slide-link aria-label="Slide 3 of 28: Cover"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-4" data-slide-link aria-label="Slide 4 of 28: Pages 2–3"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-5" data-slide-link aria-label="Slide 5 of 28: Pages 4–5"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-6" data-slide-link aria-label="Slide 6 of 28: Pages 6–7"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-7" data-slide-link aria-label="Slide 7 of 28: Pages 8–9"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-8" data-slide-link aria-label="Slide 8 of 28: Pages 10–11"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-9" data-slide-link aria-label="Slide 9 of 28: Pages 12–13"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-10" data-slide-link aria-label="Slide 10 of 28: Pages 14–15"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-11" data-slide-link aria-label="Slide 11 of 28: Pages 16–17"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-12" data-slide-link aria-label="Slide 12 of 28: Pages 18–19"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-13" data-slide-link aria-label="Slide 13 of 28: Pages 20–21"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-14" data-slide-link aria-label="Slide 14 of 28: Pages 22–23"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-15" data-slide-link aria-label="Slide 15 of 28: Pages 24–25"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-16" data-slide-link aria-label="Slide 16 of 28: Pages 26–27"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-17" data-slide-link aria-label="Slide 17 of 28: Pages 28–29"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-18" data-slide-link aria-label="Slide 18 of 28: Pages 30–31"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-19" data-slide-link aria-label="Slide 19 of 28: Pages 32–33"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-20" data-slide-link aria-label="Slide 20 of 28: Pages 34–35"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-21" data-slide-link aria-label="Slide 21 of 28: Pages 36–37"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-22" data-slide-link aria-label="Slide 22 of 28: Back cover"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-23" data-slide-link aria-label="Slide 23 of 28: Concept phasing"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-24" data-slide-link aria-label="Slide 24 of 28: Plan"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-25" data-slide-link aria-label="Slide 25 of 28: Perspective 1"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-26" data-slide-link aria-label="Slide 26 of 28: Perspective 2"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-27" data-slide-link aria-label="Slide 27 of 28: Perspective 3"><span aria-hidden="true"></span></a>
-    <a class="slide-dot" href="#slide-28" data-slide-link aria-label="Slide 28 of 28: Perspective 4"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#project-book" data-slide-link aria-label="Slide 1 of 9: Project booklet"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#story" data-slide-link aria-label="Slide 2 of 9: Project statement"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-1" data-slide-link aria-label="Slide 3 of 9: Material palette and collage studies exploring the reuse of war debris in From Ruins to Roots"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-23" data-slide-link aria-label="Slide 4 of 9: Concept phasing"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-24" data-slide-link aria-label="Slide 5 of 9: Plan"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-25" data-slide-link aria-label="Slide 6 of 9: Perspective 1"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-26" data-slide-link aria-label="Slide 7 of 9: Perspective 2"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-27" data-slide-link aria-label="Slide 8 of 9: Perspective 3"><span aria-hidden="true"></span></a>
+    <a class="slide-dot" href="#slide-28" data-slide-link aria-label="Slide 9 of 9: Perspective 4"><span aria-hidden="true"></span></a>
   </nav>
   <footer class="project-footer requires-js">
     <div class="project-caption">
