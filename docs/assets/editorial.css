@@ -251,6 +251,10 @@
 }
 
 @media (min-width: 768px) and (hover: hover) and (pointer: fine) {
+  .selected-projects > :nth-child(-n + 3) {
+    --first-row-caption-offset: 14px;
+  }
+
   .selected-project-card {
     height: 100%;
   }
@@ -260,7 +264,7 @@
     aspect-ratio: auto;
     background: transparent;
     opacity: 0;
-    /* Move only the preview; the text and grid keep their existing positions. */
+    /* Align the preview without changing row sizing. */
     transform: translateY(var(--project-preview-offset-y, 0px));
   }
 
@@ -271,6 +275,7 @@
 
   .selected-project-caption {
     align-self: start;
+    inset-block-start: var(--first-row-caption-offset, 0px);
   }
 
   .selected-project-location {
@@ -297,6 +302,10 @@
 
 @media (min-width: 1240px) {
   .selected-projects { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+  .selected-projects > :nth-child(4) {
+    --first-row-caption-offset: 14px;
+  }
 }
 
 @media (max-width: 767px), (pointer: coarse) {
