@@ -151,24 +151,24 @@ function siteHeader(prefix, route) {
   ].join('\n');
 }
 
-function layout({ body, title, description, prefix, route, socialImage, fixedTheme, notFound = false }) {
+function layout({ body, title, description, prefix, route, socialImage, notFound = false }) {
   const home = route === '';
   const about = route === 'about/';
   const project = route?.startsWith('work/');
-  const editorial = home || project || route === 'projects/' || route === 'contact/';
-  const themeAttributes = fixedTheme ? ' data-theme="' + fixedTheme + '" data-theme-lock="' + fixedTheme + '"' : '';
+  const projectIndex = route === 'projects/';
+  const editorial = home || project || projectIndex || route === 'contact/';
   const archive = route === 'press/' ? 'press' : about ? 'awards' : '';
   const archiveAttributes = archive ? ' data-archive="' + archive + '" data-archive-version="' + archiveVersions[archive] + '"' : '';
   const tags = [
     '<!doctype html>',
-    '<html lang="en"' + themeAttributes + '>',
+    '<html lang="en">',
     '<head>',
     '  <meta charset="utf-8">',
     '  <meta name="viewport" content="width=device-width, initial-scale=1">',
     '  <title>' + escape(title) + '</title>',
     '  <meta name="description" content="' + escape(description) + '">',
-    '  <meta name="theme-color" content="' + (fixedTheme === 'day' ? '#ffffff' : '#000000') + '">',
-    ...(!fixedTheme ? ['  <script src="' + prefix + 'assets/philadelphia-clock.js?v=' + clockScriptVersion + '"></script>'] : []),
+    '  <meta name="theme-color" content="#000000">',
+    '  <script src="' + prefix + 'assets/philadelphia-clock.js?v=' + clockScriptVersion + '"></script>',
     '  <link rel="icon" type="image/svg+xml" href="' + prefix + 'assets/mark.svg">',
   ];
   if (notFound) {
@@ -211,7 +211,7 @@ function layout({ body, title, description, prefix, route, socialImage, fixedThe
     siteHeader(prefix, route),
     body,
   );
-  if (home) tags.push(
+  if (home || projectIndex) tags.push(
     '<aside class="philadelphia-clock" id="philadelphia-clock" aria-label="Local time in Philadelphia" hidden>',
     '  <p>Philadelphia · <time id="philadelphia-clock-time"></time></p>',
     '  <p>The site follows the city’s daylight.</p>',
@@ -325,7 +325,6 @@ function projectsPage() {
     description: 'An index of landscape design and research projects by ' + name + '.',
     prefix: '../',
     route: 'projects/',
-    fixedTheme: 'day',
     body,
   });
 }
@@ -370,7 +369,6 @@ function aboutPage() {
     description: 'Biography, practice, education, awards, and official announcements for Jiewen Hu, a landscape designer based in Philadelphia.',
     prefix: '../',
     route: 'about/',
-    fixedTheme: 'day',
     body,
   });
 }
@@ -531,7 +529,6 @@ function projectPage(project) {
     description: project.summary,
     prefix: '../../',
     route: 'work/' + project.slug + '/',
-    fixedTheme: ['leaving-traces', 'back-to-roots'].includes(project.slug) ? 'night' : 'day',
     socialImage: { url: new URL(cover.src, siteUrl).href, alt: cover.alt },
     body,
   });
@@ -720,7 +717,6 @@ function pressPage() {
     description: 'Press, publications, and official coverage featuring landscape work by ' + name + '.',
     prefix: '../',
     route: 'press/',
-    fixedTheme: 'day',
     body,
   });
 }
@@ -744,7 +740,6 @@ function contactPage() {
     description: 'Professional contact and profile links for ' + name + ', a landscape designer based in Philadelphia.',
     prefix: '../',
     route: 'contact/',
-    fixedTheme: 'day',
     body,
   });
 }

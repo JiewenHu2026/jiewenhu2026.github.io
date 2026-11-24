@@ -112,7 +112,7 @@
       : local.hour >= 7 && local.hour < 18;
 
     // Runs immediately when included in <head>, before the first page paint.
-    const theme = document.documentElement.dataset.themeLock || (daylight ? 'day' : 'night');
+    const theme = daylight ? 'day' : 'night';
     document.documentElement.dataset.theme = theme;
     const themeColor = document.querySelector?.('meta[name="theme-color"]');
     if (themeColor) themeColor.content = theme === 'day' ? '#ffffff' : '#000000';

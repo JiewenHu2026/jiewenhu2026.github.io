@@ -172,7 +172,7 @@
 }
 
 .project-index-selected {
-  padding-block: clamp(48px, 7vw, 96px) clamp(32px, 5vw, 72px);
+  padding-block: clamp(48px, 7vw, 96px) calc(clamp(56px, 5vw, 72px) + env(safe-area-inset-bottom));
 }
 
 .project-section > h2 {
