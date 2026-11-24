@@ -1,9 +1,4 @@
 /* The home reel, project index and project readings use the site's daylight palette. */
-.site-header {
-  height: 62px;
-  padding-inline: clamp(16px, 2.4vw, 32px);
-}
-
 .site-header a[aria-current="location"] {
   color: var(--accent);
 }
@@ -19,7 +14,7 @@
   overflow: hidden;
   background: var(--surface);
   color: var(--ink);
-  scroll-margin-top: 62px;
+  scroll-margin-top: var(--site-header-height);
 }
 
 .home-work-index {
@@ -123,7 +118,7 @@
   justify-content: center;
   width: min(calc(100% - clamp(32px, 5vw, 60px)), 1380px);
   padding-block: clamp(52px, 8vw, 112px) calc(56px + env(safe-area-inset-bottom));
-  scroll-margin-top: 62px;
+  scroll-margin-top: var(--site-header-height);
 }
 
 .home-bio-inner {
@@ -632,11 +627,5 @@
 }
 
 @media (max-width: 479px) {
-  .site-header { padding-inline: 13px; }
-
-  .site-header nav {
-    gap: 8px;
-  }
-
   .project-essay-heading h1 { font-size: 2rem; }
 }

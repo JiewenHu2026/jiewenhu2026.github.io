@@ -35,8 +35,8 @@
 }
 
 .site-header .wordmark {
-  font-family: var(--serif);
-  font-weight: 400;
+  flex: none;
+  font: 400 .75rem/1.25rem var(--serif);
   letter-spacing: normal;
   text-transform: uppercase;
 }
@@ -151,14 +151,4 @@ dialog::backdrop {
 
 .archive-page h2[id] {
   scroll-margin-top: 78px;
-}
-@media (max-width: 420px) {
-  .site-header {
-    gap: 8px;
-    padding-inline: 13px;
-  }
-
-  .site-header nav {
-    gap: 8px;
-  }
 }

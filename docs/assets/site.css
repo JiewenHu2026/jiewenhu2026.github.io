@@ -22,7 +22,7 @@ img[data-image-tone="light"]{cursor:var(--black-dot-cursor),auto}
 .eyebrow,.wordmark,.site-nav,.project-caption-meta,.project-footer button,.press-meta,.work-number,.work-year,.work-index,.work-index-line,.work-index-bar{font:400 .73rem/1.35 var(--mono);letter-spacing:.11em;text-transform:uppercase}
 .eyebrow{color:var(--warm)}
 .site-header{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:0 var(--margin)}
-.site-header{height:70px;position:relative;z-index:8}
+.site-header{position:relative;z-index:8}
 .site-header nav,.site-nav{display:flex;align-items:center;gap:clamp(13px,3vw,42px)}
 .site-header a{white-space:nowrap}
 .site-header .wordmark{color:var(--ink);letter-spacing:.18em}
@@ -63,7 +63,7 @@ img[data-image-tone="light"]{cursor:var(--black-dot-cursor),auto}
 
 /* Project gallery: an image, its caption, and a quiet fixed rail. */
 body:has(.gallery-ready){--bg:#000;background:#000;overflow:hidden}
-body:has(.gallery-ready) .site-header{height:62px;background:linear-gradient(#000 37%,transparent)}
+body:has(.gallery-ready) .site-header{background:linear-gradient(#000 37%,transparent)}
 .requires-js{display:none}
 .gallery-ready .requires-js{display:revert}
 .project-slides{width:100%}
@@ -133,7 +133,6 @@ dialog::backdrop{background:#000d}
 
 @media(max-width:850px){.work-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:570px){
-  .site-header{height:58px}
   .site-header .wordmark{letter-spacing:.095em}
   .site-header nav,.site-nav{gap:13px}
   .site-header nav a{font-size:.66rem;letter-spacing:.06em}
